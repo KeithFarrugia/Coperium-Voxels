@@ -183,7 +183,7 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
-    <ClCompile Include="Src\Block\Block.cpp" />
+    <ClCompile Include="Src\Compact Data\Compact Block\Block.cpp" />
     <ClCompile Include="Src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -501,8 +501,8 @@
     <ClInclude Include="Libraries\Inc\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Libraries\Inc\KHR\khrplatform.h" />
     <ClInclude Include="Libraries\Inc\STB\stb_image.h" />
-    <ClInclude Include="Src\Block\Block.h" />
-    <ClInclude Include="Src\Block\Block Mesh.h" />
+    <ClInclude Include="Src\Compact Data\Compact Block\Block.h" />
+    <ClInclude Include="Src\Compact Data\Block Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />

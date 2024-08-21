@@ -1,5 +1,5 @@
 #pragma once
-
+#include <GLFW/glfw3.h>
 constexpr GLfloat block_vertices[] = {
     // Positions           // Colors
     // Front face (Clockwise)
