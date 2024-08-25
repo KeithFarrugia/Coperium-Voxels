@@ -36,11 +36,19 @@ public:
         const GLuint    offset
     )const;
 
+    void Add_Vertex_Set(
+        const GLuint    index,  const GLint     v_size,
+        const void*     v,      const GLsizei   type_size,
+        const GLsizei   v_len,  const GLenum    v_type
+    )const;
+
     void Draw_Mesh      (bool   wireframe = false) const;
 
-    void Clear_Mesh     ();
 
-    ~Basic_Mesh();
+    void Clear_Mesh     ();
+    void Clean_Mesh     ();
+
+    ~Basic_Mesh         ();
 private:
     GLuint  vao;
     GLuint  vbo;

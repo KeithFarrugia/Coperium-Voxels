@@ -11,7 +11,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Block/Block.h"
+#include "Compact Data/Compact Block/Block.h"
 
 GLenum error;
 
@@ -32,14 +32,14 @@ int main(void) {
 
     GLfloat* vert_comb = new GLfloat[216 * 5                 * 5 * 5];
 
+    Block block;
     for (uint8_t x = 0; x < 5; x++){
         for (uint8_t y = 0; y < 5; y++){
             for (uint8_t z = 0; z < 5; z++){
-                block_data_t block;
-                set_all(block, x, y, z, x, y, z);
+                block.Set_All(x, y, z, x, y, z);
 
                 std::unique_ptr<GLfloat[]> vert;
-                vert = (generate_cube_vertices(block));
+                vert = (block.Generate_Cube_Vertices());
 
                 size_t offset = 216 * (x + y * 5 + z * 25);
                 std::copy(vert.get(), vert.get() + 216, vert_comb + offset);
@@ -58,6 +58,7 @@ int main(void) {
     );
     mesh.Add_Vertex_Set(0, 3, 0);
     mesh.Add_Vertex_Set(1, 3, 3);
+    mesh.Clean_Mesh();
 
     // --------------------------------- Shader
 

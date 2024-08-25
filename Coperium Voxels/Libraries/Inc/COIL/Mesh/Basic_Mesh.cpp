@@ -113,9 +113,9 @@ void Basic_Mesh::Configure_Mesh(
  * ============================================================================
  */
 void Basic_Mesh::Add_Vertex_Set(
-    const GLuint   index,
-    const GLint    vec_size,
-    const GLuint   offset
+    const GLuint    index,
+    const GLint     vec_size,
+    const GLuint    offset
 )const{
     Bind_VAO(vao);
     Link_VBO(
@@ -130,6 +130,48 @@ void Basic_Mesh::Add_Vertex_Set(
     Unbind_VAO();
 }
 
+/* ============================================================================
+ * ---------------------------- Add Vertex Set
+ * Adds a vertex attribute set to the current
+ * VAO using the provided configuration.
+ * This method links a specific vertex buffer object
+ * (VBO) to a vertex attribute index in the VAO.
+ *
+ * ------ Parameters ------
+ * index        Index of the vertex attribute in the VAO.
+ * v_size       Number of components per vertex attribute (e.g., 3 for vec3).
+ * offset       Offset in bytes of where the attribute data starts in the VBO.
+ * 
+ * v            Pointer to the vertex data.
+ * type_size    The size of the vertex data in bytes.
+ * v_len        The number of elements in the vertex data.
+ * v_type       The datatype used for the vertex buffer
+ * v_stride     The byte offset between consecutive vertex attributes.
+ * ============================================================================
+ */
+void Basic_Mesh::Add_Vertex_Set(
+    const GLuint    index,
+    const GLint     v_size,
+    const void*     v,
+    const GLsizei   type_size,
+    const GLsizei   v_len,
+    const GLenum    v_type
+)const {
+    GLuint vbo;
+    Create_VBO(vbo, v, type_size, v_len);
+    Bind_VAO(vao);
+    Link_VBO(
+        vbo,
+        index,
+        v_size,
+        0,
+        0,
+        v_type,
+        type_size
+    );
+    Unbind_VAO();
+    Delete_VBO(vbo);
+}
 /* ============================================================================
 * ---------------------------- Generate Mesh
 * Generates the mesh by binding the VAO and issuing the draw call.
@@ -187,6 +229,16 @@ void Basic_Mesh::Clear_Mesh() {
     index_buffer_type       = 0;
 }
 
+/* ============================================================================
+ * ---------------------------- Clean Mesh
+ * Cleans the mesh by removing the VBO as it may no longer be required
+ * ============================================================================
+ */
+void Coil::Basic_Mesh::Clean_Mesh(){
+    if (vbo != 0) { Delete_VBO(vbo); }
+        
+    vertex_buffer_type      = 0;
+}
 /* ============================================================================
  * ---------------------------- Destructor
  * Ensures that all resources associated with the mesh are released when the
