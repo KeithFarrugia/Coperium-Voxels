@@ -10,74 +10,107 @@
 
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
-#include "Compact Data/Compact Block/Block.h"
+#include "Compact Data/Compact Location Data/CLD.h"
+#include "Compact Data/Compact Colour Data/CCD.h"
+#include "Compact Data/Compact Block/CB.h"
+#include "Compact Data/Block Mesh/CBM.h"
 
-GLenum error;
+constexpr int GRID_SIZE_X = 16;
+constexpr int GRID_SIZE_Y = 64;
+constexpr int GRID_SIZE_Z = 16;
 
-int main(void) {
+std::unique_ptr<GLfloat[]> FlattenMeshVector(const std::vector<std::unique_ptr<GLfloat[]>>& meshes, int& totalSize) {
+    totalSize = 0;
+    for (const auto& mesh : meshes) {
+        totalSize += COMPACT_CUBE_SIZE;
+    }
 
+    auto flattenedMesh = std::make_unique<GLfloat[]>(totalSize);
+    size_t offset = 0;
+    for (const auto& mesh : meshes) {
+        std::copy(mesh.get(), mesh.get() + COMPACT_CUBE_SIZE, flattenedMesh.get() + offset);
+        offset += COMPACT_CUBE_SIZE;
+    }
+    return flattenedMesh;
+}
+
+int main() {
+    // Initialize Logger and OpenGL
     Coil::Logger::init_logger(Coil::LOG_TO_FILE);
     Coil::Initialise_Opengl();
     Coil::Initialise_GLAD();
 
-
+    // Create Window
     Coil::Window window("Hello World", 640, 480);
     window.EnableVsync();
     window.FF_Clockwise();
     window.EnableDepthTest();
     window.EnableCulling();
-                    
-    // --------------------------------- MESH
 
-    GLfloat* vert_comb = new GLfloat[216 * 5                 * 5 * 5];
+    // Initialize ImGui
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window.Get_Window(), true);
+    ImGui_ImplOpenGL3_Init("#version 130");
 
-    Block block;
-    for (uint8_t x = 0; x < 5; x++){
-        for (uint8_t y = 0; y < 5; y++){
-            for (uint8_t z = 0; z < 5; z++){
-                block.Set_All(x, y, z, x, y, z);
-
-                std::unique_ptr<GLfloat[]> vert;
-                vert = (block.Generate_Cube_Vertices());
-
-                size_t offset = 216 * (x + y * 5 + z * 25);
-                std::copy(vert.get(), vert.get() + 216, vert_comb + offset);
+    // Create Cube Meshes
+    std::vector<std::unique_ptr<GLfloat[]>> cubeMeshes;
+    for (int x = 0; x < GRID_SIZE_X; x++) {
+        for (int y = 0; y < GRID_SIZE_Y; y++) {
+            for (int z = 0; z < GRID_SIZE_Z; z++) {
+                CB cube(x, y, z, x, (int)(y / 4.0f), z);
+                auto sub_mesh = cube.Generate_Mesh();
+                cubeMeshes.push_back(std::move(sub_mesh));
             }
+            printf("G Colour %d at [%d]\n", (int)(y / 4.0f), y);
         }
-
     }
 
+    int totalSize = 0;
+    auto cubesMesh = FlattenMeshVector(cubeMeshes, totalSize);
+
+    // Configure Mesh
     Coil::Basic_Mesh mesh;
     mesh.Configure_Mesh(
-        vert_comb,
+        cubesMesh.get(),
         sizeof(GLfloat),
-        216*5 *5 *5,
+        totalSize,
         GL_FLOAT,
-        6
+        2
     );
-    mesh.Add_Vertex_Set(0, 3, 0);
-    mesh.Add_Vertex_Set(1, 3, 3);
+
+    mesh.Add_Vertex_Set(0, 1, 0);
+    mesh.Add_Vertex_Set(1, 1, 1);
     mesh.Clean_Mesh();
 
-    // --------------------------------- Shader
-
+    // Initialize Shader
     Coil::Shader shader(std::string("Basic"));
     shader.Add_Shaders(
         Coil::shader_list_t{
-            Coil::shader_info_t{ "basic.vert", Coil::shader_type_t::VERTEX_SHADER   },
-            Coil::shader_info_t{ "basic.frag", Coil::shader_type_t::FRAGMENT_SHADER }
+            Coil::shader_info_t{ "compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER   },
+            Coil::shader_info_t{ "compact_v2.frag", Coil::shader_type_t::FRAGMENT_SHADER }
         });
     shader.Compile_And_Link();
 
-    // --------------------------------- CAMERA
-    Coil::Fly_Camera camera(window, 0,0, 2);
+    // Initialize Camera
+    Coil::Fly_Camera camera(window, 0, 0, 2);
     camera.Take_Over_All_Input();
-    // Main loop
+
+    // Main rendering loop
     while (!window.Is_Closed()) {
         int width, height;
         window.Get_Size(width, height);
 
+        // Start ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // Clear screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -89,16 +122,30 @@ int main(void) {
         shader.Set_Matrix4("model", model);
 
         mesh.Draw_Mesh(false);
+
+        // Render ImGui UI
+        ImGui::Begin("FPS Counter");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        ImGui::End();
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Swap buffers
         window.SwapBuffers();
 
-        // Poll for and process events
+        // Poll events and update camera
         glfwPollEvents();
         camera.Update();
-
-        error = glGetError();       if (error != GL_NO_ERROR) { printf("OpenGL error: %d\n", error); }
     }
 
-    // Clean up and exit
+    // Cleanup ImGui
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    // Cleanup and exit
     window.Del();
     glfwTerminate();
 

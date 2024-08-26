@@ -155,6 +155,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp" />
+    <ClCompile Include="Src\Compact Data\Compact Colour Data\CCD.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Calculations.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Callbacks &amp; Handlers.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Fly_Camera.cpp" />
@@ -183,12 +185,12 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
-    <ClCompile Include="Src\Compact Data\Compact Block\Block.cpp" />
-    <ClCompile Include="Src\Compact Data\Compact BVD\Block Vertex Data.cpp" />
-    <ClCompile Include="Src\Compact Data\Compact BVD\Private Func.cpp" />
+    <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
     <ClCompile Include="Src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Compact Data\Compact Block\CB.h" />
+    <ClInclude Include="Src\Compact Data\Compact Colour Data\CCD.h" />
     <ClInclude Include="Libraries\Inc\COIL\Camera\Fly Camera\Fly_Camera.h" />
     <ClInclude Include="Libraries\Inc\COIL\Camera\Camera.h" />
     <ClInclude Include="Libraries\Inc\COIL\Mesh\Basic_Mesh.h" />
@@ -503,9 +505,8 @@
     <ClInclude Include="Libraries\Inc\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Libraries\Inc\KHR\khrplatform.h" />
     <ClInclude Include="Libraries\Inc\STB\stb_image.h" />
-    <ClInclude Include="Src\Compact Data\Compact Block\Block.h" />
-    <ClInclude Include="Src\Compact Data\Block Mesh.h" />
-    <ClInclude Include="Src\Compact Data\Compact BVD\Block Vertex Data.h" />
+    <ClInclude Include="Src\Compact Data\Block Mesh\CBM.h" />
+    <ClInclude Include="Src\Compact Data\Compact Location Data\CLD.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
@@ -653,6 +654,12 @@
     <None Include="Libraries\Inc\GLM\gtx\wrap.inl" />
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\basic.vert" />
+    <None Include="Resources\Shaders\compact_v2.frag" />
+    <None Include="Resources\Shaders\compact_v2.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Extras\Previous Main 1.txt" />
+    <Text Include="Extras\Previous Main 2 .txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

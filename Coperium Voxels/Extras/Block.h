@@ -9,6 +9,7 @@
 #include <algorithm>
 
 constexpr int MASK_4_BITS = 0xF;
+constexpr int MASK_5_BITS = 0x1F;
 
 class Block {
 public:

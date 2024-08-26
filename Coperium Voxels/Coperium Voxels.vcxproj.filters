@@ -102,13 +102,13 @@
     <ClCompile Include="Libraries\Inc\COIL\Camera\Getters &amp; Setters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Compact Data\Compact BVD\Block Vertex Data.cpp">
+    <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Compact Data\Compact BVD\Private Func.cpp">
+    <ClCompile Include="Src\Compact Data\Compact Colour Data\CCD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Compact Data\Compact Block\Block.cpp">
+    <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1055,13 +1055,16 @@
     <ClInclude Include="Libraries\Inc\COIL\Camera\Fly Camera\Fly_Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Compact Data\Compact BVD\Block Vertex Data.h">
+    <ClInclude Include="Src\Compact Data\Block Mesh\CBM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Compact Data\Compact Block\Block.h">
+    <ClInclude Include="Src\Compact Data\Compact Location Data\CLD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Compact Data\Block Mesh.h">
+    <ClInclude Include="Src\Compact Data\Compact Colour Data\CCD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\Compact Block\CB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1491,5 +1494,11 @@
     </None>
     <None Include="Resources\Shaders\basic.vert" />
     <None Include="Resources\Shaders\basic.frag" />
+    <None Include="Resources\Shaders\compact_v2.vert" />
+    <None Include="Resources\Shaders\compact_v2.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Extras\Previous Main 1.txt" />
+    <Text Include="Extras\Previous Main 2 .txt" />
   </ItemGroup>
 </Project>

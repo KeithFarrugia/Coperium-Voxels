@@ -7,7 +7,7 @@
  *
  * ------ Parameters ------
  * x: The x-coordinate of the Block (0-15).
- * y: The y-coordinate of the Block (0-15).
+ * y: The y-coordinate of the Block (0-31).
  * z: The z-coordinate of the Block (0-15).
  * r: The red color component of the Block (0-15).
  * g: The green color component of the Block (0-15).
@@ -27,7 +27,7 @@ Block::Block(uint8_t x, uint8_t y, uint8_t z, uint8_t r, uint8_t g, uint8_t b) {
  * ============================================================================
  */
 uint8_t Block::Get_X() const {
-    return (data >> 28) & MASK_4_BITS;
+    return (data >> 27) & MASK_4_BITS;
 }
 
 /* ============================================================================
@@ -35,11 +35,11 @@ uint8_t Block::Get_X() const {
  * Retrieves the y-coordinate from the Block's data.
  *
  * ------ Returns ------
- * uint8_t: The y-coordinate (4-bit value).
+ * uint8_t: The y-coordinate (5-bit value).
  * ============================================================================
  */
 uint8_t Block::Get_Y() const {
-    return (data >> 24) & MASK_4_BITS;
+    return (data >> 22) & MASK_5_BITS;
 }
 
 /* ============================================================================
@@ -51,7 +51,7 @@ uint8_t Block::Get_Y() const {
  * ============================================================================
  */
 uint8_t Block::Get_Z() const {
-    return (data >> 20) & MASK_4_BITS;
+    return (data >> 18) & MASK_4_BITS;
 }
 
 /* ============================================================================
@@ -63,7 +63,7 @@ uint8_t Block::Get_Z() const {
  * ============================================================================
  */
 uint8_t Block::Get_R() const {
-    return (data >> 16) & MASK_4_BITS;
+    return (data >> 14) & MASK_4_BITS;
 }
 
 /* ============================================================================
@@ -75,7 +75,7 @@ uint8_t Block::Get_R() const {
  * ============================================================================
  */
 uint8_t Block::Get_G() const {
-    return (data >> 12) & MASK_4_BITS;
+    return (data >> 10) & MASK_4_BITS;
 }
 
 /* ============================================================================
@@ -87,7 +87,7 @@ uint8_t Block::Get_G() const {
  * ============================================================================
  */
 uint8_t Block::Get_B() const {
-    return (data >> 8) & MASK_4_BITS;
+    return (data >> 6) & MASK_4_BITS;
 }
 
 /* ============================================================================
@@ -100,22 +100,20 @@ uint8_t Block::Get_B() const {
  * ============================================================================
  */
 void Block::Set_X(const uint8_t x) {
-    data =
-        (data & ~(MASK_4_BITS << 28))
-        | ((x & MASK_4_BITS) << 28);
+    data = (data & ~(MASK_4_BITS << 27)) | ((x & MASK_4_BITS) << 27);
 }
 
 /* ============================================================================
  * --------------------------- Block::Set_Y
  * Sets the y-coordinate in the Block's data. The y value is masked to ensure
- * it is within 4 bits and then positioned correctly in the data variable.
+ * it is within 5 bits and then positioned correctly in the data variable.
  *
  * ------ Parameters ------
- * y: The y-coordinate (4-bit value).
+ * y: The y-coordinate (5-bit value).
  * ============================================================================
  */
 void Block::Set_Y(const uint8_t y) {
-    data = (data & ~(MASK_4_BITS << 24)) | ((y & MASK_4_BITS) << 24);
+    data = (data & ~(MASK_5_BITS << 22)) | ((y & MASK_5_BITS) << 22);
 }
 
 /* ============================================================================
@@ -128,7 +126,7 @@ void Block::Set_Y(const uint8_t y) {
  * ============================================================================
  */
 void Block::Set_Z(const uint8_t z) {
-    data = (data & ~(MASK_4_BITS << 20)) | ((z & MASK_4_BITS) << 20);
+    data = (data & ~(MASK_4_BITS << 18)) | ((z & MASK_4_BITS) << 18);
 }
 
 /* ============================================================================
@@ -142,13 +140,13 @@ void Block::Set_Z(const uint8_t z) {
  * ============================================================================
  */
 void Block::Set_R(const uint8_t r) {
-    data = (data & ~(MASK_4_BITS << 16)) | ((r & MASK_4_BITS) << 16);
+    data = (data & ~(MASK_4_BITS << 14)) | ((r & MASK_4_BITS) << 14);
 }
 
 /* ============================================================================
  * --------------------------- Block::Set_G
- * Sets the green color component in the Block's data. The g value is masked t
- * o ensure it is within 4 bits and then positioned correctly in the data
+ * Sets the green color component in the Block's data. The g value is masked
+ * to ensure it is within 4 bits and then positioned correctly in the data
  * variable.
  *
  * ------ Parameters ------
@@ -156,7 +154,7 @@ void Block::Set_R(const uint8_t r) {
  * ============================================================================
  */
 void Block::Set_G(const uint8_t g) {
-    data = (data & ~(MASK_4_BITS << 12)) | ((g & MASK_4_BITS) << 12);
+    data = (data & ~(MASK_4_BITS << 10)) | ((g & MASK_4_BITS) << 10);
 }
 
 /* ============================================================================
@@ -170,18 +168,18 @@ void Block::Set_G(const uint8_t g) {
  * ============================================================================
  */
 void Block::Set_B(const uint8_t b) {
-    data = (data & ~(MASK_4_BITS << 8)) | ((b & MASK_4_BITS) << 8);
+    data = (data & ~(MASK_4_BITS << 6)) | ((b & MASK_4_BITS) << 6);
 }
 
 /* ============================================================================
  * --------------------------- Block::Set_All
  * Sets all the x, y, z coordinates and r, g, b color components in the
- * Block's data at once. Each value is masked to ensure it is within 4 bits
- * and then positioned correctly in the data variable.
+ * Block's data at once. Each value is masked to ensure it is within its
+ * corresponding bit size and then positioned correctly in the data variable.
  *
  * ------ Parameters ------
  * x: The x-coordinate (4-bit value).
- * y: The y-coordinate (4-bit value).
+ * y: The y-coordinate (5-bit value).
  * z: The z-coordinate (4-bit value).
  * r: The red color component (4-bit value).
  * g: The green color component (4-bit value).
@@ -193,12 +191,12 @@ void Block::Set_All(
     const uint8_t r, const uint8_t g, const uint8_t b
 ) {
     data =
-        ((x & MASK_4_BITS) << 28) |
-        ((y & MASK_4_BITS) << 24) |
-        ((z & MASK_4_BITS) << 20) |
-        ((r & MASK_4_BITS) << 16) |
-        ((g & MASK_4_BITS) << 12) |
-        ((b & MASK_4_BITS) << 8);
+        ((x & MASK_4_BITS) << 27) |
+        ((y & MASK_5_BITS) << 22) |
+        ((z & MASK_4_BITS) << 18) |
+        ((r & MASK_4_BITS) << 14) |
+        ((g & MASK_4_BITS) << 10) |
+        ((b & MASK_4_BITS) << 6);
 }
 
 /* ============================================================================
