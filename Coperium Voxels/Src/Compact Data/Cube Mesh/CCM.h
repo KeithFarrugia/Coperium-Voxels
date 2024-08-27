@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CBM_H
-#define CBM_H
+#ifndef COMPACT_CUBE_MESH_H
+#define COMPACT_CUBE_MESH_H
 
 #include "../Compact Location Data/CLD.h"
 #include "../Compact Colour Data/CCD.h"
@@ -59,4 +59,4 @@ const GLfloat COMPACT_CUBE[] = {
 
 
 
-#endif // !CBM_H
+#endif // !COMPACT_CUBE_MESH_H

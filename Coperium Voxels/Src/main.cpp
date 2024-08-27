@@ -15,26 +15,8 @@
 #include "Compact Data/Compact Location Data/CLD.h"
 #include "Compact Data/Compact Colour Data/CCD.h"
 #include "Compact Data/Compact Block/CB.h"
-#include "Compact Data/Block Mesh/CBM.h"
+#include "Utility/Render Testing.h"
 
-constexpr int GRID_SIZE_X = 16;
-constexpr int GRID_SIZE_Y = 64;
-constexpr int GRID_SIZE_Z = 16;
-
-std::unique_ptr<GLfloat[]> FlattenMeshVector(const std::vector<std::unique_ptr<GLfloat[]>>& meshes, int& totalSize) {
-    totalSize = 0;
-    for (const auto& mesh : meshes) {
-        totalSize += COMPACT_CUBE_SIZE;
-    }
-
-    auto flattenedMesh = std::make_unique<GLfloat[]>(totalSize);
-    size_t offset = 0;
-    for (const auto& mesh : meshes) {
-        std::copy(mesh.get(), mesh.get() + COMPACT_CUBE_SIZE, flattenedMesh.get() + offset);
-        offset += COMPACT_CUBE_SIZE;
-    }
-    return flattenedMesh;
-}
 
 int main() {
     // Initialize Logger and OpenGL
@@ -44,7 +26,7 @@ int main() {
 
     // Create Window
     Coil::Window window("Hello World", 640, 480);
-    window.EnableVsync();
+    //window.EnableVsync();
     window.FF_Clockwise();
     window.EnableDepthTest();
     window.EnableCulling();
@@ -57,44 +39,22 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.Get_Window(), true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    // Create Cube Meshes
-    std::vector<std::unique_ptr<GLfloat[]>> cubeMeshes;
-    for (int x = 0; x < GRID_SIZE_X; x++) {
-        for (int y = 0; y < GRID_SIZE_Y; y++) {
-            for (int z = 0; z < GRID_SIZE_Z; z++) {
-                CB cube(x, y, z, x, (int)(y / 4.0f), z);
-                auto sub_mesh = cube.Generate_Mesh();
-                cubeMeshes.push_back(std::move(sub_mesh));
-            }
-            printf("G Colour %d at [%d]\n", (int)(y / 4.0f), y);
-        }
-    }
+    bool optimise = true;
 
-    int totalSize = 0;
-    auto cubesMesh = FlattenMeshVector(cubeMeshes, totalSize);
 
     // Configure Mesh
-    Coil::Basic_Mesh mesh;
-    mesh.Configure_Mesh(
-        cubesMesh.get(),
-        sizeof(GLfloat),
-        totalSize,
-        GL_FLOAT,
-        2
-    );
-
-    mesh.Add_Vertex_Set(0, 1, 0);
-    mesh.Add_Vertex_Set(1, 1, 1);
-    mesh.Clean_Mesh();
-
-    // Initialize Shader
     Coil::Shader shader(std::string("Basic"));
-    shader.Add_Shaders(
-        Coil::shader_list_t{
-            Coil::shader_info_t{ "compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER   },
-            Coil::shader_info_t{ "compact_v2.frag", Coil::shader_type_t::FRAGMENT_SHADER }
-        });
-    shader.Compile_And_Link();
+    Coil::Basic_Mesh mesh;
+
+
+    if (optimise == true) {
+        Render_Compact_Cube_Mesh(mesh, shader);
+    } else {
+        Render_Simple_Cube_Mesh(mesh, shader);
+    }
+
+
+
 
     // Initialize Camera
     Coil::Fly_Camera camera(window, 0, 0, 2);

@@ -221,3 +221,40 @@ std::unique_ptr<GLfloat[]> CB::Generate_Mesh() const{
 
     return cube_mesh;
 }
+
+/* ============================================================================
+ * --------------------------- Generate_Mesh_Old
+ * Generates a mesh using the un optimised cube mesh data
+ * ============================================================================
+ */
+std::unique_ptr<GLfloat[]> CB::Generate_Mesh_Old() const {
+    float x = (float)Get_X();
+    float y = (float)Get_Y();
+    float z = (float)Get_Z();
+
+    float r = ((float)Get_R()) / 16.0f;
+    float g = ((float)Get_G()) / 16.0f;
+    float b = ((float)Get_B()) / 16.0f;
+
+    auto cube_mesh = std::make_unique<GLfloat[]>(SIMPLE_CUBE_SIZE);
+
+    std::copy(  SIMPLE_CUBE, 
+                SIMPLE_CUBE + SIMPLE_CUBE_SIZE, 
+                cube_mesh.get());
+
+    for (   size_t i = 0; 
+            i        < SIMPLE_CUBE_SIZE; 
+            i       += SIMPLE_CUBE_ELEMENTS
+        ) {
+        cube_mesh[i + 0] += x;
+        cube_mesh[i + 1] += y;
+        cube_mesh[i + 2] += z;
+
+        cube_mesh[i + 3] *= r;
+        cube_mesh[i + 4] *= g;
+        cube_mesh[i + 5] *= b;
+    }
+
+
+    return cube_mesh;
+}

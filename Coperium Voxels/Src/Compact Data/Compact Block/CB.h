@@ -6,7 +6,8 @@
 #include <cstdint>
 #include <memory>
 
-#include "../Block Mesh/CBM.h"
+#include "../Cube Mesh/CCM.h"
+#include "../Cube Mesh/SCM.h"
 
 class CB {
 public:
@@ -43,6 +44,7 @@ public:
 
     // --------------------------------- GENERATION
     std::unique_ptr<GLfloat[]> Generate_Mesh()const;
+    std::unique_ptr<GLfloat[]> Generate_Mesh_Old()const;
 
 private:
     uint32_t data;

@@ -189,6 +189,7 @@
     <ClCompile Include="Src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Compact Data\Cube Mesh\SCM.h" />
     <ClInclude Include="Src\Compact Data\Compact Block\CB.h" />
     <ClInclude Include="Src\Compact Data\Compact Colour Data\CCD.h" />
     <ClInclude Include="Libraries\Inc\COIL\Camera\Fly Camera\Fly_Camera.h" />
@@ -505,8 +506,9 @@
     <ClInclude Include="Libraries\Inc\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Libraries\Inc\KHR\khrplatform.h" />
     <ClInclude Include="Libraries\Inc\STB\stb_image.h" />
-    <ClInclude Include="Src\Compact Data\Block Mesh\CBM.h" />
+    <ClInclude Include="Src\Compact Data\Cube Mesh\CCM.h" />
     <ClInclude Include="Src\Compact Data\Compact Location Data\CLD.h" />
+    <ClInclude Include="Src\Utility\Render Testing.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
