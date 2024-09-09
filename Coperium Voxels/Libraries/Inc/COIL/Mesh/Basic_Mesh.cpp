@@ -21,7 +21,6 @@ Basic_Mesh::Basic_Mesh() {
 
     index_buffer_size       = 0;
     index_buffer_length     = 0;
-    index_buffer_type       = 0;
 }
 
 /* ============================================================================
@@ -48,7 +47,7 @@ void Basic_Mesh::Configure_Mesh(
     const GLsizei   v_len, const GLenum    v_type,
     const GLsizei   v_stride,
     const void*     i,      const GLsizei   i_size,   
-    const GLsizei   i_len,  const GLenum    i_type
+    const GLsizei   i_len
 ){
     Clear_Mesh();
 
@@ -64,7 +63,6 @@ void Basic_Mesh::Configure_Mesh(
 
     index_buffer_size       = i_size;
     index_buffer_length     = i_len;
-    index_buffer_type       = i_type;
 }
 
 /* ============================================================================
@@ -99,6 +97,32 @@ void Basic_Mesh::Configure_Mesh(
 
 }
 
+/* ============================================================================
+ * ---------------------------- Configure Index Buffer
+ * Configures the mesh with the provided index data.
+ * This method initializes the EBO (Element Buffer Object) to manage index data
+ * for the mesh and stores the configuration for later rendering.
+ *
+ * ------ Parameters ------
+ * i            Pointer to the index data.
+ * i_size       Size of one index element in bytes.
+ * i_len        Number of index elements.
+ * i_type       Data type of the index data (e.g., GL_UNSIGNED_INT).
+ * ============================================================================
+ */
+void Basic_Mesh::Configure_Index_Buffer(
+    const void*     i,      const GLsizei   i_size,
+    const GLsizei   i_len
+) {
+    if (ebo != 0) {
+        Delete_EBO(ebo);
+    }
+
+    Create_EBO(ebo, i, i_size, i_len);
+
+    index_buffer_size = i_size;
+    index_buffer_length = i_len;
+}
 /* ============================================================================
  * ---------------------------- Add Vertex Set
  * Adds a vertex attribute set to the current 
@@ -226,7 +250,6 @@ void Basic_Mesh::Clear_Mesh() {
 
     index_buffer_size       = 0;
     index_buffer_length     = 0;
-    index_buffer_type       = 0;
 }
 
 /* ============================================================================

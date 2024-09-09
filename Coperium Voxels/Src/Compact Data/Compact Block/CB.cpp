@@ -193,21 +193,22 @@ int CB::Get_B() const {
  * Generates a mesh
  * ============================================================================
  */
-std::unique_ptr<GLfloat[]> CB::Generate_Mesh() const{
-    float x = (float) Get_X();
-    float y = (float) Get_Y();
-    float z = (float) Get_Z();
+compact_cube_mesh_t CB::Generate_Mesh() const {
+    float x = static_cast<float>(Get_X());
+    float y = static_cast<float>(Get_Y());
+    float z = static_cast<float>(Get_Z());
 
-    float r = ((float)Get_R()) / 16.0f;
-    float g = ((float)Get_G()) / 16.0f;
-    float b = ((float)Get_B()) / 16.0f;
+    float r = static_cast<float>(Get_R()) / 16.0f;
+    float g = static_cast<float>(Get_G()) / 16.0f;
+    float b = static_cast<float>(Get_B()) / 16.0f;
 
+    // Allocate memory for the vertex data.
     auto cube_mesh = std::make_unique<GLfloat[]>(COMPACT_CUBE_SIZE);
 
-    std::copy(  COMPACT_CUBE, 
-                COMPACT_CUBE + COMPACT_CUBE_SIZE,
-                cube_mesh.get());
+    // Copy the compact cube data into our vertex buffer.
+    std::copy(COMPACT_CUBE, COMPACT_CUBE + COMPACT_CUBE_SIZE, cube_mesh.get());
 
+    // Modify the vertex data based on the object's position and color.
     for (size_t i = 0; i < COMPACT_CUBE_SIZE; i += COMPACT_CUBE_ELEMENTS) {
         CLD loc(cube_mesh[i]);
         CCD col(cube_mesh[i + 1]);
@@ -215,11 +216,18 @@ std::unique_ptr<GLfloat[]> CB::Generate_Mesh() const{
         loc.Shift(x, y, z);
         col.Scale(r, g, b);
 
-        cube_mesh[i]     = loc.To_Float();
+        cube_mesh[i] = loc.To_Float();
         cube_mesh[i + 1] = col.To_Float();
     }
 
-    return cube_mesh;
+    // Allocate memory for the index data and copy it.
+    auto index_buffer = std::make_unique<GLuint[]>(COMPACT_CUBE_INDEX_SIZE);
+    std::copy(  COMPACT_CUBE_INDICES, 
+                COMPACT_CUBE_INDICES + COMPACT_CUBE_INDEX_SIZE, 
+                index_buffer.get());
+
+    // Return both the vertex and index buffers in a MeshData struct.
+    return compact_cube_mesh_t{ std::move(cube_mesh), std::move(index_buffer) };
 }
 
 /* ============================================================================

@@ -23,12 +23,17 @@ public:
         const GLsizei   v_len,  const GLenum    v_type,
         const GLsizei   v_stride,
         const void*     i,      const GLsizei   i_size, 
-        const GLsizei   i_len,  const GLenum    i_type
+        const GLsizei   i_len
     ); 
     void Configure_Mesh (
         const void*     v,      const GLsizei   v_size, 
         const GLsizei   v_len,  const GLenum    v_type, 
         const GLsizei   v_stride
+    );
+
+    void Configure_Index_Buffer(
+        const void*     i,      const GLsizei   i_size,
+        const GLsizei   i_len
     );
 
     void Add_Vertex_Set (
@@ -62,7 +67,6 @@ private:
 
     GLsizei index_buffer_size;
     GLsizei index_buffer_length;
-    GLenum  index_buffer_type;
 
 };
 

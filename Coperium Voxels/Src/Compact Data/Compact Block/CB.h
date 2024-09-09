@@ -8,7 +8,10 @@
 
 #include "../Cube Mesh/CCM.h"
 #include "../Cube Mesh/SCM.h"
-
+typedef struct {
+    std::unique_ptr<GLfloat[]>  vert_data;
+    std::unique_ptr<GLuint[]>   inde_data;
+}compact_cube_mesh_t;
 class CB {
 public:
     CB();
@@ -43,7 +46,7 @@ public:
     int Get_B() const;
 
     // --------------------------------- GENERATION
-    std::unique_ptr<GLfloat[]> Generate_Mesh()const;
+    compact_cube_mesh_t Generate_Mesh()const;
     std::unique_ptr<GLfloat[]> Generate_Mesh_Old()const;
 
 private:
