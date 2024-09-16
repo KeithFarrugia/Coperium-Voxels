@@ -155,6 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp" />
+    <ClCompile Include="Src\Compact Data\World Data\World_Mesh.cpp" />
+    <ClCompile Include="Src\Compact Data\World Data\Sector\Sector.cpp" />
+    <ClCompile Include="Src\Compact Data\World Data\Chunk\Chunk.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Colour Data\CCD.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Calculations.cpp" />
@@ -187,8 +191,16 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\Compact Data\World Data\Voxel\Voxel.cpp" />
+    <ClCompile Include="Src\Compact Data\World Data\Voxel\Voxel_Loc.cpp" />
+    <ClCompile Include="Src\Compact Data\World Data\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h" />
+    <ClInclude Include="Src\Compact Data\World Data\World_Mesh.h" />
+    <ClInclude Include="Src\Compact Data\World Data\Operations.h" />
+    <ClInclude Include="Src\Compact Data\World Data\Sector\Sector.h" />
+    <ClInclude Include="Src\Compact Data\World Data\Chunk\Chunk.h" />
     <ClInclude Include="Src\Compact Data\Cube Mesh\SCM.h" />
     <ClInclude Include="Src\Compact Data\Compact Block\CB.h" />
     <ClInclude Include="Src\Compact Data\Compact Colour Data\CCD.h" />
@@ -508,7 +520,11 @@
     <ClInclude Include="Libraries\Inc\STB\stb_image.h" />
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCM.h" />
     <ClInclude Include="Src\Compact Data\Compact Location Data\CLD.h" />
+    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel_Type_List.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
+    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel.h" />
+    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel_Loc.h" />
+    <ClInclude Include="Src\Compact Data\World Data\World\World.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
@@ -658,10 +674,6 @@
     <None Include="Resources\Shaders\basic.vert" />
     <None Include="Resources\Shaders\compact_v2.frag" />
     <None Include="Resources\Shaders\compact_v2.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Extras\Previous Main 1.txt" />
-    <Text Include="Extras\Previous Main 2 .txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

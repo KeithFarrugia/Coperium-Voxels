@@ -9,6 +9,7 @@ constexpr int COMPACT_CUBE_INDEX_SIZE   = 36;
 constexpr int COMPACT_CUBE_SIZE         = 48;
 constexpr int COMPACT_CUBE_ELEMENTS     = 2;
 
+
 const GLfloat COMPACT_CUBE[] = {
     // Front Face
     CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),

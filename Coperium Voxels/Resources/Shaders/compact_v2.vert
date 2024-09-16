@@ -7,6 +7,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec3 vertex_offset;
+
 // Output vertex color
 out vec4 vertexColor;
 
@@ -62,6 +64,11 @@ vec4 decodeColor(float encoded) {
 }
 
 void main() {
-    gl_Position = projection * view * model * vec4(decodeValue(aPos), 1.0);
+    vec3 vert = decodeValue(aPos);
+    vert = vec3(    vert.x + vertex_offset.x, 
+                    vert.y + vertex_offset.y,
+                    vert.z + vertex_offset.z);
+
+    gl_Position = projection * view * model * vec4(vert, 1.0);
     vertexColor = decodeColor(aColor);
 }

@@ -1,7 +1,6 @@
 #pragma once
 #ifndef COIL_BUFFERS_H
 #define COIL_BUFFERS_H
-#include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 #include <cstddef>
 

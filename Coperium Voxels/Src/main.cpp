@@ -11,12 +11,18 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <chrono>  // For FPS calculation
 
 #include "Compact Data/Compact Location Data/CLD.h"
 #include "Compact Data/Compact Colour Data/CCD.h"
 #include "Compact Data/Compact Block/CB.h"
-#include "Utility/Render Testing.h"
+#include "Compact Data/World Data/World/World.h"
+#include "Compact Data/Cube Mesh/CCMS.h"
+#include "Compact Data/World Data/World_Mesh.h"
 
+constexpr int GRID_SIZE_X = 16;
+constexpr int GRID_SIZE_Y = 64;
+constexpr int GRID_SIZE_Z = 16;
 
 int main() {
     // Initialize Logger and OpenGL
@@ -26,10 +32,10 @@ int main() {
 
     // Create Window
     Coil::Window window("Hello World", 640, 480);
-    //window.EnableVsync();
     window.FF_Clockwise();
     window.EnableDepthTest();
     window.EnableCulling();
+    glfwSwapInterval(0);
 
     // Initialize ImGui
     IMGUI_CHECKVERSION();
@@ -37,38 +43,40 @@ int main() {
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window.Get_Window(), true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 330 core");
 
-    bool optimise = true;
-
-
-    // Configure Mesh
     Coil::Shader shader(std::string("Basic"));
-    Coil::Basic_Mesh mesh;
-
-
-    if (optimise == true) {
-        Render_Compact_Cube_Mesh(mesh, shader);
-    } else {
-        Render_Simple_Cube_Mesh(mesh, shader);
-    }
-
-
-
-
-    // Initialize Camera
     Coil::Fly_Camera camera(window, 0, 0, 2);
     camera.Take_Over_All_Input();
 
-    // Main rendering loop
+    World w;
+
+    for (int x = 0; x < GRID_SIZE_X; x++) {
+        for (int y = 0; y < GRID_SIZE_Y; y++) {
+            for (int z = 0; z < GRID_SIZE_Z; z++) {
+                w.Add_Voxel(glm::ivec3(x, y, z), glm::ivec3(x, (int)(y / 4.0f), z), 15, voxel_type_t::NORMAL);
+            }
+        }
+    }
+
+    //w.Display();
+    Generate_Chunk_Meshes(w);
+
+    shader.Add_Shaders(
+        Coil::shader_list_t{
+            Coil::shader_info_t{"compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER},
+            Coil::shader_info_t{"compact_v2.frag", Coil::shader_type_t::FRAGMENT_SHADER}
+        });
+    shader.Compile_And_Link();
+
+    // Variables for FPS calculation
+    float fps = 0.0f;
+    int frames = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+
     while (!window.Is_Closed()) {
         int width, height;
         window.Get_Size(width, height);
-
-        // Start ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
 
         // Clear screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -81,12 +89,35 @@ int main() {
         shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         shader.Set_Matrix4("model", model);
 
-        mesh.Draw_Mesh(false);
+        Render_Chunk_Meshes(w, shader);
 
-        // Render ImGui UI
-        ImGui::Begin("FPS Counter");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        // Calculate FPS
+        frames++;
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<float> duration = end - start;
+        if (duration.count() >= 1.0f) {
+            fps = frames / duration.count();
+            frames = 0;
+            start = end;
+        }
+
+        // Start the ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // Set the ImGui window position to the top-left corner
+        ImGui::SetNextWindowPos(ImVec2(0, 0));  // Top-left corner
+        ImGui::SetNextWindowSize(ImVec2(200, 20));  // Set the size of the box
+
+        // Show FPS in ImGui
+        ImGui::Begin("FPS Display", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+        ImGui::Text("FPS: %.1f", fps);
         ImGui::End();
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // Render ImGui
         ImGui::Render();
@@ -100,12 +131,11 @@ int main() {
         camera.Update();
     }
 
-    // Cleanup ImGui
+    // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    // Cleanup and exit
     window.Del();
     glfwTerminate();
 

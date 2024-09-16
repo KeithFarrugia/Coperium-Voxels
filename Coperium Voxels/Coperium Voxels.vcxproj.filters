@@ -111,6 +111,27 @@
     <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Compact Data\World Data\Voxel\Voxel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compact Data\World Data\Voxel\Voxel_Loc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compact Data\World Data\Chunk\Chunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compact Data\World Data\Sector\Sector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compact Data\World Data\World\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compact Data\World Data\World_Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
@@ -1073,6 +1094,33 @@
     <ClInclude Include="Src\Utility\Render Testing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel_Loc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\Chunk\Chunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel_Type_List.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\Sector\Sector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\World\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\Operations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\World Data\World_Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
@@ -1502,9 +1550,5 @@
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\compact_v2.vert" />
     <None Include="Resources\Shaders\compact_v2.frag" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Extras\Previous Main 1.txt" />
-    <Text Include="Extras\Previous Main 2 .txt" />
   </ItemGroup>
 </Project>
