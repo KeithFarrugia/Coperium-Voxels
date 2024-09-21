@@ -14,7 +14,7 @@ typedef std::unordered_map<Voxel_Loc, Voxel> voxel_set_t;
 
 
 constexpr auto CHUNK_X_MAX = 16;
-constexpr auto CHUNK_Y_MAX = 32;
+constexpr auto CHUNK_Y_MAX = 64;
 constexpr auto CHUNK_Z_MAX = 16;
 
 class Chunk {

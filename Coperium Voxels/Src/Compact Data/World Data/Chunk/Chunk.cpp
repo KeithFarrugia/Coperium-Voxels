@@ -214,7 +214,7 @@ voxel_set_t* Chunk::Get_Voxels(){
  * ============================================================================
  */
 void Chunk::Generate_Mesh(std::vector<GLfloat>& vertex_mesh, std::vector<GLuint>&  index_mesh){
-
+	mesh.Clear_Mesh();
 	mesh.Configure_Mesh(
 		vertex_mesh.data(),
 		sizeof(GLfloat),

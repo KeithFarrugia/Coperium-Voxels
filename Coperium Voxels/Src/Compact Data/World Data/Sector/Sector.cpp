@@ -59,6 +59,31 @@ void Sector::Add_Voxel(
     }
 
 }
+/* ============================================================================
+ * --------------------------- Remove_Voxel
+ * removes a voxel to the given sector position
+ *
+ * ------ Parameters ------
+ * position: the world position
+ * ============================================================================
+ */
+void Sector::Remove_Voxel(const glm::ivec3 position){
+    Chunk* chunk;
+
+    glm::ivec3 chunk_pos =
+        Convert_Sector_To_Chunk(position);
+
+    chunk = Get_Chunk_S(position.x, position.y, position.z);
+
+
+    if (chunk != nullptr) {
+
+        chunk->Remove_Voxel(chunk_pos.x, chunk_pos.y, chunk_pos.z);
+
+    }else{
+        return;
+    }
+}
 
 /* ============================================================================
  * --------------------------- Sector

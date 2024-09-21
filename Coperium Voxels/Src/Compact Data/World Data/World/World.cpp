@@ -55,6 +55,28 @@ void World::Add_Voxel(
 
     }
 }
+/* ============================================================================
+ * --------------------------- Remove_Voxel
+ * Removes a voxel to the given world position
+ *
+ * ------ Parameters ------
+ * position: the world position
+ * ============================================================================
+ */
+void World::Remove_Voxel(const glm::ivec3 position){
+    Sector* sector = Get_Sector_W(position.x, position.y, position.z);
+
+    glm::ivec3 sector_pos =
+        Convert_World_To_Sector(position);
+
+
+    if (sector != nullptr) {
+        sector->Remove_Voxel(sector_pos);
+
+    }else{
+        return;
+    }
+}
 
 /* ============================================================================
  * --------------------------- Create_Sector
@@ -175,6 +197,26 @@ Sector* World::Get_Sector_W(
 ) {
     glm::ivec3 local_co = Convert_World_To_Local(glm::ivec3(x, y, z));
     return Get_Sector_L(local_co.x, local_co.y, local_co.z);
+}
+
+/* ============================================================================
+ * --------------------------- Get_Chunk
+ * Retrieves the Chunk using the world position
+ * ============================================================================
+ */
+Chunk* World::Get_Chunk(const glm::ivec3 position){
+    Sector* sector = Get_Sector_W(position.x, position.y, position.z);
+
+    glm::ivec3 sector_pos =
+        Convert_World_To_Sector(position);
+
+
+    if (sector != nullptr) {
+        sector->Get_Chunk_S(sector_pos.x, sector_pos.y, sector_pos.z);
+
+    }else{
+        return nullptr;
+    }
 }
 
 /* ============================================================================

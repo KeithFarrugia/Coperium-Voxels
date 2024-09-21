@@ -22,6 +22,7 @@ public:
                              const glm::ivec3   colour  ,
                              const int          l       ,
                              const int          type    );
+    void    Remove_Voxel    (const glm::ivec3   position);
 
     void     Create_Chunk   (const int x, const int y, const int z);
     void     Add_Chunk      (const Chunk& chunk);

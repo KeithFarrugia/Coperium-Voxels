@@ -132,6 +132,9 @@
     <ClCompile Include="Src\Compact Data\World Data\World_Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\EditorCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
@@ -1121,6 +1124,9 @@
     <ClInclude Include="Src\Compact Data\World Data\World_Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\EditorCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
@@ -1550,5 +1556,8 @@
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\compact_v2.vert" />
     <None Include="Resources\Shaders\compact_v2.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="test.txt" />
   </ItemGroup>
 </Project>

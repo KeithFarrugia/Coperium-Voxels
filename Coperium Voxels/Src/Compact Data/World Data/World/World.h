@@ -21,6 +21,8 @@ public:
                              const int          l       ,
                              const int          type    );
 
+    void Remove_Voxel       (const glm::ivec3   position);
+
     void Create_Sector      (const int          x       ,
                              const int          z       );
 
@@ -31,6 +33,7 @@ public:
     Voxel   Get_Voxel       (const int x, const int y, const int z);
     Sector* Get_Sector_L    (const int x, const int y, const int z);
     Sector* Get_Sector_W    (const int x, const int y, const int z);
+    Chunk*  Get_Chunk       (const glm::ivec3   position);
 
     sector_set_t*   Get_Sectors();
 
