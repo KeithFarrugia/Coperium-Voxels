@@ -12,7 +12,7 @@
 #include "Compact Data/Compact Location Data/CLD.h"
 #include "Compact Data/Compact Colour Data/CCD.h"
 #include "Compact Data/Compact Block/CB.h"
-#include "Compact Data/World Data/World/World.h"
+//#include "Compact Data/World Data/World/World.h"
 #include "Compact Data/Cube Mesh/CCMS.h"
 #include "Compact Data/World Data/World_Mesh.h"
 #include "EditorCamera.h"
@@ -22,8 +22,6 @@
 constexpr int GRID_SIZE_X = 64;
 constexpr int GRID_SIZE_Y = 64;
 constexpr int GRID_SIZE_Z = 64;
-
-
 
 int main() {
     // Initialize Logger and OpenGL
@@ -40,17 +38,13 @@ int main() {
 
     Coil::Shader shader(std::string("Basic"));
 
+
     World w;
+    w.Add_Voxel(glm::ivec3(0, 0, 0), glm::ivec3(13, 15, 3), 15, voxel_type_t::NORMAL);
+    Generate_All_Chunk_Meshes(w);
 
     EditorCamera camera(window, w, 0, 0, 2);
-    camera.Take_Over_All_Input();
-
-    w.Add_Voxel(glm::ivec3(0, 0, 0), glm::ivec3(13, 15, 3), 15, voxel_type_t::NORMAL);
-    w.Add_Voxel(glm::ivec3(0, 32, 0), glm::ivec3(13, 15, 3), 15, voxel_type_t::NORMAL);
-    w.Add_Voxel(glm::ivec3(0, 64, 0), glm::ivec3(13, 15, 3), 15, voxel_type_t::NORMAL);
-    w.Display();
-
-    Generate_All_Chunk_Meshes(w);
+    //camera.Take_Over_All_Input();
 
     shader.Add_Shaders(
         Coil::shader_list_t{
@@ -66,21 +60,23 @@ int main() {
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window.Get_Window(), true);
     ImGui_ImplOpenGL3_Init("#version 130");
-    io.WantCaptureMouse = false;
+    io.WantCaptureMouse = true;
     io.WantCaptureKeyboard = false;
-    io.WantSetMousePos = false;
 
     // Variables for FPS calculation
     float fps = 0.0f;
     int frames = 0;
     auto start = std::chrono::high_resolution_clock::now();
 
+    // Color picker variable
+    float color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };  // Default to green color
+
     while (!window.Is_Closed()) {
         int width, height;
         window.Get_Size(width, height);
 
         // Clear screen
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);  // Use selected color for the clear color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -113,6 +109,25 @@ int main() {
         ImGui::Text("FPS: %.1f", fps);
         ImGui::End();
 
+        // Color Picker UI (Color Wheel Style)
+        ImGui::SetNextWindowPos(ImVec2(10, 50));  // Below the FPS counter
+        ImGui::Begin("Color Picker", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+
+        // ImGui ColorPicker (with color wheel image)
+        ImGui::ColorPicker4("Pick a Color", color, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview | ImGuiColorEditFlags_PickerHueWheel);
+
+        ImGui::End();
+
+        // Render Crosshair
+        glBegin(GL_LINES);
+        glColor3f(1.0f, 1.0f, 1.0f);  // White crosshair
+        // Horizontal line
+        glVertex2f(-0.01f, 0.0f);
+        glVertex2f(0.01f, 0.0f);
+        // Vertical line
+        glVertex2f(0.0f, -0.01f);
+        glVertex2f(0.0f, 0.01f);
+        glEnd();
 
         // Render ImGui
         ImGui::Render();

@@ -84,7 +84,7 @@ void EditorCamera::Process_Mouse_Button(int button, int action, int mods) {
 
         printf("Result %s [%f, %f, %f] Normal [%f, %f, %f]\n", hit ? "true" : "false", hitPosition.x, hitPosition.y, hitPosition.z, normal.x, normal.y, normal.z);
 
-        if (true) {
+        if (hit) {
             glm::ivec3 hit_vox = glm::floor(hitPosition);
 
             if (button == GLFW_MOUSE_BUTTON_LEFT) {

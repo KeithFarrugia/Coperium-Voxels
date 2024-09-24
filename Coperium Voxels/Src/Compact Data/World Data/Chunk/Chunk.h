@@ -9,6 +9,7 @@
 #include "../../Cube Mesh/CCMS.h"
 
 #include <COIL/Mesh/Basic_Mesh.h>
+#include <GLFW/glfw3.h>
 
 typedef std::unordered_map<Voxel_Loc, Voxel> voxel_set_t;
 
@@ -52,6 +53,7 @@ public:
 	void Generate_Mesh(std::vector<GLfloat>& vertex_mesh, std::vector<GLuint>& index_mesh);
 	void Draw_Mesh();
 
+
 	void Display();
 
 	static uint16_t Compact(int x, int y, int z);
@@ -75,8 +77,9 @@ private:
 	// Map to store the voxels
 	voxel_set_t voxels;
 
-
-	Coil::Basic_Mesh mesh;
+	bool first_draw;
+	int ebo_size;
+	GLuint VAO, VBO, EBO;
 };
 
 #endif // !CHUNK_H

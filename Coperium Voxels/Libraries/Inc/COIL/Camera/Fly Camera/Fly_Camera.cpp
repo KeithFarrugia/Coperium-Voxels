@@ -25,6 +25,7 @@ Fly_Camera::Fly_Camera(
     Window& window, GLfloat Pos_x, GLfloat Pos_y, GLfloat Pos_z)
     : Camera(window, Pos_x, Pos_y, Pos_z
 ){
+    toggle_mouse = true;
     last_frame   = 0.0f;
 }
 

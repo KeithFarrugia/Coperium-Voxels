@@ -1,17 +1,19 @@
+#include <GLAD/glad.h>
 #include "Chunk.h"
+
 /* ============================================================================
  * --------------------------- Voxel
  * Default constructor initializing data to default LRGB (0, 0, 0, 0) and type 0.
  * ============================================================================
  */
-Chunk::Chunk() : chunk_offset(0) {}
+Chunk::Chunk() : chunk_offset(0), first_draw(true){}
 
 /* ============================================================================
  * --------------------------- Voxel
  * Constructor initializing data to a given value.
  * ============================================================================
  */
-Chunk::Chunk(const uint16_t data) : chunk_offset(data) {}
+Chunk::Chunk(const uint16_t data) : chunk_offset(data), first_draw(true) {}
 
 /* ============================================================================
  * --------------------------- Add_Voxel
@@ -214,23 +216,35 @@ voxel_set_t* Chunk::Get_Voxels(){
  * ============================================================================
  */
 void Chunk::Generate_Mesh(std::vector<GLfloat>& vertex_mesh, std::vector<GLuint>&  index_mesh){
-	mesh.Clear_Mesh();
-	mesh.Configure_Mesh(
-		vertex_mesh.data(),
-		sizeof(GLfloat),
-		(GLsizei)vertex_mesh.size(),
-		GL_FLOAT,
-		FACE_NUM_ELEMENTS
-	);
-	mesh.Configure_Index_Buffer(
-		index_mesh.data(),
-		sizeof(GLuint),
-		(GLsizei)index_mesh.size()
-	);
+	if (first_draw == false) {
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
+	}
+	
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
-	mesh.Add_Vertex_Set(0, 1, 0);
-	mesh.Add_Vertex_Set(1, 1, 1);
-	mesh.Clean_Mesh();
+	// Bind VAO
+	glBindVertexArray(VAO);
+
+	// Bind VBO and EBO and set their data
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertex_mesh.size() * sizeof(GLfloat), vertex_mesh.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_mesh.size() * sizeof(GLuint), index_mesh.data(), GL_STATIC_DRAW);
+
+	// Set vertex attribute pointers
+	// Position attribute
+	glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	glEnableVertexAttribArray(0);
+	// Color attribute
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)(1 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+	ebo_size = index_mesh.size();
+	first_draw = false;
 }
 
 /* ============================================================================
@@ -239,7 +253,9 @@ void Chunk::Generate_Mesh(std::vector<GLfloat>& vertex_mesh, std::vector<GLuint>
  * ============================================================================
  */
 void Chunk::Draw_Mesh(){
-	mesh.Draw_Mesh(false);
+	glDrawElements(GL_TRIANGLES, ebo_size, GL_UNSIGNED_INT, 0);
+
+	// Clean up by deleting VAO, VBO, EBO every frame
 }
 
 /* ============================================================================

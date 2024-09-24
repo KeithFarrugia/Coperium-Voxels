@@ -212,7 +212,7 @@ Chunk* World::Get_Chunk(const glm::ivec3 position){
 
 
     if (sector != nullptr) {
-        sector->Get_Chunk_S(sector_pos.x, sector_pos.y, sector_pos.z);
+       return sector->Get_Chunk_S(sector_pos.x, sector_pos.y, sector_pos.z);
 
     }else{
         return nullptr;

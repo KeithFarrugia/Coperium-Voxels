@@ -5,7 +5,6 @@ void Generate_Single_Chunk_Mesh(World& w, Chunk* chunk, Sector* sector) {
     std::vector<GLuint> index_mesh;
     int vertex_offset = 0;
     int index_offset = 0;
-
     if (chunk == nullptr || sector == nullptr) {
         return;
     }

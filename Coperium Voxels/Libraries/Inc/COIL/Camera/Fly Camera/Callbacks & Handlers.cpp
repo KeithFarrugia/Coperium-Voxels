@@ -39,14 +39,11 @@ void Fly_Camera::Key_Handler(int key, key_states_t event, float velocity) {
         case GLFW_KEY_SPACE:        position += up    * velocity; break;
         case GLFW_KEY_LEFT_SHIFT:   position -= up    * velocity; break;
 
-        case GLFW_KEY_TAB:          Release_Mouse();              break;
+        case GLFW_KEY_TAB:          toggle_mouse ? Release_Mouse() : Take_Over_Mouse();   toggle_mouse = !toggle_mouse;           break;
         }
     
     
     }else {
-        switch (key) {
-        case GLFW_KEY_TAB:          Take_Over_Mouse();            break;
-        }
     }
 }
 

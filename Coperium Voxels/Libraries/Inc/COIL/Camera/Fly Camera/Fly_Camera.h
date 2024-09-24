@@ -43,6 +43,8 @@ private:
     void Window_Focus_Callback  (Window& window);
     void Window_Size_Callback   (Window& window);
 
+    bool toggle_mouse;
+
 };
 }
 #endif // !COIL_FLY_CAMERA_H
