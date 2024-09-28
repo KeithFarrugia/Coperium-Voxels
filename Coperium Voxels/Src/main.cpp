@@ -118,17 +118,6 @@ int main() {
 
         ImGui::End();
 
-        // Render Crosshair
-        glBegin(GL_LINES);
-        glColor3f(1.0f, 1.0f, 1.0f);  // White crosshair
-        // Horizontal line
-        glVertex2f(-0.01f, 0.0f);
-        glVertex2f(0.01f, 0.0f);
-        // Vertical line
-        glVertex2f(0.0f, -0.01f);
-        glVertex2f(0.0f, 0.01f);
-        glEnd();
-
         // Render ImGui
         ImGui::Render();
         ImDrawData* draw_data = ImGui::GetDrawData();

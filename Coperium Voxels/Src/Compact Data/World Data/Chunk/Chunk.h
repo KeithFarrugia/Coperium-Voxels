@@ -77,9 +77,7 @@ private:
 	// Map to store the voxels
 	voxel_set_t voxels;
 
-	bool first_draw;
-	int ebo_size;
-	GLuint VAO, VBO, EBO;
+	Coil::Basic_Mesh mesh;
 };
 
 #endif // !CHUNK_H
