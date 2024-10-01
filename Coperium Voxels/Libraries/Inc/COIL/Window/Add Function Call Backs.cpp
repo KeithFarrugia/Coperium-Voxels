@@ -13,7 +13,7 @@ namespace Coil {
  * ============================================================================
  */
 void Window::Add_Size_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     size_cf.push_back(callback);
 }
@@ -29,7 +29,7 @@ void Window::Add_Size_Callback(
  * ============================================================================
  */
 void Window::Add_Frame_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     frame_cf.push_back(callback);
 }
@@ -45,7 +45,7 @@ void Window::Add_Frame_Callback(
  * ============================================================================
  */
 void Window::Add_Close_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     close_cf.push_back(callback);
 }
@@ -61,15 +61,16 @@ void Window::Add_Close_Callback(
  * ============================================================================
  */
 void Window::Add_Refresh_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     refresh_cf.push_back(callback);
 }
 
 /* ============================================================================
  * --------------------------- Add Focus Callback
- * Registers a callback function to be called when the window gains or loses focus.
- * The function will be added to the list of focus callback functions.
+ * Registers a callback function to be called when the window gains or 
+ * loses focus. The function will be added to the list of focus callback 
+ * functions.
  * 
  * ------ Parameters ------
  * callback: The callback function to be registered. It takes a reference 
@@ -77,15 +78,16 @@ void Window::Add_Refresh_Callback(
  * ============================================================================
  */
 void Window::Add_Focus_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     focus_cf.push_back(callback);
 }
 
 /* ============================================================================
  * -------------------------- Add Iconify Callback
- * Registers a callback function to be called when the window is minimized or restored.
- * The function will be added to the list of iconify callback functions.
+ * Registers a callback function to be called when the window is minimized
+ * or restored. The function will be added to the list of iconify callback 
+ * functions.
  * 
  * ------ Parameters ------
  * callback: The callback function to be registered. It takes a reference 
@@ -93,9 +95,26 @@ void Window::Add_Focus_Callback(
  * ============================================================================
  */
 void Window::Add_Iconify_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     iconify_cf.push_back(callback);
+}
+
+/* ============================================================================
+ * -------------------------- Add Maximize Callback
+ * Registers a callback function to be called when the window is maximised 
+ * or restored. The function will be added to the list of maximise
+ * callback functions.
+ *
+ * ------ Parameters ------
+ * callback: The callback function to be registered. It takes a reference
+ *           to a Window object as its parameter.
+ * ============================================================================
+ */
+void Window::Add_Maximise_Callback(
+    const window_cb_t& callback
+){
+    maximise_cf.push_back(callback);
 }
 
 /* ============================================================================
@@ -109,7 +128,7 @@ void Window::Add_Iconify_Callback(
  * ============================================================================
  */
 void Window::Add_Position_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     position_cf.push_back(callback);
 }
@@ -126,7 +145,7 @@ void Window::Add_Position_Callback(
  * ============================================================================
  */
 void Window::Add_Content_Scale_Callback(
-    const std::function<void(Window&)>& callback
+    const window_cb_t& callback
 ){
     content_cf.push_back(callback);
 }

@@ -8,6 +8,9 @@
 #include "Utility/Types.h"
 #include "Utility/Constants.h"
 #include "Utility/Conversion.h"
+#include "Utility/GLFW_CFF.h"
+#include "Utility/CFF.h"
+#include "Utility/IO.h"
 
 #endif // !COIL_UTILITY_H
 

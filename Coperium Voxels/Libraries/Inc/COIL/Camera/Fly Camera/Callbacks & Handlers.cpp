@@ -27,9 +27,9 @@ namespace Coil {
  * the velocity.
  * ============================================================================
  */
-void Fly_Camera::Key_Handler(int key, key_states_t event, float velocity) {
-    if (event == key_states_t::PRESSED ||
-        event == key_states_t::REPEAT) {
+void Fly_Camera::Key_Handler(int key, io_states event, float velocity) {
+    if (event == io_states::PRESSED ||
+        event == io_states::REPEAT) {
 
         switch (key) {
         case GLFW_KEY_W:            position += front * velocity; break;

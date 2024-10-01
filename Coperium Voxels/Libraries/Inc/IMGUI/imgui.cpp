@@ -85,7 +85,7 @@ CODE
 // [SECTION] SCROLLING
 // [SECTION] TOOLTIPS
 // [SECTION] POPUPS
-// [SECTION] KEYBOARD/GAMEPAD NAVIGATION
+// [SECTION] BOARD/GAMEPAD NAVIGATION
 // [SECTION] DRAG AND DROP
 // [SECTION] LOGGING/CAPTURING
 // [SECTION] SETTINGS
@@ -145,7 +145,7 @@ CODE
    - ESCAPE:                        Revert text to its original value.
    - On OSX, controls are automatically adjusted to match standard OSX text editing 2ts and behaviors.
 
- - KEYBOARD CONTROLS
+ - BOARD CONTROLS
    - Basic:
      - Tab, SHIFT+Tab               Cycle through text editable fields.
      - CTRL+Tab, CTRL+Shift+Tab     Cycle through windows.
@@ -11598,7 +11598,7 @@ ImVec2 ImGui::FindBestWindowPosForPopup(ImGuiWindow* window)
 }
 
 //-----------------------------------------------------------------------------
-// [SECTION] KEYBOARD/GAMEPAD NAVIGATION
+// [SECTION] BOARD/GAMEPAD NAVIGATION
 //-----------------------------------------------------------------------------
 
 // FIXME-NAV: The existence of SetNavID vs SetFocusID vs FocusWindow() needs to be clarified/reworked.
@@ -15039,7 +15039,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
 
     if (TreeNode("Inputs"))
     {
-        Text("KEYBOARD/GAMEPAD/MOUSE KEYS");
+        Text("KEYBOARD/GAMEPAD/MOUSE S");
         {
             // We iterate both legacy native range and named ImGuiKey ranges, which is a little odd but this allows displaying the data for old/new backends.
             // User code should never have to go through such hoops! You can generally iterate between ImGuiKey_NamedKey_BEGIN and ImGuiKey_NamedKey_END.

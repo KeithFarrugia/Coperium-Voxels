@@ -59,6 +59,21 @@ bool Window::Is_Iconified() const {
 }
 
 /* ============================================================================
+ * --------------------------- Is_Maximised
+ * Checks if the window is currently maximised.
+ * A maximised window is enlarged to fill the entire screen or a substantial
+ * portion of it.
+ *
+ * ------ Returns ------
+ * true: If the window is maximised.
+ * false: If the window is not maximised.
+ * ============================================================================
+ */
+bool Window::Is_Maximised() const{
+    return glfwGetWindowAttrib(window, GLFW_MAXIMIZED) == GLFW_TRUE;
+}
+
+/* ============================================================================
  * --------------------------- Is_Focused
  * Checks if the window is currently focused.
  * A focused window is the active window that is receiving user input.

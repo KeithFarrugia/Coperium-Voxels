@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp" />
     <ClCompile Include="Src\EditorCamera.cpp" />
     <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp" />
     <ClCompile Include="Src\Compact Data\World Data\World_Mesh.cpp" />
@@ -200,6 +201,10 @@
     <ClCompile Include="Src\Compact Data\World Data\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libraries\Inc\COIL\Input Handler\Input_Handler.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\CFF.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\GLFW_CFF.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\IO.h" />
     <ClInclude Include="Src\EditorCamera.h" />
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h" />
     <ClInclude Include="Src\Compact Data\World Data\World_Mesh.h" />

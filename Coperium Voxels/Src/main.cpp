@@ -19,9 +19,12 @@
 #include <IMGUI/imgui_impl_glfw.h>
 #include <IMGUI/imgui_impl_opengl3.h>
 
-constexpr int GRID_SIZE_X = 64;
-constexpr int GRID_SIZE_Y = 64;
-constexpr int GRID_SIZE_Z = 64;
+constexpr int GRID_SIZE_S_X = 64;
+constexpr int GRID_SIZE_S_Y = 64;
+constexpr int GRID_SIZE_S_Z = 64;
+constexpr int GRID_SIZE_F_X = -64;
+constexpr int GRID_SIZE_F_Y = -64;
+constexpr int GRID_SIZE_F_Z = -64;
 
 int main() {
     // Initialize Logger and OpenGL
@@ -36,15 +39,20 @@ int main() {
     window.EnableCulling();
     glfwSwapInterval(0);
 
+
     Coil::Shader shader(std::string("Basic"));
 
-
     World w;
-    w.Add_Voxel(glm::ivec3(0, 0, 0), glm::ivec3(13, 15, 3), 15, voxel_type_t::NORMAL);
+    for (int x = GRID_SIZE_F_X; x < GRID_SIZE_S_X; x++) {
+        for (int y = GRID_SIZE_F_Y; y < GRID_SIZE_S_Y; y++) {
+            for (int z = GRID_SIZE_F_Z; z < GRID_SIZE_S_Z; z++) {
+                w.Add_Voxel(glm::ivec3(x, y, z), glm::ivec3(x, (int)(y / 4.0f), z), 15, voxel_type_t::NORMAL);
+            }
+        }
+    }
     Generate_All_Chunk_Meshes(w);
 
     EditorCamera camera(window, w, 0, 0, 2);
-    //camera.Take_Over_All_Input();
 
     shader.Add_Shaders(
         Coil::shader_list_t{

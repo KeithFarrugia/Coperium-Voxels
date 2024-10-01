@@ -181,4 +181,16 @@ void Window::Set_Decorated(const bool decorated) {
     );
 }
 
+/* ============================================================================
+ * --------------------------- Allow_CB_Chain
+ * Sets whether or not the previous
+ *
+ * ------ Parameters ------
+ * decorated: Boolean value indicating if the window should be decorated.
+ * ============================================================================
+ */
+void Window::Allow_CB_Chain(const bool allow_chain){
+    allow_cb_chain = allow_chain;
+}
+
 }

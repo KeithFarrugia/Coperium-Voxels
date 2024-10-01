@@ -37,7 +37,7 @@ private:
     float last_frame;
 
     void Key_Handler            (int          key,
-                                 key_states_t event,
+                                 io_states  event,
                                  float        velocity   );
 
     void Window_Focus_Callback  (Window& window);

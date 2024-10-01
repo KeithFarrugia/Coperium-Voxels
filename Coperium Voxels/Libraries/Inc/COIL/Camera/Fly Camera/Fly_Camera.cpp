@@ -48,7 +48,7 @@ void Fly_Camera::Process_Keyboard(float deltaTime) {
     for (auto it = key_map.begin(); it != key_map.end(); ) {
         Key_Handler(it->first, it->second, velocity);
 
-        if (it->second == key_states_t::UNPRESSED) {
+        if (it->second == io_states::UNPRESSED) {
             it = key_map.erase(it);
 
         } else { ++it; }
@@ -137,7 +137,7 @@ void Fly_Camera::Update() {
 void Fly_Camera::Take_Over_All_Input() {
     first_mouse = true;
     Get_CurrentInstance() = this;
-    GLFWwindow* window_ref = window.Get_Window();
+    GLFWwindow* window_ref = window->Get_Window();
 
     // Register all relevant input callbacks
     glfwSetCursorPosCallback    (window_ref, Mouse_Callback);
@@ -164,7 +164,7 @@ void Fly_Camera::Take_Over_All_Input() {
 void Fly_Camera::Take_Over_Mouse() {
     first_mouse = true;
     Get_CurrentInstance() = this;
-    GLFWwindow* window_ref = window.Get_Window();
+    GLFWwindow* window_ref = window->Get_Window();
 
     // Register mouse-related input callbacks
     glfwSetCursorPosCallback    (window_ref, Mouse_Callback);
@@ -185,7 +185,7 @@ void Fly_Camera::Take_Over_Mouse() {
  */
 void Fly_Camera::Take_Over_Keyboard() {
     Get_CurrentInstance() = this;
-    GLFWwindow* window_ref = window.Get_Window();
+    GLFWwindow* window_ref = window->Get_Window();
 
     // Register the keyboard input callback
     glfwSetKeyCallback      (window_ref, Keyboard_Callback);
@@ -205,7 +205,7 @@ void Fly_Camera::Take_Over_Keyboard() {
  */
 void Fly_Camera::Release_All_Input() {
     Get_CurrentInstance() = NULL;
-    GLFWwindow* window_ref = window.Get_Window();
+    GLFWwindow* window_ref = window->Get_Window();
 
     // Unregister all input callbacks
     glfwSetCursorPosCallback    (window_ref, NULL);
@@ -230,7 +230,7 @@ void Fly_Camera::Release_All_Input() {
  * ============================================================================
  */
 void Fly_Camera::Release_Mouse() {
-    GLFWwindow* window_ref = window.Get_Window();
+    GLFWwindow* window_ref = window->Get_Window();
 
     // Unregister mouse-related input callbacks
     glfwSetCursorPosCallback    (window_ref, NULL);
@@ -250,7 +250,7 @@ void Fly_Camera::Release_Mouse() {
  * ============================================================================
  */
 void Fly_Camera::Release_Keyboard() {
-    GLFWwindow* window_ref = window.Get_Window();
+    GLFWwindow* window_ref = window->Get_Window();
 
     // Unregister the keyboard input callback
     glfwSetKeyCallback          (window_ref, NULL);
