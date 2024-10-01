@@ -3,6 +3,7 @@
 #define COIL_INPUT_HANDLER_H
 
 #include "../Window/Window.h"
+#include "../Utility.h"
 
 namespace Coil {
 
@@ -19,6 +20,13 @@ private:
     void Focus_Handler(Window win);
 
     
+    std::vector<key_cb_t>           key_cb_func;
+    std::vector<mouse_move_cb_t>    mouse_move_cb_func;
+    std::vector<mouse_click_cb_t>   mouse_click_cb_func;
+    std::vector<mouse_scroll_cb_t>  mouse_scroll_cb_func;
+
+
+    std::vector<mouse_button_t>     mouse_
 
     static void MouseButton_CB  (GLFWwindow* window, int button, int action, int mods);
     static void CursorPos_CB    (GLFWwindow* window, double xpos, double ypos);

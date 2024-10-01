@@ -23,34 +23,51 @@ void Input_Handler::Focus_Handler(Window win){
         Current_Instance() = this;
     }
 }
+/* ============================================================================
+ * ---------------------------- Constructor
+ * Initializes all member variables to default values.
+ * This sets up the mesh with no allocated resources.
+ * ============================================================================
+ */
+void InputManager::Poll_MouseClicks() {
+    // Get the current mouse position
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    mouseState.x = xpos;
+    mouseState.y = ypos;
 
+    // Get mouse button states
+    mouseState.leftButton   = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT    )   == GLFW_PRESS) ? MouseButtonState::Pressed : MouseButtonState::Released;
+    mouseState.rightButton  = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT   )  == GLFW_PRESS) ? MouseButtonState::Pressed : MouseButtonState::Released;
+    mouseState.middleButton = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE  ) == GLFW_PRESS) ? MouseButtonState::Pressed : MouseButtonState::Released;
 
-void Input_Handler::Configure_CallBacks() {
-    /*previous_cb.mouse_button_cb = SetCallback(previous_cb.mouse_button_cb,
-        MouseButton_CB, glfwSetMouseButtonCallback);
+    // Get scroll offset (reset manually since glfw only reports it on scroll event)
+    double scrollX, scrollY;
+    glfwGetScrollOffset(window, &scrollX, &scrollY);
+    mouseState.scrollX = scrollX;
+    mouseState.scrollY = scrollY;
 
-    previous_cb.cursor_pos_cb = SetCallback(previous_cb.cursor_pos_cb,
-        CursorPos_CB, glfwSetCursorPosCallback);
+    // Detect changes and trigger callbacks if needed
+    detectMouseChanges();
 
-    previous_cb.cursor_enter_cb = SetCallback(previous_cb.cursor_enter_cb,
-        CursorEnter_CB, glfwSetCursorEnterCallback);
-
-    previous_cb.scroll_cb = SetCallback(previous_cb.scroll_cb,
-        Scroll_CB, glfwSetScrollCallback);
-
-    previous_cb.key_cb = SetCallback(previous_cb.key_cb,
-        Key_CB, glfwSetKeyCallback);
-
-    previous_cb.char_cb = SetCallback(previous_cb.char_cb,
-        Char_CB, glfwSetCharCallback);
-
-    previous_cb.char_mods_cb = SetCallback(previous_cb.char_mods_cb,
-        CharMods_CB, glfwSetCharModsCallback);
-
-    previous_cb.drop_cb = SetCallback(previous_cb.drop_cb,
-        Drop_CB, glfwSetDropCallback);
-
-    previous_cb.joystick_cb = SetCallback(previous_cb.joystick_cb,
-        Joystick_CB, glfwSetJoystickCallback);*/
+    // Update the previous mouse state
+    prevMouseState = mouseState;
 }
+void InputManager::detectMouseChanges() {
+    // Trigger mouse click callback if any button state has changed
+    if (mouseClickCallback && (mouseState.leftButton != prevMouseState.leftButton)) {
+        mouseClickCallback(mouseState.leftButton);
+    }
+
+    // Trigger mouse move callback if the position has changed
+    if (mouseMoveCallback && (mouseState.x != prevMouseState.x || mouseState.y != prevMouseState.y)) {
+        mouseMoveCallback(mouseState.x, mouseState.y);
+    }
+
+    // Trigger scroll callback if scroll has changed
+    if (mouseScrollCallback && (mouseState.scrollX != prevMouseState.scrollX || mouseState.scrollY != prevMouseState.scrollY)) {
+        mouseScrollCallback(mouseState.scrollX, mouseState.scrollY);
+    }
+}
+
 }
