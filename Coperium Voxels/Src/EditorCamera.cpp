@@ -75,7 +75,8 @@ std::tuple<bool, glm::vec3, glm::vec3> EditorCamera::Raycast(glm::vec3 origin, g
 * ============================================================================
 */
 void EditorCamera::Process_Mouse_Button(int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
+    
+    if (action == GLFW_PRESS  && mouse_press == false) {
         std::tuple<bool, glm::vec3, glm::vec3> result = Raycast(position, front, 10);  // Raycasting into the world
 
         bool hit = std::get<0>(result);
@@ -102,5 +103,7 @@ void EditorCamera::Process_Mouse_Button(int button, int action, int mods) {
                 Re_Generate_Chunk_Mesh(world, place_position);
             }
         }
+        mouse_press = true;
     }
+    else if (action != GLFW_RELEASE) { mouse_press = false; }
 }

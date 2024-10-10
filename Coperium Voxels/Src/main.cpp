@@ -23,7 +23,7 @@ constexpr int GRID_SIZE_S_X = 64;
 constexpr int GRID_SIZE_S_Y = 64;
 constexpr int GRID_SIZE_S_Z = 64;
 constexpr int GRID_SIZE_F_X = -64;
-constexpr int GRID_SIZE_F_Y = -64;
+constexpr int GRID_SIZE_F_Y = 0;
 constexpr int GRID_SIZE_F_Z = -64;
 
 int main() {
@@ -43,6 +43,9 @@ int main() {
     Coil::Shader shader(std::string("Basic"));
 
     World w;
+
+    auto start_c = std::chrono::high_resolution_clock::now();
+    Chunk c;
     for (int x = GRID_SIZE_F_X; x < GRID_SIZE_S_X; x++) {
         for (int y = GRID_SIZE_F_Y; y < GRID_SIZE_S_Y; y++) {
             for (int z = GRID_SIZE_F_Z; z < GRID_SIZE_S_Z; z++) {
@@ -50,9 +53,37 @@ int main() {
             }
         }
     }
+
+    auto end_c = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_c - start_c;
+    std::cout << "Time to fill the 3D array: " << elapsed.count() << " seconds\n";
+
+
+
+    
+    
+    /*std::vector<std::vector<std::vector<int>>> array(GRID_SIZE_S_X, std::vector<std::vector<int>>(GRID_SIZE_S_Y, std::vector<int>(GRID_SIZE_S_Z)));
+
+    auto start_c = std::chrono::high_resolution_clock::now();
+    Chunk c;
+    for (int x = 0; x < GRID_SIZE_S_X; x++) {
+        for (int y = 0; y < GRID_SIZE_S_Y; y++) {
+            for (int z = 0; z < GRID_SIZE_S_Z; z++) {
+                array[x][y][z] = x + y + z;
+            }
+        }
+    }
+    auto end_c = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_c - start_c;
+    std::cout << "Time to fill the 3D array: " << elapsed.count() << " seconds\n";*/
+    
+
+
+
+
     Generate_All_Chunk_Meshes(w);
 
-    EditorCamera camera(window, w, 0, 0, 2);
+    EditorCamera camera(window, w, 0, -3, 2);
 
     shader.Add_Shaders(
         Coil::shader_list_t{

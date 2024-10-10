@@ -3,20 +3,11 @@
 #define COIL_INPUT_ENUMS_H
 
 #include <functional>
+#include <string>
 
 namespace Coil {
 
 
-typedef enum {
-    HAT_CENTERED        = 0,    HAT_UP              = 1,
-    HAT_RIGHT           = 2,    HAT_DOWN            = 4,
-    HAT_LEFT            = 8,
-
-    HAT_RIGHT_UP        = (HAT_RIGHT | HAT_UP),
-    HAT_RIGHT_DOWN      = (HAT_RIGHT | HAT_DOWN),
-    HAT_LEFT_UP         = (HAT_LEFT  | HAT_UP),
-    HAT_LEFT_DOWN       = (HAT_LEFT  | HAT_DOWN)
-} hat_state_t;
 
 
 typedef enum key_t {
@@ -86,6 +77,18 @@ typedef enum key_t {
     KEY_RIGHT_CONTROL   = 345,  KEY_RIGHT_ALT       = 346,
     KEY_RIGHT_SUPER     = 347,  KEY_MENU            = 348
 } key_t;
+
+
+typedef enum {
+    HAT_CENTERED        = 0,    HAT_UP              = 1,
+    HAT_RIGHT           = 2,    HAT_DOWN            = 4,
+    HAT_LEFT            = 8,
+
+    HAT_RIGHT_UP        = (HAT_RIGHT | HAT_UP),
+    HAT_RIGHT_DOWN      = (HAT_RIGHT | HAT_DOWN),
+    HAT_LEFT_UP         = (HAT_LEFT  | HAT_UP),
+    HAT_LEFT_DOWN       = (HAT_LEFT  | HAT_DOWN)
+} hat_state_t;
 
 typedef enum {
     MOD_SHIFT           = 0x01, MOD_CONTROL         = 0x02,
@@ -191,6 +194,13 @@ typedef struct {
 
 
 
+key_t IntToKey(int key);
+std::string KeyToString(key_t key);
+std::string ModKeyToString(mod_key_t mod);
+std::string MouseButtonToString(mouse_button_t button);
+std::string JoystickToString(joystick_t joystick);
+std::string JoystickStateToString(joystick_state_t state);
+std::string GamepadButtonToString(gamepad_button_t button);
 
 }
 

@@ -2,17 +2,20 @@
 
 void Generate_Single_Chunk_Mesh(World& w, Chunk* chunk, Sector* sector) {
     std::vector<GLfloat> vertex_mesh;
+    vertex_mesh.reserve(16 * 1024);
     std::vector<GLuint> index_mesh;
+    index_mesh.reserve(4 * 1024);
     int vertex_offset = 0;
     int index_offset = 0;
     if (chunk == nullptr || sector == nullptr) {
         return;
     }
-    for (auto& voxel_entry : *chunk->Get_Voxels()) {
+    for (int i = 0; i < VOX_LOC_MAX; i++) {
+        Voxel_Loc v_loc(i);
         glm::ivec3 relative_position = glm::vec3(
-            voxel_entry.first.Get_X(),
-            voxel_entry.first.Get_Y(),
-            voxel_entry.first.Get_Z()
+            v_loc.Get_X(),
+            v_loc.Get_Y(),
+            v_loc.Get_Z()
         );
 
         glm::ivec3 position = relative_position + glm::ivec3(
@@ -20,12 +23,16 @@ void Generate_Single_Chunk_Mesh(World& w, Chunk* chunk, Sector* sector) {
             chunk->Get_Offset_Y() * CHUNK_Y_MAX,
             chunk->Get_Offset_Z() * CHUNK_Z_MAX + sector->Get_Offset_Z() * SECTOR_Z_MAX
         );
-
+        Voxel v = chunk->Get_Voxel(relative_position.x, relative_position.y, relative_position.z);
         glm::vec3 colour = glm::vec3(
-            voxel_entry.second.Get_R(),
-            voxel_entry.second.Get_G(),
-            voxel_entry.second.Get_B()
+            v.Get_R(),
+            v.Get_G(),
+            v.Get_B()
         );
+        
+        if (v.Get_Type() != voxel_type_t::NORMAL) {
+            continue;
+        }
 
         cube_faces_t flags = static_cast<cube_faces_t>(0);
 
@@ -80,11 +87,14 @@ void Re_Generate_Chunk_Mesh(World& w, glm::ivec3 position) {
         {0, 0, -CHUNK_Z_MAX}    // Back
     };
 
+    printf("\n\nRegenerating....\n\n");
     for (const auto& offset : neighbors) {
-        Chunk* neighbor_chunk = w.Get_Chunk(position + glm::ivec3(offset)); // Adjust using offsets
+        if (position.x % CHUNK_X_MAX != 0 || position.y % CHUNK_Y_MAX != 0 || position.z % CHUNK_Z_MAX != 0) { continue; }
+        Chunk* neighbor_chunk = w.Get_Chunk(position + glm::ivec3(offset)); // Adjust using offse       ts
 
         if (neighbor_chunk) {
             Generate_Single_Chunk_Mesh(w, neighbor_chunk, sector);
+            printf("Regenerating chunk: %d %d, %d\n", neighbor_chunk->Get_Offset_X(), neighbor_chunk->Get_Offset_Y(), neighbor_chunk->Get_Offset_Z());
         }
     }
 }

@@ -17,7 +17,7 @@ void Window::Window_Size_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
 
-    if (window) {
+    if (window != nullptr) {
         
         if (window->previous_cb.window_size_cb  != nullptr &&
             window->allow_cb_chain              == true    ){
@@ -48,7 +48,7 @@ void Window::Window_Framebuffer_Size_CB(
 
     if (width <= 0 || height <= 0) {return;}
     
-    if (window) {
+    if (window != nullptr) {
         Window* pre = window->MakeContext();
         glViewport(0, 0, width, height);
         window->MakeContext(pre);
@@ -78,7 +78,7 @@ void Window::Window_Close_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win)); 
 
-    if (window) {
+    if (window != nullptr) {
         if (window->previous_cb.window_close_cb != nullptr  &&
             window->allow_cb_chain              == true     ){
 
@@ -104,7 +104,7 @@ void Window::Window_Refresh_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
 
-    if (window) {
+    if (window != nullptr) {
 
         if (window->previous_cb.window_refresh_cb   != nullptr  &&
             window->allow_cb_chain                  == true     ){
@@ -132,7 +132,7 @@ void Window::Window_Focus_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
 
-    if (window) {
+    if (window != nullptr) {
 
         if (window->previous_cb.window_focus_cb != nullptr  &&
             window->allow_cb_chain              == true     ){
@@ -160,7 +160,7 @@ void Window::Window_Iconify_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
 
-    if (window) {
+    if (window != nullptr) {
 
         if (window->previous_cb.window_iconify_cb   != nullptr  &&
             window->allow_cb_chain                  == true     ){
@@ -187,7 +187,7 @@ void Window::Window_Maximise_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
 
-    if (window) {
+    if (window != nullptr) {
 
         if (window->previous_cb.window_maximised_cb != nullptr &&
             window->allow_cb_chain == true) {
@@ -216,7 +216,7 @@ void Window::Window_Pos_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
     window->MakeContext();
-    if (window) {
+    if (window != nullptr) {
 
         if (window->previous_cb.window_pos_cb   != nullptr  &&
             window->allow_cb_chain              == true     ){
@@ -245,7 +245,7 @@ void Window::Window_Content_Scale_CB(
 ){
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(win));
     window->MakeContext();
-    if (window) {
+    if (window != nullptr) {
 
         if (window->previous_cb.content_scale_cb    != nullptr  &&
             window->allow_cb_chain                  == true     ){

@@ -99,11 +99,7 @@ int Voxel_Loc::Get_Z() const {
  * ============================================================================
  */
 uint16_t Voxel_Loc::Compact(const int x, const int y, const int z){
-    uint16_t packed = 0;
-    packed |= (x & 0xF) << X_SHIFT;
-    packed |= (y & 0x3F) << Y_SHIFT;
-    packed |= (z & 0xF) << Z_SHIFT;
-    return packed;
+    return (x << X_SHIFT) | (y << Y_SHIFT) | (z << Z_SHIFT);
 }
 
 /* ============================================================================

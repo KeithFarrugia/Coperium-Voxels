@@ -48,7 +48,7 @@ public:
 	int		Get_Offset_Y	() const;
 	int		Get_Offset_Z	() const;
 
-	voxel_set_t* Get_Voxels();
+	Voxel* Get_Voxels();
 
 	void Generate_Mesh(std::vector<GLfloat>& vertex_mesh, std::vector<GLuint>& index_mesh);
 	void Draw_Mesh();
@@ -75,7 +75,7 @@ private:
 	uint16_t chunk_offset;
 
 	// Map to store the voxels
-	voxel_set_t voxels;
+    Voxel voxels[VOX_LOC_MAX];
 
 	Coil::Basic_Mesh mesh;
 };

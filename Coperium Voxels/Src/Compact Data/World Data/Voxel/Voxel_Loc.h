@@ -4,6 +4,9 @@
 
 #include <cstdint>
 
+
+constexpr int VOX_LOC_MAX = 16384;
+
 class Voxel_Loc {
 public:
     Voxel_Loc();
@@ -30,14 +33,14 @@ private:
     uint16_t data;
 
     // --------------------------------- MASK VALUES
-    static constexpr uint16_t X_MASK = 0xF000;
-    static constexpr uint16_t Y_MASK = 0x0FC0;
-    static constexpr uint16_t Z_MASK = 0x003C;
+    static constexpr uint16_t X_MASK = 0x3C00;
+    static constexpr uint16_t Y_MASK = 0x03F0;
+    static constexpr uint16_t Z_MASK = 0x000F;
 
     // --------------------------------- SHIFT VALUES
-    static constexpr int    X_SHIFT = 12;
-    static constexpr int    Y_SHIFT = 6;
-    static constexpr int    Z_SHIFT = 2;
+    static constexpr int    X_SHIFT = 10;
+    static constexpr int    Y_SHIFT = 4;
+    static constexpr int    Z_SHIFT = 0;
 };
 
 #endif // !VOXEL_LOCATION_H

@@ -6,7 +6,9 @@
  * Default constructor initializing data to default LRGB (0, 0, 0, 0) and type 0.
  * ============================================================================
  */
-Chunk::Chunk() : chunk_offset(0){}
+Chunk::Chunk() : chunk_offset(0){
+    // voxels = Voxel[VOX_LOC_MAX];
+}
 
 /* ============================================================================
  * --------------------------- Voxel
@@ -38,8 +40,10 @@ void Chunk::Add_Voxel(
 ){
 
 	Voxel v;
-	v.Set_L(l);				v.Set_R(colour.r);
-	v.Set_G(colour.g);		v.Set_B(colour.b);
+    v.Set_L(l);				
+    v.Set_R(colour.r);
+	v.Set_G(colour.g);		
+    v.Set_B(colour.b);
 	v.Set_Type(type);
 
 	//printf("Voxel: %d %d %d\n", position.x, position.y, position.z);
@@ -58,12 +62,7 @@ void Chunk::Add_Voxel(
  * ============================================================================
  */
 void Chunk::Remove_Voxel(const int x, const int y, const int z) {
-
-	auto it = voxels.find(Voxel_Loc::Compact(x, y, z));
-
-	if (it != voxels.end()) {
-		voxels.erase(it);
-	}
+    Add_Voxel(glm::vec3(x, y, z), glm::vec3(0, 0, 0), 0, voxel_type_t::INVALID);
 }
 
 /* ============================================================================
@@ -72,7 +71,9 @@ void Chunk::Remove_Voxel(const int x, const int y, const int z) {
  * ============================================================================
  */
 void Chunk::Clear(){
-	voxels.clear();
+    for (int i = 0; i < VOX_LOC_MAX; i++) {
+        voxels[i].Set_Type(voxel_type_t::INVALID);
+    }
 }
 
 /* ============================================================================
@@ -105,20 +106,8 @@ Voxel Chunk::Get_Voxel(const int x, const int y, const int z) const{
 		return v;
 	}
 
-	auto it = voxels.find(Voxel_Loc::Compact(x, y, z));
 
-	// --------------------------------- Found -> Return
-	if (it != voxels.end()) {
-		return (it->second);
-
-	// --------------------------------- Not Found -> Air Voxel
-	}else {
-		Voxel v;
-		v.Set_L(0);		v.Set_R(0);
-		v.Set_G(0);		v.Set_B(0);
-		v.Set_Type(voxel_type_t::AIR);
-		return v;
-	}
+    return voxels[Voxel_Loc::Compact(x, y, z)];
 }
 
 /* ============================================================================
@@ -206,8 +195,8 @@ int Chunk::Get_Offset_Z() const {
  * The list of voxels
  * ============================================================================
  */
-voxel_set_t* Chunk::Get_Voxels(){
-	return &voxels;
+Voxel* Chunk::Get_Voxels(){
+	return voxels;
 }
 
 /* ============================================================================
@@ -256,22 +245,23 @@ void Chunk::Display(){
 		<< Get_Offset_Z() << "]"
 		<< std::endl << std::endl << std::flush;
 
-	for (auto& voxel_entry : voxels) {
+    for (uint16_t i = 0; i < CHUNK_X_MAX + CHUNK_Y_MAX + CHUNK_Z_MAX; i++) {
+        Voxel_Loc v_loc(i);
 		std::cout << "\tVoxel ["
-			<< voxel_entry.first.Get_X() << "] ["
-			<< voxel_entry.first.Get_Y() << "] ["
-			<< voxel_entry.first.Get_Z() << "]"
+			<< v_loc.Get_X() << "] ["
+			<< v_loc.Get_Y() << "] ["
+			<< v_loc.Get_Z() << "]"
 			<< std::endl << std::flush;
-
+        Voxel v = voxels[i];
 		std::cout << "\t\tVoxel R["
-			<< voxel_entry.second.Get_R() << "] G["
-			<< voxel_entry.second.Get_G() << "] B["
-			<< voxel_entry.second.Get_B() << "] L["
-			<< voxel_entry.second.Get_L() << "]"
+			<< v.Get_R() << "] G["
+			<< v.Get_G() << "] B["
+			<< v.Get_B() << "] L["
+			<< v.Get_L() << "]"
 			<< std::endl << std::flush;
 
 		std::cout << "\t\tVoxel Type ["
-			<< Voxel_Type_To_String(voxel_entry.second.Get_Type()) << "]"
+			<< Voxel_Type_To_String(v.Get_Type()) << "]"
 			<< std::endl << std::endl << std::flush;
 	}
 }

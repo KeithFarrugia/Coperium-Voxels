@@ -46,7 +46,6 @@ public:
     Window* MakeContext     ();
     Window* MakeContext     (Window*);
 
-    void Configure_CallBacks();
     // --------------------------------- Queiries
     bool Is_FullScreen      () const;
     bool Does_Exist         () const;
@@ -120,6 +119,7 @@ public:
 
     
 private:
+
     GLFWwindow* window;
     int     windowed_x, windowed_y;
     int     windowed_w, windowed_h;
@@ -143,6 +143,8 @@ private:
     glfw_window_cb_t previous_cb;
 
     // --------------------------------- Call Back Handlers
+    void Configure_CallBacks();
+
     static void Window_Refresh_CB
         (GLFWwindow* win                                );
     static void Window_Close_CB

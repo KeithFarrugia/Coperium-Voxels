@@ -51,7 +51,7 @@ void Add_Cube_Mesh(
     if (face_flags & BACK_FACE) {
         Add_Face(   vert_pos_offset     ,   vert_colour     ,    
                     vertex_mesh         ,   index_mesh      ,
-                    BACK_FACE_MESH     ,   FACE_INDEX_MESH ,
+                    BACK_FACE_MESH      ,   FACE_INDEX_MESH ,
                     vertex_offset       ,   index_offset    ,
                     FACE_NUM_ELEMENTS   ,
                     FACE_VERT_SIZE      ,   FACE_INDEX_SIZE );
@@ -61,7 +61,7 @@ void Add_Cube_Mesh(
     if (face_flags & LEFT_FACE) {
         Add_Face(   vert_pos_offset     ,   vert_colour     ,    
                     vertex_mesh         ,   index_mesh      ,
-                    LEFT_FACE_MESH     ,   FACE_INDEX_MESH ,
+                    LEFT_FACE_MESH      ,   FACE_INDEX_MESH ,
                     vertex_offset       ,   index_offset    ,
                     FACE_NUM_ELEMENTS   ,
                     FACE_VERT_SIZE      ,   FACE_INDEX_SIZE );

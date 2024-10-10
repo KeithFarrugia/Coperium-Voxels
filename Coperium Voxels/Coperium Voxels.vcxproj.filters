@@ -72,12 +72,6 @@
     <ClCompile Include="Libraries\Inc\COIL\Window\Basic Queries.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\Inc\COIL\Window\Callback Handlers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\Inc\COIL\Window\Add Function Call Backs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\Inc\COIL\Window\Getters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,6 +130,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\AddCallBacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Inc\COIL\Utility\IO\IO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\HandleCallbacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Inc\COIL\Window\WinAddCallBacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1140,6 +1149,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Inc\COIL\Utility\CFF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Inc\COIL\Utility\IO\IO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

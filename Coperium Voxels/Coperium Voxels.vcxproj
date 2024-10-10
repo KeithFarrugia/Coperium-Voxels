@@ -158,7 +158,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\HandleCallbacks.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\AddCallBacks.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Utility\IO\IO.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Window\WinAddCallBacks.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp" />
     <ClCompile Include="Src\EditorCamera.cpp" />
     <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp" />
     <ClCompile Include="Src\Compact Data\World Data\World_Mesh.cpp" />
@@ -180,8 +185,6 @@
     <ClCompile Include="Libraries\Inc\COIL\Shaders\Uniform Handler.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Utility\Logger\Logger.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Basic Queries.cpp" />
-    <ClCompile Include="Libraries\Inc\COIL\Window\Callback Handlers.cpp" />
-    <ClCompile Include="Libraries\Inc\COIL\Window\Add Function Call Backs.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Getters.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Setters.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Window.cpp" />
@@ -205,6 +208,7 @@
     <ClInclude Include="Libraries\Inc\COIL\Utility\CFF.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\GLFW_CFF.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\IO.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\IO\IO.h" />
     <ClInclude Include="Src\EditorCamera.h" />
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h" />
     <ClInclude Include="Src\Compact Data\World Data\World_Mesh.h" />
