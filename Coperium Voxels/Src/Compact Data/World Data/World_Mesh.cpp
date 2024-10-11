@@ -1,6 +1,6 @@
 #include "World_Mesh.h"
 
-void Generate_Single_Chunk_Mesh(World& w, Chunk* chunk, Sector* sector) {
+void Generate_Single_Chunk_Mesh(World* w, Chunk* chunk, Sector* sector) {
     std::vector<GLfloat> vertex_mesh;
     vertex_mesh.reserve(16 * 1024);
     std::vector<GLuint> index_mesh;
@@ -37,22 +37,22 @@ void Generate_Single_Chunk_Mesh(World& w, Chunk* chunk, Sector* sector) {
         cube_faces_t flags = static_cast<cube_faces_t>(0);
 
         // Check neighboring voxels to determine which faces to render
-        if (w.Get_Voxel(position.x + 1, position.y, position.z).Get_Type() != voxel_type_t::NORMAL) {
+        if (w->Get_Voxel(position.x + 1, position.y, position.z).Get_Type() != voxel_type_t::NORMAL) {
             flags = (cube_faces_t)(flags | cube_faces_t::RIGHT_FACE);
         }
-        if (w.Get_Voxel(position.x - 1, position.y, position.z).Get_Type() != voxel_type_t::NORMAL) {
+        if (w->Get_Voxel(position.x - 1, position.y, position.z).Get_Type() != voxel_type_t::NORMAL) {
             flags = (cube_faces_t)(flags | cube_faces_t::LEFT_FACE);
         }
-        if (w.Get_Voxel(position.x, position.y + 1, position.z).Get_Type() != voxel_type_t::NORMAL) {
+        if (w->Get_Voxel(position.x, position.y + 1, position.z).Get_Type() != voxel_type_t::NORMAL) {
             flags = (cube_faces_t)(flags | cube_faces_t::TOP_FACE);
         }
-        if (w.Get_Voxel(position.x, position.y - 1, position.z).Get_Type() != voxel_type_t::NORMAL) {
+        if (w->Get_Voxel(position.x, position.y - 1, position.z).Get_Type() != voxel_type_t::NORMAL) {
             flags = (cube_faces_t)(flags | cube_faces_t::BOTTOM_FACE);
         }
-        if (w.Get_Voxel(position.x, position.y, position.z + 1).Get_Type() != voxel_type_t::NORMAL) {
+        if (w->Get_Voxel(position.x, position.y, position.z + 1).Get_Type() != voxel_type_t::NORMAL) {
             flags = (cube_faces_t)(flags | cube_faces_t::FRONT_FACE);
         }
-        if (w.Get_Voxel(position.x, position.y, position.z - 1).Get_Type() != voxel_type_t::NORMAL) {
+        if (w->Get_Voxel(position.x, position.y, position.z - 1).Get_Type() != voxel_type_t::NORMAL) {
             flags = (cube_faces_t)(flags | cube_faces_t::BACK_FACE);
         }
 
@@ -70,9 +70,9 @@ void Generate_Single_Chunk_Mesh(World& w, Chunk* chunk, Sector* sector) {
 }
 
 
-void Re_Generate_Chunk_Mesh(World& w, glm::ivec3 position) {
-    Sector* sector = w.Get_Sector_W(position.x, position.y, position.z);
-    Chunk* chunk = w.Get_Chunk(position);
+void Re_Generate_Chunk_Mesh(World* w, glm::ivec3 position) {
+    Sector* sector = w->Get_Sector_W(position.x, position.y, position.z);
+    Chunk* chunk = w->Get_Chunk(position);
 
     // Generate mesh for the current chunk
     Generate_Single_Chunk_Mesh(w, chunk, sector);
@@ -90,7 +90,7 @@ void Re_Generate_Chunk_Mesh(World& w, glm::ivec3 position) {
     printf("\n\nRegenerating....\n\n");
     for (const auto& offset : neighbors) {
         if (position.x % CHUNK_X_MAX != 0 || position.y % CHUNK_Y_MAX != 0 || position.z % CHUNK_Z_MAX != 0) { continue; }
-        Chunk* neighbor_chunk = w.Get_Chunk(position + glm::ivec3(offset)); // Adjust using offse       ts
+        Chunk* neighbor_chunk = w->Get_Chunk(position + glm::ivec3(offset)); // Adjust using offse       ts
 
         if (neighbor_chunk) {
             Generate_Single_Chunk_Mesh(w, neighbor_chunk, sector);
@@ -99,27 +99,34 @@ void Re_Generate_Chunk_Mesh(World& w, glm::ivec3 position) {
     }
 }
 
-void Generate_All_Chunk_Meshes(World& w) {
-    for (auto& sector_entry : *w.Get_Sectors()) {
-        for (auto& chunk_entry : *sector_entry.second.Get_Chunks()) {
-            Generate_Single_Chunk_Mesh(w, &chunk_entry.second, &sector_entry.second);
+void Generate_All_Chunk_Meshes(World* w) {
+
+    for (uint32_t valid_sector : *w->Get_Valid_Sectors()) {
+        for (uint16_t valid_chunk : *w->Get_Sector(valid_sector)->Get_Valid_Chunks()) {
+            Generate_Single_Chunk_Mesh(
+                w, 
+                w->Get_Sector(valid_sector)->Get_Chunk(valid_chunk),
+                w->Get_Sector(valid_sector)
+            );
         }
     }
 }
 
-void Render_Chunk_Meshes(World& w, Coil::Shader& s){
+void Render_Chunk_Meshes(World* w, Coil::Shader& s){
 
-    for (auto& sector_entry : *w.Get_Sectors()) {
-        for (auto& chunk_entry : *sector_entry.second.Get_Chunks()) {
+    for (uint32_t valid_sector : *w->Get_Valid_Sectors()) {
+        for (uint16_t valid_chunk : *w->Get_Sector(valid_sector)->Get_Valid_Chunks()) {
+
+            Chunk* c = w->Get_Sector(valid_sector)->Get_Chunk(valid_chunk);
             glm::ivec3 offset = glm::vec3(
-                chunk_entry.second.Get_Offset_X() * CHUNK_X_MAX + sector_entry.second.Get_Offset_X() * SECTOR_X_MAX,
-                chunk_entry.second.Get_Offset_Y() * CHUNK_Y_MAX,
-                chunk_entry.second.Get_Offset_Z() * CHUNK_Z_MAX + sector_entry.second.Get_Offset_Z() * SECTOR_Z_MAX
+                c->Get_Offset_X() * CHUNK_X_MAX + w->Get_Sector(valid_sector)->Get_Offset_X() * SECTOR_X_MAX,
+                c->Get_Offset_Y() * CHUNK_Y_MAX,
+                c->Get_Offset_Z() * CHUNK_Z_MAX + w->Get_Sector(valid_sector)->Get_Offset_Z() * SECTOR_Z_MAX
             );
 
             s.Set_Vec3("vertex_offset",offset);
 
-            chunk_entry.second.Draw_Mesh();
+            c->Draw_Mesh();
         }
     }
 

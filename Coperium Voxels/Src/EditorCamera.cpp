@@ -25,7 +25,7 @@ std::tuple<bool, glm::vec3, glm::vec3> EditorCamera::Raycast(glm::vec3 origin, g
     float distanceTravelled = 0.0f;
 
     while (distanceTravelled < maxLength) {
-        Voxel voxel = world.Get_Voxel(currentVoxel.x, currentVoxel.y, currentVoxel.z);
+        Voxel voxel = world->Get_Voxel(currentVoxel.x, currentVoxel.y, currentVoxel.z);
         if (voxel.Get_Type() == voxel_type_t::NORMAL) {
             // Calculate normal based on the axis that was hit first
             glm::vec3 normal(0.0f);
@@ -90,7 +90,7 @@ void EditorCamera::Process_Mouse_Button(int button, int action, int mods) {
 
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
                 // Remove the voxel
-                world.Remove_Voxel(hit_vox);
+                world->Remove_Voxel(hit_vox);
                 Re_Generate_Chunk_Mesh(world, hit_vox);
 
             }
@@ -99,7 +99,7 @@ void EditorCamera::Process_Mouse_Button(int button, int action, int mods) {
                 glm::ivec3 place_position = hit_vox + glm::ivec3(static_cast<int>(normal.x), static_cast<int>(normal.y), static_cast<int>(normal.z));
 
                 // Add a voxel at the adjacent position
-                world.Add_Voxel(place_position, glm::ivec3(255, 255, 255), 0, voxel_type_t::NORMAL);  // Example: Add white block
+                world->Add_Voxel(place_position, glm::ivec3(255, 255, 255), 0, voxel_type_t::NORMAL);  // Example: Add white block
                 Re_Generate_Chunk_Mesh(world, place_position);
             }
         }

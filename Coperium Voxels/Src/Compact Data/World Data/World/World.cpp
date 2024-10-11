@@ -12,7 +12,6 @@ World::World(){}
  * ============================================================================
  */
 World::~World() {
-    Clear_Sectors();
 }
 
 /* ============================================================================
@@ -84,9 +83,11 @@ void World::Remove_Voxel(const glm::ivec3 position){
  * ============================================================================
  */
 void World::Create_Sector(const int x, const int z){
-    Sector s;
-    s.Set_Offset(x, z);
-    sectors[Sector::Compact(x, z)] = s;
+    uint32_t sector_key = Sector::Compact(x, z);
+    if (sectors[sector_key] != nullptr) { return; }
+
+    sectors[sector_key] = std::make_unique<Sector>(sector_key);
+    valid_sector_indices.push_back(sector_key);
 }
 
 /* ============================================================================
@@ -99,11 +100,11 @@ void World::Create_Sector(const int x, const int z){
  * sector: The sector to add to the world.
  * ============================================================================
  */
-void World::Add_Sector(const Sector& sector) {
-    sectors[Sector::Compact(
-        sector.Get_Offset_X(), 
-        sector.Get_Offset_Z()
-    )] = sector;
+void World::Add_Sector(std::unique_ptr<Sector> sector) {
+    if (sectors[sector->Get_Offset()] != nullptr) { return; }
+
+    valid_sector_indices .push_back(sector->Get_Offset());
+    sectors[sector->Get_Offset()] = std::move(sector);
 }
 
 /* ============================================================================
@@ -111,8 +112,17 @@ void World::Add_Sector(const Sector& sector) {
  * Clears the Sectors list
  * ============================================================================
  */
-void World::Clear_Sectors(){
-    sectors.clear();
+void World::Remove_Sector(const int x, const int z){
+    uint32_t location = Sector::Compact(x, z);
+
+    if (sectors[location] == nullptr) { return; }
+
+    sectors[location].reset();
+
+    valid_sector_indices.erase(
+        std::remove(valid_sector_indices.begin(), valid_sector_indices.end(), location),
+        valid_sector_indices.end()
+    );
 }
 
 /* ============================================================================
@@ -144,6 +154,18 @@ Voxel World::Get_Voxel(const int x, const int y, const int z) {
     return invalid_voxel;
 }
 
+/* ============================================================================
+ * --------------------------- Get_Sector
+ * Retrieves a sector at the relative sector position
+ *
+ * ------ Parameters ------
+ * location: location of sector
+ * ============================================================================
+ */
+Sector* World::Get_Sector(uint32_t location){
+    return sectors[location].get();
+}
+
 
 
 /* ============================================================================
@@ -166,14 +188,10 @@ Sector* World::Get_Sector_L(
     const int x, const int y, const int z
 ){
     uint32_t location = Sector::Compact(x, z);
+    if (location >= MAX_SECTOR_LOC) {    return nullptr;  }
+    if (sectors[location] == nullptr) { return nullptr; }
 
-    auto it = sectors.find(location);
-    if (it != sectors.end()) {
-        return &it->second;
-
-    }else {
-        return nullptr;
-    }
+    return sectors[location].get();
 }
 
 /* ============================================================================
@@ -228,7 +246,19 @@ Chunk* World::Get_Chunk(const glm::ivec3 position){
  * ============================================================================
  */
 sector_set_t* World::Get_Sectors(){
-    return &sectors;
+    return sectors;
+}
+
+/* ============================================================================
+ * --------------------------- Get_Valid_Sectors
+ * Retrieves the Sectors valid index list/set
+ *
+ * ------ Returns ------
+ * valid index list
+ * ============================================================================
+ */
+std::vector<uint32_t>* World::Get_Valid_Sectors(){
+    return &valid_sector_indices;
 }
 
 /* ============================================================================
@@ -237,8 +267,10 @@ sector_set_t* World::Get_Sectors(){
  * ============================================================================
  */
 void World::Display(){
-    for (auto& sector_entry : sectors) {
-        sector_entry.second.Display();
+    for (uint32_t index: valid_sector_indices) {
+        if (sectors[index]) {
+            sectors[index]->Display();
+        }
     }
 }
 

@@ -2,37 +2,43 @@
 #ifndef SECTOR_H
 #define SECTOR_H
 
-#include <unordered_map>
+
+#include <vector>
+#include <memory>
+#include <functional>
 
 #include "../Chunk/Chunk.h"
 #include "../Operations.h"
 
 
-typedef std::unordered_map<uint32_t, Chunk> chunk_set_t;
+typedef std::unique_ptr<Chunk> chunk_set_t;
 
-constexpr auto SECTOR_X_MAX = 512;
-constexpr auto SECTOR_Z_MAX = 512;
+constexpr auto SECTOR_X_MAX     = 512;
+constexpr auto SECTOR_Z_MAX     = 512;
+constexpr auto MAX_SECTOR_LOC   = SECTOR_X_MAX * SECTOR_Z_MAX;
 
 class Sector {
 public:
     Sector();
     Sector(uint32_t offset);
     
-    void    Add_Voxel       (const glm::ivec3   position,
-                             const glm::ivec3   colour  ,
-                             const int          l       ,
-                             const int          type    );
-    void    Remove_Voxel    (const glm::ivec3   position);
+    void        Add_Voxel       (const glm::ivec3   position,
+                                 const glm::ivec3   colour  ,
+                                 const int          l       ,
+                                 const int          type    );
+    void        Remove_Voxel    (const glm::ivec3   position);
 
-    void     Create_Chunk   (const int x, const int y, const int z);
-    void     Add_Chunk      (const Chunk& chunk);
+    void        Create_Chunk   (const int x, const int y, const int z);
+    void        Add_Chunk      (std::unique_ptr<Chunk> chunk);
 
-    void     Remove_Chunk   (const int x, const int y, const int z);
+    void        Remove_Chunk   (const int x, const int y, const int z);
 
-    Voxel    Get_Voxel      (const int x, const int y, const int z);
+    Voxel       Get_Voxel      (const int x, const int y, const int z);
 
     chunk_set_t* Get_Chunks();
+    std::vector<uint16_t>* Get_Valid_Chunks();
 
+    Chunk* Get_Chunk   (uint16_t location);
     Chunk* Get_Chunk_L (const int x, const int y, const int z);
     Chunk* Get_Chunk_S (const int x, const int y, const int z);
 
@@ -44,7 +50,8 @@ public:
 
     void     Display();
 
-    static uint32_t     Compact                 (const int x, const int z);
+
+    static uint32_t     Compact                 (int x, int z);
     static glm::ivec3   Convert_Sector_To_Local (const glm::ivec3 sector_pos);
     static glm::ivec3   Convert_Sector_To_Chunk (const glm::ivec3 sector_pos);
 
@@ -61,7 +68,8 @@ private:
 
     uint32_t sector_offset;
 
-    chunk_set_t chunks;
+    chunk_set_t chunks[MAX_CHUNK_LOC]{ nullptr };
+    std::vector<uint16_t> valid_chunk_indices;
 };
 
 #endif // !SECTOR_H

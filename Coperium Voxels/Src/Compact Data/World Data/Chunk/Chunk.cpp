@@ -280,7 +280,15 @@ void Chunk::Display(){
  * ============================================================================
  */
 uint16_t Chunk::Compact(int x, int y, int z){
-	Chunk c;
-	c.Set_Offset(x, y, z);
-	return c.chunk_offset;
+	uint16_t chunk_offset = 0;
+
+	chunk_offset |= (x & MASK_5_BITS) << X_SHIFT;
+	chunk_offset |= (z & MASK_5_BITS) << Z_SHIFT;
+
+	if (y < 0) {
+		chunk_offset |= MASK_1_BITS << Y_S_SHIFT;
+	}
+
+	chunk_offset |= (abs(y) & MASK_5_BITS) << Y_SHIFT;
+	return chunk_offset;
 }

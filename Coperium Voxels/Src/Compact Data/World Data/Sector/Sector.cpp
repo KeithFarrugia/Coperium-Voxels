@@ -68,20 +68,15 @@ void Sector::Add_Voxel(
  * ============================================================================
  */
 void Sector::Remove_Voxel(const glm::ivec3 position){
-    Chunk* chunk;
-
     glm::ivec3 chunk_pos =
         Convert_Sector_To_Chunk(position);
 
-    chunk = Get_Chunk_S(position.x, position.y, position.z);
+    Chunk* chunk = Get_Chunk_S(position.x, position.y, position.z);
 
 
     if (chunk != nullptr) {
 
         chunk->Remove_Voxel(chunk_pos.x, chunk_pos.y, chunk_pos.z);
-
-    }else{
-        return;
     }
 }
 
@@ -91,14 +86,13 @@ void Sector::Remove_Voxel(const glm::ivec3 position){
  * chunks or offset.
  * ============================================================================
  */
-void Sector::Create_Chunk(const int x, const int y, const int z){
-    Chunk c;
-    c.Set_Offset(x, y, z);
-    chunks[Chunk::Compact(
-        c.Get_Offset_X(),
-        c.Get_Offset_Y(),
-        c.Get_Offset_Z()
-    )] = c;
+void Sector::Create_Chunk(const int x, const int y, const int z) {
+    uint16_t chunk_key = Chunk::Compact(x, y, z);
+
+    if (chunks[chunk_key] != nullptr) { return; }
+
+    chunks[chunk_key] = std::make_unique<Chunk>(chunk_key);
+    valid_chunk_indices.push_back(chunk_key);
 }
 
 /* ============================================================================
@@ -109,12 +103,12 @@ void Sector::Create_Chunk(const int x, const int y, const int z){
  * chunk: The chunk being added
  * ============================================================================
  */
-void Sector::Add_Chunk(const Chunk& chunk){
-    chunks[Chunk::Compact(
-        chunk.Get_Offset_X(),
-        chunk.Get_Offset_Y(),
-        chunk.Get_Offset_Z()
-    )] = chunk;
+void Sector::Add_Chunk(std::unique_ptr<Chunk> chunk){
+
+    if (chunks[chunk->Get_Offset()] != nullptr) { return; }
+
+    valid_chunk_indices.push_back(chunk->Get_Offset());
+    chunks[chunk->Get_Offset()] = std::move(chunk);
 }
 
 /* ============================================================================
@@ -130,10 +124,16 @@ void Sector::Add_Chunk(const Chunk& chunk){
  * ============================================================================
  */
 void Sector::Remove_Chunk(int x, int y, int z) {
-    auto it = chunks.find(Chunk::Compact(x, y, z));
-    if (it != chunks.end()) {
-        chunks.erase(it);
-    }
+    uint16_t location = Chunk::Compact(x, y, z);
+
+    if (chunks[location] == nullptr) { return; }
+
+    chunks[location].reset();
+
+    valid_chunk_indices.erase(
+        std::remove(valid_chunk_indices.begin(), valid_chunk_indices.end(), location),
+        valid_chunk_indices.end()
+    );
 }
 
 /* ============================================================================
@@ -170,14 +170,34 @@ Voxel Sector::Get_Voxel(int x, int y, int z) {
 /* ============================================================================
  * --------------------------- Get_Chunks
  * Returns a pointer to the chunk map/set.
- * 
- * 
  * ------ Returns ------
- * 
+ * list of chunks
  * ============================================================================
  */
 chunk_set_t* Sector::Get_Chunks(){
-    return &chunks;
+    return chunks;
+}
+
+/* ============================================================================
+ * --------------------------- Get_Chunks
+ * Returns a pointer to the valid chunks map/set.
+ * ------ Returns ------
+ * vector of valid chunk locations
+ * ============================================================================
+ */
+std::vector<uint16_t>* Sector::Get_Valid_Chunks(){
+    return &valid_chunk_indices;
+}
+
+/* ============================================================================
+ * --------------------------- Get_Chunk
+ * Returns a pointer to a chunk using the index of that chunk.
+ * ------ Returns ------
+ * pointer to a chunk
+ * ============================================================================
+ */
+Chunk* Sector::Get_Chunk(uint16_t location){
+    return chunks[location].get();
 }
 
 /* ============================================================================
@@ -198,13 +218,7 @@ chunk_set_t* Sector::Get_Chunks(){
 Chunk* Sector::Get_Chunk_L(const int x, const int y, const int z) {
     uint32_t location = Chunk::Compact(x, y, z);
 
-    auto it = chunks.find(location);
-    if (it != chunks.end()) {
-        return &it->second;
-
-    }else {
-        return nullptr;
-    }
+    return chunks[location].get();
 }
 /* ============================================================================
  * --------------------------- Get_Sector_W
@@ -244,17 +258,16 @@ Chunk* Sector::Get_Chunk_S(const int x, const int y, const int z) {
 void Sector::Set_Offset(int x, int z) {
     sector_offset = 0;
 
-    if (x < 0) {
-        sector_offset |= (MASK_1_BITS << X_S_SHIFT);
-        x = -x;
-    }
-    sector_offset |= (x & MASK_15_BITS) << X_M_SHIFT;
+    uint32_t x_sign = (x >> 31) & MASK_1_BITS;
+    uint32_t z_sign = (z >> 31) & MASK_1_BITS;
 
-    if (z < 0) {
-        sector_offset |= (MASK_1_BITS << Z_S_SHIFT);
-        z = -z;
-    }
-    sector_offset |= (z & MASK_15_BITS) << Z_M_SHIFT;
+    x = (x ^ (x >> 31)) & MASK_15_BITS;
+    z = (z ^ (z >> 31)) & MASK_15_BITS;
+
+    sector_offset = (x_sign << X_S_SHIFT)   |
+                    (x      << X_M_SHIFT)   | 
+                    (z_sign << Z_S_SHIFT)   | 
+                    (z      << Z_M_SHIFT);
 }
 
 /* ============================================================================
@@ -281,8 +294,10 @@ void Sector::Display(){
         << Get_Offset_Z() << "] ----------------"
         << std::endl << std::flush;
 
-    for (auto& chunk_entry : chunks) {
-        chunk_entry.second.Display();
+    for (const auto& index : valid_chunk_indices) {
+        if (chunks[index]) {
+            chunks[index]->Display();
+        }
     }
 }
 
@@ -333,12 +348,18 @@ int Sector::Get_Offset_Z() const {
  * A 32-bit unsigned integer representing the compacted sector coordinates.
  * ============================================================================
  */
-uint32_t Sector::Compact(const int x, const int z) {
-    Sector s;
-    s.Set_Offset(x, z);
-    return s.sector_offset;
-}
+uint32_t Sector::Compact(int x, int z) {
+    uint32_t x_sign = (x >> 31) & MASK_1_BITS;
+    uint32_t z_sign = (z >> 31) & MASK_1_BITS;
 
+    x = (x ^ (x >> 31)) & MASK_15_BITS;
+    z = (z ^ (z >> 31)) & MASK_15_BITS;
+
+    return  (x_sign << X_S_SHIFT)   | 
+            (x      << X_M_SHIFT)   | 
+            (z_sign << Z_S_SHIFT)   | 
+            (z      << Z_M_SHIFT);
+}
 /* ============================================================================
  * --------------------------- Convert_Sector_To_Local
  * Converts a given Sector relative position and deduces the chunk at

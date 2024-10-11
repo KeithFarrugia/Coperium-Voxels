@@ -12,27 +12,26 @@
 #include "Compact Data/Compact Location Data/CLD.h"
 #include "Compact Data/Compact Colour Data/CCD.h"
 #include "Compact Data/Compact Block/CB.h"
-//#include "Compact Data/World Data/World/World.h"
 #include "Compact Data/Cube Mesh/CCMS.h"
 #include "Compact Data/World Data/World_Mesh.h"
 #include "EditorCamera.h"
 #include <IMGUI/imgui_impl_glfw.h>
 #include <IMGUI/imgui_impl_opengl3.h>
 
-constexpr int GRID_SIZE_S_X = 64;
+constexpr int GRID_SIZE_S_X = 128;
 constexpr int GRID_SIZE_S_Y = 64;
-constexpr int GRID_SIZE_S_Z = 64;
-constexpr int GRID_SIZE_F_X = -64;
+constexpr int GRID_SIZE_S_Z = 128;
+constexpr int GRID_SIZE_F_X = 0;
 constexpr int GRID_SIZE_F_Y = 0;
-constexpr int GRID_SIZE_F_Z = -64;
+constexpr int GRID_SIZE_F_Z = 0;
 
 int main() {
     // Initialize Logger and OpenGL
     Coil::Logger::init_logger(Coil::LOG_TO_FILE);
     Coil::Initialise_Opengl();
-    Coil::Initialise_GLAD();
+    Coil::Initialise_GLAD(); 
 
-    // Create Window
+    //// Create Window
     Coil::Window window("Hello World", 640, 480);
     window.FF_Clockwise();
     window.EnableDepthTest();
@@ -42,41 +41,41 @@ int main() {
 
     Coil::Shader shader(std::string("Basic"));
 
-    World w;
+   // World w;
 
+    World* w = new World();
     auto start_c = std::chrono::high_resolution_clock::now();
-    Chunk c;
     for (int x = GRID_SIZE_F_X; x < GRID_SIZE_S_X; x++) {
         for (int y = GRID_SIZE_F_Y; y < GRID_SIZE_S_Y; y++) {
             for (int z = GRID_SIZE_F_Z; z < GRID_SIZE_S_Z; z++) {
-                w.Add_Voxel(glm::ivec3(x, y, z), glm::ivec3(x, (int)(y / 4.0f), z), 15, voxel_type_t::NORMAL);
+                w->Add_Voxel(glm::ivec3(x, y, z), glm::ivec3(x, (int)(y / 4.0f), z), 15, voxel_type_t::NORMAL);
             }
         }
     }
 
     auto end_c = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end_c - start_c;
-    std::cout << "Time to fill the 3D array: " << elapsed.count() << " seconds\n";
+    std::cout << "Time to fill the World: " << elapsed.count() << " seconds\n";
 
 
 
-    
-    
-    /*std::vector<std::vector<std::vector<int>>> array(GRID_SIZE_S_X, std::vector<std::vector<int>>(GRID_SIZE_S_Y, std::vector<int>(GRID_SIZE_S_Z)));
+    //
+    //
+    ///*std::vector<std::vector<std::vector<int>>> array(GRID_SIZE_S_X, std::vector<std::vector<int>>(GRID_SIZE_S_Y, std::vector<int>(GRID_SIZE_S_Z)));
 
-    auto start_c = std::chrono::high_resolution_clock::now();
-    Chunk c;
-    for (int x = 0; x < GRID_SIZE_S_X; x++) {
-        for (int y = 0; y < GRID_SIZE_S_Y; y++) {
-            for (int z = 0; z < GRID_SIZE_S_Z; z++) {
-                array[x][y][z] = x + y + z;
-            }
-        }
-    }
-    auto end_c = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end_c - start_c;
-    std::cout << "Time to fill the 3D array: " << elapsed.count() << " seconds\n";*/
-    
+    //auto start_c = std::chrono::high_resolution_clock::now();
+    //Chunk c;
+    //for (int x = 0; x < GRID_SIZE_S_X; x++) {
+    //    for (int y = 0; y < GRID_SIZE_S_Y; y++) {
+    //        for (int z = 0; z < GRID_SIZE_S_Z; z++) {
+    //            array[x][y][z] = x + y + z;
+    //        }
+    //    }
+    //}
+    //auto end_c = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> elapsed = end_c - start_c;
+    //std::cout << "Time to fill the 3D array: " << elapsed.count() << " seconds\n";*/
+    //
 
 
 

@@ -7,8 +7,7 @@
 #include "../Sector/Sector.h"
 #include "../Operations.h"
 
-
-typedef std::unordered_map<uint32_t, Sector> sector_set_t;
+typedef std::unique_ptr<Sector> sector_set_t;
 
 class World {
 public:
@@ -26,16 +25,18 @@ public:
     void Create_Sector      (const int          x       ,
                              const int          z       );
 
-    void Add_Sector         (const Sector&      sector  );
+    void Add_Sector         (std::unique_ptr<Sector> sector);
 
-    void Clear_Sectors      ();
+    void    Remove_Sector   (const int x, const int z);
 
     Voxel   Get_Voxel       (const int x, const int y, const int z);
+    Sector* Get_Sector      (uint32_t location);
     Sector* Get_Sector_L    (const int x, const int y, const int z);
     Sector* Get_Sector_W    (const int x, const int y, const int z);
     Chunk*  Get_Chunk       (const glm::ivec3   position);
 
     sector_set_t*   Get_Sectors();
+    std::vector<uint32_t>*   Get_Valid_Sectors();
 
     void Display();
 
@@ -45,7 +46,8 @@ public:
 
 private:
 
-    sector_set_t sectors;
+    sector_set_t sectors[MAX_SECTOR_LOC]{ nullptr };
+    std::vector<uint32_t> valid_sector_indices;
 };
 
 #endif // !WORLD_H
