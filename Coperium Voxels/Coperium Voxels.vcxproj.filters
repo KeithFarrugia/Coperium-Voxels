@@ -147,6 +147,9 @@
     <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
@@ -1152,6 +1155,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Inc\COIL\Utility\IO\IO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\HandleCallbacks.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\AddCallBacks.cpp" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Src\Compact Data\World Data\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h" />
     <ClInclude Include="Libraries\Inc\COIL\Input Handler\Input_Handler.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\CFF.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\GLFW_CFF.h" />
