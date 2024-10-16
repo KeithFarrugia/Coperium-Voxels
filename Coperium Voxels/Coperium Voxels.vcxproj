@@ -159,14 +159,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\HandleCallbacks.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\AddCallBacks.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Utility\IO\IO.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\WinAddCallBacks.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp" />
-    <ClCompile Include="Src\EditorCamera.cpp" />
     <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Colour Data\CCD.cpp" />
@@ -199,7 +197,9 @@
     <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\WorldData\Operations.h" />
-    <ClCompile Include="Src\WorldData\World\World.cpp" />
+    <ClCompile Include="Src\WorldData\Sector.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk.cpp" />
+    <ClCompile Include="Src\WorldData\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h" />
@@ -208,7 +208,6 @@
     <ClInclude Include="Libraries\Inc\COIL\Utility\GLFW_CFF.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\IO.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\IO\IO.h" />
-    <ClInclude Include="Src\EditorCamera.h" />
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h" />
     <ClInclude Include="Src\Compact Data\Cube Mesh\SCM.h" />
     <ClInclude Include="Src\Compact Data\Compact Block\CB.h" />
@@ -530,7 +529,8 @@
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCM.h" />
     <ClInclude Include="Src\Compact Data\Compact Location Data\CLD.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
-    <ClInclude Include="Src\WorldData\World\World.h" />
+    <ClInclude Include="Src\WorldData\CommonWD.h" />
+    <ClInclude Include="Src\WorldData\World.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
