@@ -105,25 +105,7 @@
     <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Compact Data\World Data\Voxel\Voxel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Compact Data\World Data\Voxel\Voxel_Loc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Compact Data\World Data\Chunk\Chunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Compact Data\World Data\Sector\Sector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Compact Data\World Data\World\World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Compact Data\World Data\World_Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\EditorCamera.cpp">
@@ -148,6 +130,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\World\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Operations.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1112,31 +1100,7 @@
     <ClInclude Include="Src\Utility\Render Testing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel_Loc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\Chunk\Chunk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\Voxel\Voxel_Type_List.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\Sector\Sector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\World\World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\Operations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Compact Data\World Data\World_Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\EditorCamera.h">
@@ -1158,6 +1122,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
