@@ -26,14 +26,14 @@ constexpr int MAX_VOX_LOC  =    CHUNK_SIZE_X *
 
 
 
-typedef enum {
+typedef enum rel_loc_t{
     WORLD_LOC,
     SECTOR_LOC,
     CHUNK_LOC,
     VOXEL_LOC,
 }rel_loc_t;
 
-typedef struct {
+typedef struct vox_data_t {
     glm::ivec3  position;
     glm::ivec3  colour;
     int         light;

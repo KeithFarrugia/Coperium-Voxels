@@ -17,11 +17,16 @@ private:
         id_type id;
         data_type data;
         int height;
-        std::unique_ptr<node_t> children[2];
+        std::unique_ptr<node_t> children[2]{nullptr};
 
         node_t(const id_type& id, const data_type& data) : 
             id(id), data(data), height(1), children{nullptr, nullptr} {}
     };
+
+    typedef enum {
+        L  = 0,
+        R  = 1,
+    }dir_t;
 
 public:
     /* ============================================================================
@@ -126,7 +131,7 @@ public:
         Iterator(node_t* root) {
             while (root) {
                 nodeStack.push(root);
-                root = root->children[0].get();
+                root = root->children[L].get();
             }
         }
 
@@ -149,17 +154,16 @@ public:
          * ============================================================================
          */
         Iterator& operator++() {
-            if (nodeStack.empty()) return *this; // Do nothing if stack is empty
+            if (nodeStack.empty()) return *this;
 
             node_t* node = nodeStack.top();
-            nodeStack.pop(); // Remove the node from the stack
+            nodeStack.pop();
 
-            // Push the right child and its left descendants onto the stack
-            if (node->children[1]) {
-                node = node->children[1].get();
+            if (node->children[R]) {
+                node = node->children[R].get();
                 while (node) {
                     nodeStack.push(node);
-                    node = node->children[0].get();
+                    node = node->children[L].get();
                 }
             }
 
@@ -247,6 +251,38 @@ private:
         }
         return nullptr;
     }
+
+    /* ============================================================================
+     * --------------------------- Balance
+     * Makes sure that the tree is balanced at a given node.
+     * ------ Parameters ------
+     * pivot:       Node at which to check
+     * ============================================================================
+     */
+    std::unique_ptr<node_t> Balance(std::unique_ptr<node_t>& pivot) {
+
+        int balance = Get_Balance(pivot.get());
+
+        if (balance > 1) {
+            // --------------------------------- LEFT LEFT
+            if (Get_Balance(pivot->children[L].get()) > 0) {
+                pivot = Rotate_R(pivot);
+            // --------------------------------- LEFT RIGHT
+            } else {
+                pivot = Rotate_LR(pivot);
+            }
+
+        }else if (balance < -1) {
+            // --------------------------------- RIGHT LEFT
+            if (Get_Balance(pivot->children[R].get()) > 0) {
+                pivot = Rotate_RL(pivot);
+            } else {
+                pivot = Rotate_L(pivot);
+            }
+        }
+        return std::move(pivot);
+    }
+
 
     /* ============================================================================
      * --------------------------- Insert_Node
@@ -377,16 +413,23 @@ private:
      * New root of the rotated subtree
      * ============================================================================
      */
-    std::unique_ptr<node_t> Rotate_R(std::unique_ptr<node_t> node) {
-        std::unique_ptr<node_t> newRoot = std::move(node->children[1]);
-        node->children[1] = std::move(newRoot->children[0]);
-        newRoot->children[0] = std::move(node);
+    std::unique_ptr<node_t> Rotate_R(std::unique_ptr<node_t>& node) {
 
-        // Update heights
-        newRoot->children[0]->height = 1 + std::max(Get_Height(newRoot->children[0]->children[0].get()), Get_Height(newRoot->children[0]->children[1].get()));
-        newRoot->height = 1 + std::max(Get_Height(newRoot->children[0].get()), Get_Height(newRoot->children[1].get()));
+        std::unique_ptr<node_t> pivot = std::move(node.children[L]);
+        node.children[L]    = std::move(pivot.children[L]);
+        pivot.children[R]   = std::move(node);
 
-        return newRoot;
+        pivot.children[R]->height = 
+            1 + std::max(
+                Get_Height(pivot->children[L]->children[L].get()),
+                Get_Height(pivot->children[L]->children[R].get())
+            );
+        pivot->height =
+            1 + std::max(
+                Get_Height(pivot->children[L].get()),
+                Get_Height(pivot->children[L].get())
+            );
+        return pivot;
     }
 
     /* ============================================================================
