@@ -8,6 +8,14 @@
 Sector::Sector() {}
 
 /* ============================================================================
+ * --------------------------- Sector (Copy Constructor)
+ * Copy Constructor
+ * ============================================================================
+ */
+Sector::Sector(const Sector& other){
+    chunks = other.chunks;
+}
+/* ============================================================================
  * --------------------------- ~Sector
  * Destructor for the Sector class, ensures the chunk tree is cleared.
  * ============================================================================
@@ -49,7 +57,7 @@ Voxel* Sector::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  */
 Chunk* Sector::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
     return chunks.Find(
-        sector_loc_t::Compact(
+        chunk_loc_t::Compact(
             Convert_Loc_2_ID(
                 pos, rel, rel_loc_t::SECTOR_LOC
             )
@@ -72,8 +80,18 @@ Chunk* Sector::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void Sector::Create_Voxel(vox_data_t data) {
-    Chunk* c = Get_Chunk(data.position, data.rel);
-    if (c != nullptr) { c->Create_Voxel(data); }
+    chunk_loc_t loc = chunk_loc_t::Compact(
+        Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::CHUNK_LOC)
+    );
+
+    Chunk* c = chunks.Find(loc);
+
+    if (c != nullptr) { c->Create_Voxel(data); return; }
+
+    chunks.Create_Node(loc);
+    c = chunks.Find(loc);
+
+    if (c != nullptr) { c->Create_Voxel(data); return; }
 }
 
 /* ============================================================================
@@ -88,7 +106,7 @@ void Sector::Create_Voxel(vox_data_t data) {
  * ============================================================================
  */
 void Sector::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    chunks.Create_Node(sector_loc_t::Compact(
+    chunks.Create_Node(chunk_loc_t::Compact(
         Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC))
     );
 }
@@ -119,7 +137,7 @@ void Sector::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void Sector::Remove_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    chunks.Remove(sector_loc_t::Compact(
+    chunks.Remove(chunk_loc_t::Compact(
         Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC))
     );
 }

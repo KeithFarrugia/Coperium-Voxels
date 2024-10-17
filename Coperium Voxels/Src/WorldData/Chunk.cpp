@@ -5,7 +5,18 @@
  * Constructor for Chunk class, initializing a new chunk
  * ============================================================================
  */
-Chunk::Chunk() {}
+Chunk::Chunk() {
+    voxels.resize(MAX_VOX_LOC);
+}
+
+/* ============================================================================
+ * --------------------------- Chunk (Copy Constructor)
+ * Copy Constructor
+ * ============================================================================
+ */
+Chunk::Chunk(const Chunk& other){
+    voxels = other.voxels;
+}
 
 /* ============================================================================
  * --------------------------- ~Chunk
@@ -29,11 +40,10 @@ Chunk::~Chunk() {
  * ============================================================================
  */
 Voxel* Chunk::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
-    voxels[1];
     return &voxels[
-        voxel_t::Compress(
+        voxel_loc_t::Compact(
             Convert_Loc_2_Offset(pos, rel, rel_loc_t::CHUNK_LOC)
-        )
+        ).location
     ];
 }
 
@@ -46,6 +56,12 @@ Voxel* Chunk::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void Chunk::Create_Voxel(vox_data_t data) {
+    Voxel vox(data);
+    voxels[
+        voxel_loc_t::Compact(
+            Convert_Loc_2_Offset(data.position, data.rel, rel_loc_t::CHUNK_LOC)
+        ).location
+    ] = vox;
 }
 
 /* ============================================================================
@@ -58,6 +74,11 @@ void Chunk::Create_Voxel(vox_data_t data) {
  * ============================================================================
  */
 void Chunk::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
+    voxels[
+        voxel_loc_t::Compact(
+            Convert_Loc_2_Offset(pos, rel, rel_loc_t::CHUNK_LOC)
+        ).location
+    ].SetType(voxel_type_t::AIR);
 }
 
 /* ============================================================================
@@ -68,6 +89,6 @@ void Chunk::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  * A container (voxels_t) with all the voxels in the chunk
  * ============================================================================
  */
-voxels_t Chunk::Get_All_Voxels() {
-    return voxels_t();
+voxels_t* Chunk::Get_All_Voxels() {
+    return &voxels;
 }

@@ -77,7 +77,7 @@ key_t IntToKey(int key) {
         case 346    :return KEY_RIGHT_ALT;      case 347    :return KEY_RIGHT_SUPER;
         case 348    :return KEY_MENU;
 
-        default     :KEY_UNKNOWN;
+        default     :return KEY_UNKNOWN;
     }
 }
 std::string KeyToString(key_t key) {
