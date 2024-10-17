@@ -215,6 +215,7 @@ private:
      */
     int Get_Balance(node_t* node) {
         return node ? Get_Height(node->children[0].get()) - Get_Height(node->children[1].get()) : 0;
+        return Get_Height(node->children[0]) - Get_Height(node[1]);
     }
 
     /* ============================================================================
