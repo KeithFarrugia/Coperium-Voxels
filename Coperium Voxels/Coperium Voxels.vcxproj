@@ -199,6 +199,7 @@
     <ClCompile Include="Src\WorldData\Operations.h" />
     <ClCompile Include="Src\WorldData\Sector.cpp" />
     <ClCompile Include="Src\WorldData\Chunk.cpp" />
+    <ClCompile Include="Src\WorldData\Voxel.cpp" />
     <ClCompile Include="Src\WorldData\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -682,6 +683,7 @@
     <None Include="Resources\Shaders\compact_v2.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Extras\Testing Conversion.txt" />
     <Text Include="test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

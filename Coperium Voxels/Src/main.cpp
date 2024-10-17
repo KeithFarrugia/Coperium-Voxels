@@ -15,37 +15,39 @@
 #include <IMGUI/imgui_impl_glfw.h>
 #include <IMGUI/imgui_impl_opengl3.h>
 
+constexpr int GRID_SIZE_F_X = 128;
+constexpr int GRID_SIZE_F_Y = 64;
+constexpr int GRID_SIZE_F_Z = 128;
+
+constexpr int GRID_SIZE_S_X = -128;
+constexpr int GRID_SIZE_S_Y = 0;
+constexpr int GRID_SIZE_S_Z = -128;
 
 int main() {
-    glm::vec3 x = glm::vec3(1010, 0, 1010);
+    World w;
 
-    std::cout << "\n----------------------------- ID -----------------------------\n";
+    auto start = std::chrono::high_resolution_clock::now();
 
-    glm::vec3 Sec_ID = World::Convert_Loc_2_ID(x, rel_loc_t::WORLD_LOC, rel_loc_t::SECTOR_LOC);
-    std::cout << "W -> S : [" << Sec_ID.x << "] [" << Sec_ID.y << "] [" << Sec_ID.z << "]\n";
+    for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
+        for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
+            for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
+                w.Create_Voxel(vox_data_t{
+                        glm::ivec3(x, y, z),    // position
+                        glm::ivec3(0, 0, 0),    // colour
+                        voxel_type_t::NORMAL,   // type
+                        true,                   // solid
+                        false,                  // transparency
+                        rel_loc_t::WORLD_LOC    // Relative
+                    });
+            }
+        }
+    }
 
-    glm::vec3 Chunk_ID = World::Convert_Loc_2_ID(x, rel_loc_t::WORLD_LOC, rel_loc_t::CHUNK_LOC);
-    std::cout << "W -> C : [" << Chunk_ID.x << "] [" << Chunk_ID.y << "] [" << Chunk_ID.z << "]\n";
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
 
+    std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
+        << duration.count() << " seconds." << std::endl;
 
-
-    std::cout << "\n----------------------------- Loc -----------------------------\n";
-
-    glm::vec3 Sec_Loc = World::Convert_Loc_2_Offset(x, rel_loc_t::WORLD_LOC, rel_loc_t::SECTOR_LOC);
-    std::cout << "W -> S : [" << Sec_Loc.x << "] [" << Sec_Loc.y << "] [" << Sec_Loc.z << "]\n";
-
-    glm::vec3 Chunk_Loc = World::Convert_Loc_2_Offset(x, rel_loc_t::WORLD_LOC, rel_loc_t::CHUNK_LOC);
-    std::cout << "W -> C : [" << Chunk_Loc.x << "] [" << Chunk_Loc.y << "] [" << Chunk_Loc.z << "]\n";
-
-
-    std::cout << "\n----------------------------- ID -----------------------------\n";
-
-    glm::vec3 Chunk_ID2 = World::Convert_Loc_2_ID(Sec_Loc, rel_loc_t::SECTOR_LOC, rel_loc_t::CHUNK_LOC);
-    std::cout << "S -> C : [" << Chunk_ID2.x << "] [" << Chunk_ID2.y << "] [" << Chunk_ID2.z << "]\n";
-
-
-    std::cout << "\n----------------------------- Loc -----------------------------\n";
-    glm::vec3 Chunk_Loc2 = World::Convert_Loc_2_Offset(Sec_Loc, rel_loc_t::SECTOR_LOC, rel_loc_t::CHUNK_LOC);
-    std::cout << "W -> C : [" << Chunk_Loc2.x << "] [" << Chunk_Loc2.y << "] [" << Chunk_Loc2.z << "]\n";
-
+    return 0;
 }

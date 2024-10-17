@@ -1,11 +1,20 @@
 #include "World.h"
 
 /* ============================================================================
- * --------------------------- ~World (Constructor)
+ * --------------------------- World (Constructor)
  * Default Constructor
  * ============================================================================
  */
 World::World() {}
+
+/* ============================================================================
+ * --------------------------- World (Copy Constructor)
+ * Copy Constructor
+ * ============================================================================
+ */
+World::World(const World& other){
+    sectors = other.sectors;
+}
 
 /* ============================================================================
  * --------------------------- ~World (Destructor)
@@ -30,7 +39,8 @@ World::~World() {
  */
 Voxel* World::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
     Chunk* c = Get_Chunk(pos, rel);
-    (c == nullptr) ? nullptr : c->Get_Voxel(pos, rel);
+    if (c == nullptr) { return nullptr; }
+    return c->Get_Voxel(pos, rel);
 }
 
 /* ============================================================================
@@ -48,7 +58,8 @@ Voxel* World::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  */
 Chunk* World::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
     Sector* s = Get_Sector(pos, rel);
-    (s == nullptr) ? nullptr : s->Get_Chunk(pos, rel);
+    if (s == nullptr) { return nullptr; }
+    return s->Get_Chunk(pos, rel);
 }
 
 /* ============================================================================
@@ -86,17 +97,18 @@ Sector* World::Get_Sector(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void World::Create_Voxel(vox_data_t data) {
-    data.position = Convert_Loc_2_ID(
-        data.position,
-        data.rel,
-        rel_loc_t::SECTOR_LOC
+    sector_loc_t loc = sector_loc_t::Compact(
+        Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::SECTOR_LOC)
     );
 
-    data.rel = SECTOR_LOC;
+    Sector* s = sectors.Find(loc);
 
-    Sector* s = sectors.Find(sector_loc_t::Compact(data.position));
+    if (s != nullptr) { s->Create_Voxel(data); return; }
 
-    if (s != nullptr) { s->Create_Voxel(data); }
+    sectors.Create_Node(loc);
+    s = sectors.Find(loc);
+
+    if (s != nullptr) { s->Create_Voxel(data); return; }
 }
 
 /* ============================================================================
@@ -110,12 +122,19 @@ void World::Create_Voxel(vox_data_t data) {
  * ============================================================================
  */
 void World::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    pos = Convert_Loc_2_ID(pos, rel, rel_loc_t::SECTOR_LOC);
-    rel = SECTOR_LOC;
 
-    Sector* s = sectors.Find(sector_loc_t::Compact(pos));
+    sector_loc_t loc = sector_loc_t::Compact(
+        Convert_Loc_2_ID(pos, rel, rel_loc_t::SECTOR_LOC)
+    );
 
-    if (s != nullptr) { s->Create_Chunk(pos, rel); }
+    Sector* s = sectors.Find(loc);
+
+    if (s != nullptr) { s->Create_Chunk(pos, rel); return; }
+
+    sectors.Create_Node(loc);
+    s = sectors.Find(loc);
+
+    if (s != nullptr) { s->Create_Chunk(pos, rel); return; }
 }
 
 /* ============================================================================
@@ -171,7 +190,7 @@ void World::Remove_Chunk(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void World::Remove_Sector(glm::ivec3 pos, rel_loc_t rel) {
-    glm::ivec3 pos = Convert_Loc_2_ID(
+    pos = Convert_Loc_2_ID(
         pos,
         rel,
         rel_loc_t::SECTOR_LOC

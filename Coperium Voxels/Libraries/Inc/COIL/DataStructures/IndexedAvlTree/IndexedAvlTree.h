@@ -37,7 +37,7 @@ public:
      * ============================================================================
      */
     ~IndexedAvlTree() {
-        Destroy_Tree(root);
+        Destroy_Tree(std::move(root));
     }
 
     /* ============================================================================
@@ -137,8 +137,9 @@ public:
          * Reference to the data stored in the current node
          * ============================================================================
          */
-        data_type& operator*() {
-            return nodeStack.top()->data; // Return the data at the top node
+        std::pair<const id_type&, data_type&> operator*() {
+            node_t* node = nodeStack.top();
+            return { node->id, node->data };
         }
 
         /* ============================================================================
@@ -184,7 +185,7 @@ public:
     };
 
     Iterator begin() { return Iterator(root.get()); }
-    Iterator end() { return Iterator(); }
+    Iterator end()   { return Iterator()          ; }
 
 private:
     // --------------------------------- VARIABLES
@@ -201,7 +202,8 @@ private:
      * ============================================================================
      */
     int Get_Height(node_t* node) {
-        return node ? node->height : 0;
+        if (node != nullptr) { return node->height; }
+        return 0;
     }
 
     /* ============================================================================
@@ -214,8 +216,8 @@ private:
      * ============================================================================
      */
     int Get_Balance(node_t* node) {
-        return node ? Get_Height(node->children[0].get()) - Get_Height(node->children[1].get()) : 0;
-        return Get_Height(node->children[0]) - Get_Height(node[1]);
+        if (node == nullptr) { return 0; }
+        return Get_Height(node->children[0].get()) - Get_Height(node->children[1].get());
     }
 
     /* ============================================================================
@@ -261,16 +263,19 @@ private:
      * ============================================================================
      */
     std::unique_ptr<node_t> Insert_Node(std::unique_ptr<node_t> node, const id_type& id, const data_type& data) {
-        if (!node) {
+        if (node == nullptr) {
             return std::make_unique<node_t>(id, data);
         } else if (id == node->id) {
-            return node; // Node already exists
+            return node;
         }
 
         int direction = (id > node->id);
         node->children[direction] = Insert_Node(std::move(node->children[direction]), id, data);
 
-        node->height = 1 + std::max(Get_Height(node->children[0].get()), Get_Height(node->children[1].get()));
+        node->height = 1 + std::max(
+            Get_Height(node->children[0].get()),
+            Get_Height(node->children[1].get())
+        );
 
         int balance = Get_Balance(node.get());
 
@@ -311,6 +316,7 @@ private:
         if (!node) return nullptr;
 
         int direction = (id > node->id);
+
         if (id < node->id) {
             node->children[0] = Delete_Node(std::move(node->children[0]), id);
         } else if (id > node->id) {
@@ -362,10 +368,10 @@ private:
      * node:    Node from which to delete
      * ============================================================================
      */
-    void Destroy_Tree(std::unique_ptr<node_t>& node) {
+    void Destroy_Tree(std::unique_ptr<node_t> node) {
         if (!node) return;
-        Destroy_Tree(node->children[0]);
-        Destroy_Tree(node->children[1]);
+        Destroy_Tree(std::move(node->children[0]));
+        Destroy_Tree(std::move(node->children[1]));
     }
 
     /* ============================================================================
@@ -378,15 +384,37 @@ private:
      * ============================================================================
      */
     std::unique_ptr<node_t> Rotate_R(std::unique_ptr<node_t> node) {
+        // Check if the node or its right child is nullptr
+        if (!node) {
+            return nullptr; // Return nullptr if the node is null
+        }
+        if (!node->children[1]) {
+            return std::move(node); // No right child, nothing to rotate
+        }
+
+        // Perform rotation
         std::unique_ptr<node_t> newRoot = std::move(node->children[1]);
-        node->children[1] = std::move(newRoot->children[0]);
-        newRoot->children[0] = std::move(node);
 
-        // Update heights
-        newRoot->children[0]->height = 1 + std::max(Get_Height(newRoot->children[0]->children[0].get()), Get_Height(newRoot->children[0]->children[1].get()));
-        newRoot->height = 1 + std::max(Get_Height(newRoot->children[0].get()), Get_Height(newRoot->children[1].get()));
+        // Check the new root's left child before accessing
+        if (newRoot) {
+            node->children[1] = std::move(newRoot->children[0]);
+            newRoot->children[0] = std::move(node);
+        }
 
-        return newRoot;
+        // Update heights after rotation
+        node->height =
+            1 + std::max(
+                Get_Height(node->children[0].get()),
+                Get_Height(node->children[1].get())
+            );
+
+        newRoot->height =
+            1 + std::max(
+                Get_Height(newRoot->children[0].get()),
+                Get_Height(newRoot->children[1].get())
+            );
+
+        return newRoot;  // Return the new root after rotation
     }
 
     /* ============================================================================
@@ -399,17 +427,30 @@ private:
      * ============================================================================
      */
     std::unique_ptr<node_t> Rotate_L(std::unique_ptr<node_t> node) {
+        // Check if the left child is nullptr
+        if (!node || !node->children[0]) {
+            return std::move(node);
+        }
+
         std::unique_ptr<node_t> newRoot = std::move(node->children[0]);
         node->children[0] = std::move(newRoot->children[1]);
         newRoot->children[1] = std::move(node);
 
-        // Update heights
-        newRoot->children[1]->height = 1 + std::max(Get_Height(newRoot->children[1]->children[0].get()), Get_Height(newRoot->children[1]->children[1].get()));
-        newRoot->height = 1 + std::max(Get_Height(newRoot->children[0].get()), Get_Height(newRoot->children[1].get()));
+        // Update heights after rotation
+        node->height =
+            1 + std::max(
+                Get_Height(node->children[0].get()),
+                Get_Height(node->children[1].get())
+            );
+
+        newRoot->height =
+            1 + std::max(
+                Get_Height(newRoot->children[0].get()),
+                Get_Height(newRoot->children[1].get())
+            );
 
         return newRoot;
     }
-
     /* ============================================================================
      * --------------------------- Copy_Tree
      * Copies the Nodes of a Subtree

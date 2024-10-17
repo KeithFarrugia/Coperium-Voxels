@@ -5,10 +5,9 @@
 
 
 class World{
-private:
-
 public:
-    World();
+     World();
+     World(const World& other);
     ~World();
 
     Voxel * Get_Voxel   (glm::ivec3 pos, rel_loc_t rel);
@@ -34,10 +33,9 @@ private:
 
 
 class Sector {
-private:
-
 public:
-    Sector();
+     Sector();
+     Sector(const Sector& other);
     ~Sector();
 
     Voxel* Get_Voxel(glm::ivec3 pos, rel_loc_t rel);
@@ -60,10 +58,9 @@ private:
 
 
 class Chunk {
-private:
-
 public:
-    Chunk();
+     Chunk();
+     Chunk(const Chunk& other);
     ~Chunk();
 
     Voxel* Get_Voxel(glm::ivec3 pos, rel_loc_t rel);
@@ -72,10 +69,40 @@ public:
 
     void Remove_Voxel(glm::ivec3 pos, rel_loc_t rel);
 
-    voxels_t Get_All_Voxels();
+    voxels_t* Get_All_Voxels();
 
 private:
     voxels_t voxels;
+};
+
+
+class Voxel {
+public:
+     Voxel();
+     Voxel(const Voxel& other);
+     Voxel(const vox_data_t voxelData);
+    ~Voxel();
+    void SetSolid       (bool       s);
+    void SetTransparency(bool       t);
+    void SetR           (uint8_t    r);
+    void SetG           (uint8_t    g);
+    void SetB           (uint8_t    b);
+    void SetType        (uint32_t   t);
+
+    // Getters
+    bool IsSolid        () const;
+    bool IsTransparent  () const;
+    uint8_t GetR        () const;
+    uint8_t GetG        () const;
+    uint8_t GetB        () const;
+    uint32_t GetType    () const;
+
+    static Voxel Compact(const vox_data_t voxelData);
+    void Display() const;
+
+private:
+    uint32_t data;
+
 };
 
 
