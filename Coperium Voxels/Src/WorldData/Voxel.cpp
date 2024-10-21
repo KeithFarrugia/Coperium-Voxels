@@ -114,7 +114,8 @@ void Voxel::SetType(uint32_t type) {
 
 /* ============================================================================
  * --------------------------- IsSolid
- * Returns whether the voxel is solid or not by checking the most significant bit.
+ * Returns whether the voxel is solid or not by checking 
+ * the most significant bit.
  *
  * ------ Returns ------
  * true if the voxel is solid, false otherwise.
@@ -122,6 +123,20 @@ void Voxel::SetType(uint32_t type) {
  */
 bool Voxel::IsSolid() const {
     return (data >> 31) & 0x1; // Get the 1st bit
+}
+
+/* ============================================================================
+ * --------------------------- IsAir
+ * Returns whether the voxel is air or not by checking 
+ * the most significant bit.
+ *
+ * ------ Returns ------
+ * true if the voxel is air, false otherwise.
+ * ============================================================================
+ */
+
+bool Voxel::IsAir() const{
+    return !((data >> 31) & 0x1);
 }
 
 /* ============================================================================
@@ -183,9 +198,9 @@ uint8_t Voxel::GetB() const {
  */
 glm::vec3 Voxel::GetColour() const {
     return glm::vec3(
-        static_cast<float>(GetR()) / 15.0f,   // Normalize 4-bit value to [0, 1]
-        static_cast<float>(GetG()) / 15.0f,   // Normalize 4-bit value to [0, 1]
-        static_cast<float>(GetB()) / 15.0f    // Normalize 4-bit value to [0, 1]
+        static_cast<float>(GetR()),   // Normalize 4-bit value to [0, 1]
+        static_cast<float>(GetG()),   // Normalize 4-bit value to [0, 1]
+        static_cast<float>(GetB())    // Normalize 4-bit value to [0, 1]
     );
 }
 /* ============================================================================

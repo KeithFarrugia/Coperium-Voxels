@@ -101,6 +101,7 @@ public:
 
     // Getters
     bool        IsSolid         () const;
+    bool        IsAir           () const;
     bool        IsTransparent   () const;
     uint8_t     GetR            () const;
     uint8_t     GetG            () const;

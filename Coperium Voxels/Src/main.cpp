@@ -11,9 +11,9 @@
 #include <IMGUI/imgui_impl_glfw.h>
 #include <IMGUI/imgui_impl_opengl3.h>
 
-constexpr int GRID_SIZE_F_X = 16;
-constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 16;
+constexpr int GRID_SIZE_F_X = 1;
+constexpr int GRID_SIZE_F_Y = 1;
+constexpr int GRID_SIZE_F_Z = 1;
 
 constexpr int GRID_SIZE_S_X = 0;
 constexpr int GRID_SIZE_S_Y = 0;
@@ -27,16 +27,27 @@ int main() {
 
 
 
-    Coil::Window window("Hello World", 640, 480);
+    Coil::Window window("Voxel Test Case", 640, 480);
     window.FF_Clockwise();
     window.EnableDepthTest();
     window.EnableCulling();
     glfwSwapInterval(0);
 
     Coil::Shader shader(std::string("Basic"));
+    World w;
+
+    w.Create_Voxel(vox_data_t{
+        glm::ivec3(-1, 0, -1),                // position
+        glm::ivec3(0, (int)(0 / 4.0f), 0),  // color
+        voxel_type_t::NORMAL,               // type
+        true,                               // solid
+        false,                              // transparency
+        rel_loc_t::WORLD_LOC                // Relative
+    });
+
+    w.Get_Voxel(glm::ivec3(-1, 0, -1), rel_loc_t::WORLD_LOC)->Display();
 
     auto start = std::chrono::high_resolution_clock::now();
-    World w;
     for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
         for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
             for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
@@ -73,7 +84,7 @@ int main() {
 
 
 
-    Coil::Fly_Camera camera(window, 0, -3, 2);
+    Coil::Fly_Camera camera(window, 0, 0, 1);
     camera.Take_Over_All_Input();
 
     shader.Add_Shaders(
