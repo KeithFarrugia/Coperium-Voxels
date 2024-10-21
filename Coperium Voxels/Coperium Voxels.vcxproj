@@ -149,6 +149,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -199,6 +200,7 @@
     <ClCompile Include="Src\WorldData\Operations.h" />
     <ClCompile Include="Src\WorldData\Sector.cpp" />
     <ClCompile Include="Src\WorldData\Chunk.cpp" />
+    <ClCompile Include="Src\WorldData\MeshGeneration.cpp" />
     <ClCompile Include="Src\WorldData\Voxel.cpp" />
     <ClCompile Include="Src\WorldData\World.cpp" />
   </ItemGroup>

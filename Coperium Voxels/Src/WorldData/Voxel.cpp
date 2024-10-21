@@ -173,6 +173,22 @@ uint8_t Voxel::GetB() const {
 }
 
 /* ============================================================================
+ * --------------------------- GetColour
+ * Retrieves the colour components (R, G, B) of the voxel as a glm::vec3.
+ * The values are normalized between 0.0 and 1.0, as they are stored in 4 bits.
+ *
+ * ------ Returns ------
+ * A glm::vec3 containing the normalized R, G, B values of the voxel.
+ * ============================================================================
+ */
+glm::vec3 Voxel::GetColour() const {
+    return glm::vec3(
+        static_cast<float>(GetR()) / 15.0f,   // Normalize 4-bit value to [0, 1]
+        static_cast<float>(GetG()) / 15.0f,   // Normalize 4-bit value to [0, 1]
+        static_cast<float>(GetB()) / 15.0f    // Normalize 4-bit value to [0, 1]
+    );
+}
+/* ============================================================================
  * --------------------------- GetType
  * Retrieves the voxel type stored in the least significant 17 bits.
  *

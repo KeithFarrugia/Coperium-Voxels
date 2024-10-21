@@ -7,6 +7,7 @@
  */
 Chunk::Chunk() {
     voxels.resize(MAX_VOX_LOC);
+    mesh = Coil::Basic_Mesh();
 }
 
 /* ============================================================================
@@ -45,6 +46,21 @@ Voxel* Chunk::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
             Convert_Loc_2_Offset(pos, rel, rel_loc_t::CHUNK_LOC)
         ).location
     ];
+}
+
+/* ============================================================================
+ * --------------------------- Get_Voxel
+ * Retrieves a voxel from the chunk based on the position
+ *
+ * ------ Parameters ------
+ * pos:    The position (ivec3) of the voxel
+ *
+ * ------ Returns ------
+ * Voxel pointer if the voxel exists, nullptr otherwise
+ * ============================================================================
+ */
+Voxel* Chunk::Get_Voxel(glm::ivec3 pos){
+    return &voxels[voxel_loc_t::Compact(pos).location];
 }
 
 /* ============================================================================
@@ -91,4 +107,17 @@ void Chunk::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  */
 voxels_t* Chunk::Get_All_Voxels() {
     return &voxels;
+}
+
+
+
+
+/* ============================================================================
+ * --------------------------- Draw_Mesh
+ * Draws the Mesh
+ * ============================================================================
+ */
+
+void Chunk::Draw_Mesh(){
+    mesh.Draw_Mesh(false);
 }

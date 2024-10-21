@@ -66,6 +66,23 @@ Chunk* Sector::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
 }
 
 /* ============================================================================
+ * --------------------------- Get_Chunk
+ * Retrieves a chunk from the sector using a position and relative location.
+ *
+ * ------ Parameters ------
+ * pos:   The 3D position to locate the chunk.
+ * rel:   The relative location enum to specify the hierarchy
+ *        (sector, chunk, voxel).
+ *
+ * ------ Returns ------
+ * Pointer to the Chunk found at the given position and relative location.
+ * ============================================================================
+ */
+Chunk* Sector::Get_Chunk(chunk_loc_t id){
+    return chunks.Find(id);
+}
+
+/* ============================================================================
  * --------------------------- Create_Voxel
  * Creates a new voxel within the sector at the specified position and 
  * hierarchy.
@@ -152,5 +169,5 @@ void Sector::Remove_Chunk(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 chunks_t* Sector::Get_All_Chunks() {
-    return nullptr;
+    return &chunks;
 }

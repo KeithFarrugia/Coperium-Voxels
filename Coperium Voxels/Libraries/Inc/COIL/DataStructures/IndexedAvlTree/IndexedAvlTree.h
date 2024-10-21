@@ -65,7 +65,7 @@ public:
      * ============================================================================
      */
     void Remove(const id_type& id) {
-        Delete_Node(root, id);
+        Delete_Node(id, root);
     }
 
     /* ============================================================================
@@ -121,6 +121,13 @@ public:
     // --------------------------------- ITERATOR
     class Iterator {
     public:
+        /* ============================================================================
+         * --------------------------- Iterator
+         * Default Constructor
+         * ============================================================================
+         */
+        Iterator(){}
+
         /* ============================================================================
          * --------------------------- Iterator
          * Constructor that initializes the iterator to the leftmost node (smallest id)
@@ -221,7 +228,7 @@ private:
      */
     int Get_Balance(node_t* node) {
         if (node == nullptr) { return 0; }
-        return Get_Height(node->children[0].get()) - Get_Height(node->children[1].get());
+        return Get_Height(node->children[L].get()) - Get_Height(node->children[R].get());
     }
 
     /* ============================================================================
@@ -234,7 +241,7 @@ private:
      * ============================================================================
      */
     node_t* Find_Min(node_t* node) {
-        while (node->children[0]) node = node->children[0].get();
+        while (node->children[L]) { node = node->children[0].get(); }
         return node;
     }
 
@@ -318,8 +325,6 @@ private:
         );
 
         node = Balance(node);
-
-        return node;
     }
 
     /* ============================================================================
@@ -343,7 +348,7 @@ private:
 
             if (node->children[L] && node->children[R]) {
 
-                std::unique_ptr<node_t> temp = 
+                node_t* temp = 
                     Find_Min(node->children[R].get());
 
                 node->id    = temp->id;
@@ -399,11 +404,11 @@ private:
      */
     std::unique_ptr<node_t> Rotate_R(std::unique_ptr<node_t>& node) {
 
-        std::unique_ptr<node_t> pivot = std::move(node.children[L]);
-        node.children[L]    = std::move(pivot.children[R]);
-        pivot.children[R]   = std::move(node);
+        std::unique_ptr<node_t> pivot = std::move(node->children[L]);
+        node->children[L]    = std::move(pivot->children[R]);
+        pivot->children[R]   = std::move(node);
 
-        pivot.children[R]->height = 
+        pivot->children[R]->height =
             1 + std::max(
                 Get_Height(pivot->children[L]->children[L].get()),
                 Get_Height(pivot->children[L]->children[R].get())
@@ -426,11 +431,11 @@ private:
      * ============================================================================
      */
     std::unique_ptr<node_t> Rotate_L(std::unique_ptr<node_t>& node) {
-        std::unique_ptr<node_t> pivot = std::move(node.children[R]);
-        node.children[R]    = std::move(pivot.children[L]);
-        pivot.children[L]   = std::move(node);
+        std::unique_ptr<node_t> pivot = std::move(node->children[R]);
+        node->children[R]    = std::move(pivot->children[L]);
+        pivot->children[L]   = std::move(node);
 
-        pivot.children[R]->height =
+        pivot->children[L]->height =
             1 + std::max(
                 Get_Height(pivot->children[L]->children[L].get()),
                 Get_Height(pivot->children[L]->children[R].get())
@@ -453,7 +458,7 @@ private:
     * ============================================================================
     */
     std::unique_ptr<node_t> Rotate_LR(std::unique_ptr<node_t>& node) {
-        node.children[L] = Rotate_L(node.children[L]);
+        node->children[L] = Rotate_L(node->children[L]);
         return Rotate_R(node);
     }
 
@@ -468,7 +473,7 @@ private:
     * ============================================================================
     */
     std::unique_ptr<node_t> Rotate_RL(std::unique_ptr<node_t>& node) {
-        node.children[R] = Rotate_L(node.children[R]);
+        node->children[R] = Rotate_L(node->children[R]);
         return Rotate_L(node);
     }
 

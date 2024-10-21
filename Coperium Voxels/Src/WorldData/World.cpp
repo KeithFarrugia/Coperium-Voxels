@@ -88,6 +88,21 @@ Sector* World::Get_Sector(glm::ivec3 pos, rel_loc_t rel) {
 }
 
 /* ============================================================================
+ * --------------------------- Get_Sector
+ * Retrieves the sector that contains the chunk at the id
+ *
+ * ------ Parameters ------
+ * id:    Specific ID
+ *
+ * ------ Returns ------
+ * Pointer to the sector that contains the chunk at the specified location.
+ * ============================================================================
+ */
+Sector* World::Get_Sector(sector_loc_t id){
+    return sectors.Find(id);
+}
+
+/* ============================================================================
  * --------------------------- Create_Voxel
  * Creates a voxel at the specified position within its sector, using the
  * provided voxel data.

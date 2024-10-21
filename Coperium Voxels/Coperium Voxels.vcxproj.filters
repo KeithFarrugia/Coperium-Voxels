@@ -108,9 +108,6 @@
     <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\EditorCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -129,13 +126,22 @@
     <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\WorldData\World\World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\WorldData\Operations.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Sector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Voxel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\MeshGeneration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1103,9 +1109,6 @@
     <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\EditorCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Libraries\Inc\COIL\Utility\IO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1124,7 +1127,10 @@
     <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\WorldData\World\World.h">
+    <ClInclude Include="Src\WorldData\CommonWD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1559,5 +1565,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />
+    <Text Include="Extras\Testing Conversion.txt" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,8 @@
 #pragma once
 #ifndef WORLD_H
 #define WORLD_H
+
+#include <COIL/Mesh/Basic_Mesh.h>
 #include "CommonWD.h"
 
 
@@ -13,6 +15,8 @@ public:
     Voxel * Get_Voxel   (glm::ivec3 pos, rel_loc_t rel);
     Chunk * Get_Chunk   (glm::ivec3 pos, rel_loc_t rel);
     Sector* Get_Sector  (glm::ivec3 pos, rel_loc_t rel);
+
+    Sector* Get_Sector  (sector_loc_t id);
 
     void Create_Voxel   (vox_data_t data);
     void Create_Chunk   (glm::ivec3 pos, rel_loc_t rel);
@@ -41,6 +45,8 @@ public:
     Voxel* Get_Voxel(glm::ivec3 pos, rel_loc_t rel);
     Chunk* Get_Chunk(glm::ivec3 pos, rel_loc_t rel);
 
+    Chunk* Get_Chunk(chunk_loc_t id);
+
     void Create_Voxel(vox_data_t data);
     void Create_Chunk(glm::ivec3 pos, rel_loc_t rel);
 
@@ -64,6 +70,7 @@ public:
     ~Chunk();
 
     Voxel* Get_Voxel(glm::ivec3 pos, rel_loc_t rel);
+    Voxel* Get_Voxel(glm::ivec3 pos);
 
     void Create_Voxel(vox_data_t data);
 
@@ -71,7 +78,10 @@ public:
 
     voxels_t* Get_All_Voxels();
 
+    void Generate_Mesh(World& w, const chunk_loc_t chunk_id, const sector_loc_t sector_id);
+    void Draw_Mesh();
 private:
+    Coil::Basic_Mesh mesh;
     voxels_t voxels;
 };
 
@@ -90,12 +100,13 @@ public:
     void SetType        (uint32_t   t);
 
     // Getters
-    bool IsSolid        () const;
-    bool IsTransparent  () const;
-    uint8_t GetR        () const;
-    uint8_t GetG        () const;
-    uint8_t GetB        () const;
-    uint32_t GetType    () const;
+    bool        IsSolid         () const;
+    bool        IsTransparent   () const;
+    uint8_t     GetR            () const;
+    uint8_t     GetG            () const;
+    uint8_t     GetB            () const;
+    glm::vec3   GetColour       () const;
+    uint32_t    GetType         () const;
 
     static Voxel Compact(const vox_data_t voxelData);
     void Display() const;
