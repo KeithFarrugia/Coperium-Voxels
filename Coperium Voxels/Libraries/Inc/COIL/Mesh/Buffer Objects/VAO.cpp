@@ -1,3 +1,4 @@
+#include <GLAD/glad.h>
 #include "Buffers.h"
 
 
@@ -68,8 +69,8 @@ void Link_VBO(
         vec_size,
         type,
         GL_FALSE,
-        stride          * type_size,
-        (void*)(offset  * type_size)
+        stride                   * type_size,
+        (void*)(GLintptr)(offset * type_size)
     );
     glEnableVertexAttribArray(index);
     Unbind_VBO();

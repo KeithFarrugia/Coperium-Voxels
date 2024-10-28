@@ -130,11 +130,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)Coperium Voxels\Libraries\Lib\glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,6 +149,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,6 +160,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\HandleCallbacks.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Input Handler\AddCallBacks.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Utility\IO\IO.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Window\WinAddCallBacks.cpp" />
+    <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp" />
+    <ClCompile Include="Src\Compact Data\Cube Mesh\CCMS.cpp" />
+    <ClCompile Include="Src\Compact Data\Compact Block\CB.cpp" />
+    <ClCompile Include="Src\Compact Data\Compact Colour Data\CCD.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Calculations.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Callbacks &amp; Handlers.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Camera\Fly Camera\Fly_Camera.cpp" />
@@ -169,8 +183,6 @@
     <ClCompile Include="Libraries\Inc\COIL\Shaders\Uniform Handler.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Utility\Logger\Logger.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Basic Queries.cpp" />
-    <ClCompile Include="Libraries\Inc\COIL\Window\Callback Handlers.cpp" />
-    <ClCompile Include="Libraries\Inc\COIL\Window\Add Function Call Backs.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Getters.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Setters.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Window\Window.cpp" />
@@ -183,10 +195,26 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
-    <ClCompile Include="Src\Compact Data\Compact Block\Block.cpp" />
+    <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\WorldData\Operations.h" />
+    <ClCompile Include="Src\WorldData\Sector.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk.cpp" />
+    <ClCompile Include="Src\WorldData\MeshGeneration.cpp" />
+    <ClCompile Include="Src\WorldData\Voxel.cpp" />
+    <ClCompile Include="Src\WorldData\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Input Handler\Input_Handler.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\CFF.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\GLFW_CFF.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\IO.h" />
+    <ClInclude Include="Libraries\Inc\COIL\Utility\IO\IO.h" />
+    <ClInclude Include="Src\Compact Data\Cube Mesh\CCMS.h" />
+    <ClInclude Include="Src\Compact Data\Cube Mesh\SCM.h" />
+    <ClInclude Include="Src\Compact Data\Compact Block\CB.h" />
+    <ClInclude Include="Src\Compact Data\Compact Colour Data\CCD.h" />
     <ClInclude Include="Libraries\Inc\COIL\Camera\Fly Camera\Fly_Camera.h" />
     <ClInclude Include="Libraries\Inc\COIL\Camera\Camera.h" />
     <ClInclude Include="Libraries\Inc\COIL\Mesh\Basic_Mesh.h" />
@@ -501,8 +529,11 @@
     <ClInclude Include="Libraries\Inc\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Libraries\Inc\KHR\khrplatform.h" />
     <ClInclude Include="Libraries\Inc\STB\stb_image.h" />
-    <ClInclude Include="Src\Compact Data\Compact Block\Block.h" />
-    <ClInclude Include="Src\Compact Data\Block Mesh.h" />
+    <ClInclude Include="Src\Compact Data\Cube Mesh\CCM.h" />
+    <ClInclude Include="Src\Compact Data\Compact Location Data\CLD.h" />
+    <ClInclude Include="Src\Utility\Render Testing.h" />
+    <ClInclude Include="Src\WorldData\CommonWD.h" />
+    <ClInclude Include="Src\WorldData\World.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
@@ -650,6 +681,12 @@
     <None Include="Libraries\Inc\GLM\gtx\wrap.inl" />
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\basic.vert" />
+    <None Include="Resources\Shaders\compact_v2.frag" />
+    <None Include="Resources\Shaders\compact_v2.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Extras\Testing Conversion.txt" />
+    <Text Include="test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

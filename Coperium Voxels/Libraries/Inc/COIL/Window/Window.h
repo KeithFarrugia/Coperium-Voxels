@@ -6,6 +6,7 @@
 #include <GLAD/glad.h>
 #include <functional>
 #include <vector>
+#include <mutex>
 
 // --------------------------------- Internal Includes
 #include "../Utility.h"
@@ -41,14 +42,16 @@ public:
     void FF_UntiClockwise   ();
     void FullScreen         ();
     void Windowed           ();
-    void MakeContext        ();
 
+    Window* MakeContext     ();
+    Window* MakeContext     (Window*);
 
     // --------------------------------- Queiries
     bool Is_FullScreen      () const;
     bool Does_Exist         () const;
     bool Is_Visible         () const;
     bool Is_Iconified       () const;
+    bool Is_Maximised       () const;
     bool Is_Focused         () const;
     bool Is_Resizable       () const;
     bool Is_Decorated       () const;
@@ -73,7 +76,8 @@ public:
     void Set_Attribute      (const int attrib, const int value);
     void Set_Resizable      (const bool resizable);
     void Set_Decorated      (const bool decorated);
-    
+
+    void Allow_CB_Chain     (const bool allow_chain);
 
     // --------------------------------- Getters
     GLFWwindow* Get_Window  ();
@@ -95,59 +99,74 @@ public:
 
     // --------------------------------- Add Call Back Handlers
     void Add_Size_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
     void Add_Frame_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
     void Add_Close_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
     void Add_Refresh_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
     void Add_Focus_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
     void Add_Iconify_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
+    void Add_Maximise_Callback
+        (const window_cb_t& callback);
     void Add_Position_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
     void Add_Content_Scale_Callback
-        (const std::function<void(Window&)>& callback);
+        (const window_cb_t& callback);
 
     
 private:
+
     GLFWwindow* window;
-    int windowed_x, windowed_y;
-    int windowed_w, windowed_h;
+    int     windowed_x, windowed_y;
+    int     windowed_w, windowed_h;
+
+    bool    allow_cb_chain;
+    
+    static Window* current_context;
+    std::mutex w_mt;
 
     // --------------------------------- Call Back Handlers Lists
-    std::vector<std::function<void(Window&)>> size_cf;
-    std::vector<std::function<void(Window&)>> frame_cf;
-    std::vector<std::function<void(Window&)>> close_cf;
-    std::vector<std::function<void(Window&)>> refresh_cf;
-    std::vector<std::function<void(Window&)>> focus_cf;
-    std::vector<std::function<void(Window&)>> iconify_cf;
-    std::vector<std::function<void(Window&)>> position_cf;
-    std::vector<std::function<void(Window&)>> content_cf;
+    std::vector<window_cb_t> size_cf     ;
+    std::vector<window_cb_t> frame_cf    ;
+    std::vector<window_cb_t> close_cf    ;
+    std::vector<window_cb_t> refresh_cf  ;
+    std::vector<window_cb_t> focus_cf    ;
+    std::vector<window_cb_t> iconify_cf  ;
+    std::vector<window_cb_t> maximise_cf ;
+    std::vector<window_cb_t> position_cf ;
+    std::vector<window_cb_t> content_cf  ;
 
-
+    glfw_window_cb_t previous_cb;
 
     // --------------------------------- Call Back Handlers
     void Configure_CallBacks();
 
-    static void Window_Refresh_Callback
+    static void Window_Refresh_CB
         (GLFWwindow* win                                );
-    static void Window_Close_Callback
+    static void Window_Close_CB
         (GLFWwindow* win                                );
-    static void Window_Focus_Callback
+    static void Window_Focus_CB
         (GLFWwindow* win, int   focused                 );
-    static void Window_Iconify_Callback
+    static void Window_Iconify_CB
         (GLFWwindow* win, int   iconified               );
-    static void Window_Size_Callback
+    static void Window_Maximise_CB
+        (GLFWwindow* win, int   maximized               );
+    static void Window_Size_CB
         (GLFWwindow* win, int   width,  int     height  );
-    static void Window_Framebuffer_Size_Callback
+    static void Window_Framebuffer_Size_CB
         (GLFWwindow* win, int   width,  int     height  );
-    static void Window_Pos_Callback
+    static void Window_Pos_CB
         (GLFWwindow* win, int   xpos,   int     ypos    );
-    static void Window_Content_Scale_Callback
+    static void Window_Content_Scale_CB
         (GLFWwindow* win, float xscale, float   yscale  );
+
+    template<typename cb_t>
+    cb_t SetCallback(   cb_t& previous, cb_t newCallback,
+                        cb_t(*setFunction)(GLFWwindow*, cb_t));
 
 };
 

@@ -3,7 +3,6 @@
 #define COIL_SHADER_H
 
 // --------------------------------- External Includes
-#include <GLAD/glad.h>
 #include <GLM/gtc/type_ptr.hpp>
 #include <string>
 #include <fstream>

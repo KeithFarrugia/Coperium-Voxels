@@ -11,7 +11,7 @@ namespace Coil {
  * ============================================================================
  */
 Window& Camera::Get_Window() const {
-    return window;
+    return *window;
 }
 
 /* ============================================================================
@@ -106,8 +106,8 @@ float Camera::Get_Mouse_Sensitivity() const {
  * window: A constant reference to a `Window` object.
  * ============================================================================
  */
-void Camera::Set_Window(const Window& window) {
-    this->window = window;
+void Camera::Set_Window(Window& window) {
+    this->window = &window;
 }
 
 /* ============================================================================
