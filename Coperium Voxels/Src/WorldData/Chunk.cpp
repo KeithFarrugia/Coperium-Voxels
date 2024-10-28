@@ -119,5 +119,5 @@ voxels_t* Chunk::Get_All_Voxels() {
  */
 
 void Chunk::Draw_Mesh(){
-    mesh.Draw_Mesh(false);
+    mesh.Draw_Mesh(true);
 }

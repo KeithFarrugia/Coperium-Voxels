@@ -18,7 +18,7 @@ namespace Coil {
     constexpr   float           SENSITIVITY             = 0.1f;
     constexpr   float           FOV                     = 70.0f;
     constexpr   float           NEAR_PLANE              = 0.1f;
-    constexpr   float           FAR_PLANE               = 100.0f;
+    constexpr   float           FAR_PLANE               = 300.0f;
     constexpr   glm::vec3       WORLD_UP                = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 #endif // !COIL_CONSTANTS_H

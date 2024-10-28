@@ -11,13 +11,13 @@
 #include <IMGUI/imgui_impl_glfw.h>
 #include <IMGUI/imgui_impl_opengl3.h>
 
-constexpr int GRID_SIZE_F_X = 16;
+constexpr int GRID_SIZE_F_X = 128;
 constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 16;
+constexpr int GRID_SIZE_F_Z = 128;
 
-constexpr int GRID_SIZE_S_X = -16;
+constexpr int GRID_SIZE_S_X = -128;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = -16;
+constexpr int GRID_SIZE_S_Z = -128;
 int main() {
 
     Coil::Logger::init_logger(Coil::LOG_TO_FILE);

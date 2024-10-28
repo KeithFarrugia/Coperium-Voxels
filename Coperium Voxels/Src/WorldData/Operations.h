@@ -15,7 +15,7 @@
  * ============================================================================
  */
 inline static int Safe_Div(int a, int b) {
-    return (a - ((a >> 3) & (b - 1))) / b;
+    return (a - (a >> 31 & (b - 1))) / b;
 }
 
 /* ============================================================================
@@ -28,7 +28,7 @@ inline static int Safe_Div(int a, int b) {
  * b: The divisor (integer by which to divide)
  *
  * ------ Returns ------
- * Non-negative remainder of the division.
+ * Non-negative remainder of the division.  
  * ============================================================================
  */
 inline static int Pos_Mod(int a, int b) {
