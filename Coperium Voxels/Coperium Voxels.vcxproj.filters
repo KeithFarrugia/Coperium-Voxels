@@ -1562,6 +1562,7 @@
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\compact_v2.vert" />
     <None Include="Resources\Shaders\compact_v2.frag" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />
