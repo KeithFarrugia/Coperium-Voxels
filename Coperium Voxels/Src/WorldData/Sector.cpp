@@ -59,7 +59,7 @@ Chunk* Sector::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
     return chunks.Find(
         chunk_loc_t::Compact(
             Convert_Loc_2_ID(
-                pos, rel, rel_loc_t::SECTOR_LOC
+                pos, rel, rel_loc_t::CHUNK_LOC
             )
         )
     );
@@ -100,15 +100,16 @@ void Sector::Create_Voxel(vox_data_t data) {
     chunk_loc_t loc = chunk_loc_t::Compact(
         Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::CHUNK_LOC)
     );
-
+    
     Chunk* c = chunks.Find(loc);
+    if (c != nullptr) {
+        c->Create_Voxel(data); return;
+    }
+    c = chunks.Insert(loc, Chunk());
 
-    if (c != nullptr) { c->Create_Voxel(data); return; }
-
-    chunks.Create_Node(loc);
-    c = chunks.Find(loc);
-
-    if (c != nullptr) { c->Create_Voxel(data); return; }
+    if (c != nullptr) {
+        c->Create_Voxel(data); return;
+    }
 }
 
 /* ============================================================================
@@ -123,8 +124,11 @@ void Sector::Create_Voxel(vox_data_t data) {
  * ============================================================================
  */
 void Sector::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    chunks.Create_Node(chunk_loc_t::Compact(
-        Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC))
+    chunks.Insert(
+        chunk_loc_t::Compact(
+            Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC)
+        ),
+        Chunk()
     );
 }
 

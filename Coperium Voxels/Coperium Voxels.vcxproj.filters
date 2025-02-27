@@ -126,7 +126,7 @@
     <ClCompile Include="Libraries\Inc\COIL\Window\WinHandleCallBacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Operations.h">
+    <ClCompile Include="Src\WorldData\World Opertions\Safe_Operations.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\WorldData\Sector.cpp">
@@ -142,6 +142,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\WorldData\MeshGeneration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\World Opertions\Location\Chunk_Location.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\World Opertions\Location\Voxel_Location.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\World Opertions\Location\Sector_Location.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1131,6 +1140,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\WorldData\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Data Structure\IDataStructure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Data Structure\AVL_DataStructure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Data Structure\UM_DataStructure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World Opertions\World_Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World Opertions\Location\World_Loc_Data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World Opertions\Location\World_Loc_Conversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

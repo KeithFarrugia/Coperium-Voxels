@@ -70,7 +70,9 @@ public:
     ~Chunk();
 
     Voxel* Get_Voxel(glm::ivec3 pos, rel_loc_t rel);
+    const Voxel* Get_Voxel(glm::ivec3 pos, rel_loc_t rel) const;
     Voxel* Get_Voxel(glm::ivec3 pos);
+    const Voxel* Get_Voxel(glm::ivec3 pos)const;
 
     void Create_Voxel(vox_data_t data);
 

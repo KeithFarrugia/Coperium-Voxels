@@ -120,8 +120,7 @@ void World::Create_Voxel(vox_data_t data) {
 
     if (s != nullptr) { s->Create_Voxel(data); return; }
 
-    sectors.Create_Node(loc);
-    s = sectors.Find(loc);
+    s = sectors.Insert(loc, Sector());
 
     if (s != nullptr) { s->Create_Voxel(data); return; }
 }
@@ -146,8 +145,7 @@ void World::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
 
     if (s != nullptr) { s->Create_Chunk(pos, rel); return; }
 
-    sectors.Create_Node(loc);
-    s = sectors.Find(loc);
+    s = sectors.Insert(loc, Sector());
 
     if (s != nullptr) { s->Create_Chunk(pos, rel); return; }
 }
@@ -162,8 +160,11 @@ void World::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void World::Create_Sector(glm::ivec3 pos, rel_loc_t rel) {
-    sectors.Create_Node(sector_loc_t::Compact(
-        Convert_Loc_2_ID(pos, rel, rel_loc_t::SECTOR_LOC))
+    sectors.Insert(
+        sector_loc_t::Compact(
+            Convert_Loc_2_ID(pos, rel, rel_loc_t::SECTOR_LOC)
+        ),
+        Sector()
     );
 }
 

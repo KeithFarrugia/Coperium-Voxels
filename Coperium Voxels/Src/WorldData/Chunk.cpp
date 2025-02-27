@@ -48,6 +48,13 @@ Voxel* Chunk::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
     ];
 }
 
+const Voxel* Chunk::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) const {
+    return &voxels[
+        voxel_loc_t::Compact(
+            Convert_Loc_2_Offset(pos, rel, rel_loc_t::CHUNK_LOC)
+        ).location
+    ];
+}
 /* ============================================================================
  * --------------------------- Get_Voxel
  * Retrieves a voxel from the chunk based on the position
@@ -62,7 +69,9 @@ Voxel* Chunk::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
 Voxel* Chunk::Get_Voxel(glm::ivec3 pos){
     return &voxels[voxel_loc_t::Compact(pos).location];
 }
-
+const Voxel* Chunk::Get_Voxel(glm::ivec3 pos) const {
+    return &voxels[voxel_loc_t::Compact(pos).location];
+}
 /* ============================================================================
  * --------------------------- Create_Voxel
  * Creates a voxel in the chunk with the given voxel data
@@ -119,5 +128,5 @@ voxels_t* Chunk::Get_All_Voxels() {
  */
 
 void Chunk::Draw_Mesh(){
-    mesh.Draw_Mesh(true);
+    mesh.Draw_Mesh(false);
 }

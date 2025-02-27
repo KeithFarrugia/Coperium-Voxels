@@ -10,14 +10,15 @@
 #include "WorldData/World.h"
 #include <IMGUI/imgui_impl_glfw.h>
 #include <IMGUI/imgui_impl_opengl3.h>
+#include "WorldData/Create_Generic_Chunks.h"
 
-constexpr int GRID_SIZE_F_X = 128;
+constexpr int GRID_SIZE_F_X = 16;
 constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 128;
+constexpr int GRID_SIZE_F_Z = 16;
 
-constexpr int GRID_SIZE_S_X = -128;
+constexpr int GRID_SIZE_S_X = 0;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = -128;
+constexpr int GRID_SIZE_S_Z = 0;
 int main() {
 
     Coil::Logger::init_logger(Coil::LOG_TO_FILE);
@@ -58,21 +59,28 @@ int main() {
     //    false,                              // transparency
     //    rel_loc_t::WORLD_LOC                // Relative
     //});
+
+    Chunk generic_chunk = Chunk();
+    Create_Air_Chunk(generic_chunk);
+
     auto start = std::chrono::high_resolution_clock::now();
     for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
         for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
             for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
-                w.Create_Voxel(vox_data_t{
+                vox_data_t som = vox_data_t{
                         glm::ivec3(x, y, z),                // position
                         glm::ivec3(x, (int)(y / 4.0f), z),  // color
                         voxel_type_t::NORMAL,               // type
                         true,                               // solid
                         false,                              // transparency
                         rel_loc_t::WORLD_LOC                // Relative
-                    });
+                };
+                w.Create_Voxel(som);
+                //w.Get_Voxel(glm::ivec3(x, y, z), rel_loc_t::WORLD_LOC)->Display();
             }
         }
     }
+
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
@@ -80,10 +88,10 @@ int main() {
 
     start = std::chrono::high_resolution_clock::now();
     sectors_t* sectors = w.Get_All_Sectrs();
-    for (auto [sectorLoc, sector] : *sectors) {
-        chunks_t* chunks = sector.Get_All_Chunks();
-        for (auto [chunkLoc, chunk] : *chunks) {
-            chunk.Generate_Mesh(w, chunkLoc, sectorLoc);
+    for (auto sector : *sectors) {
+        chunks_t* chunks = sector.second.Get_All_Chunks();
+        for (auto pair : *chunks) {
+            pair.second.Generate_Mesh(w, pair.first, sector.first);
         }
     }
     end = std::chrono::high_resolution_clock::now();
@@ -138,19 +146,19 @@ int main() {
         shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         shader.Set_Matrix4("model", model);
 
-        for (auto [sectorLoc, sector] : *sectors) {
-            chunks_t* chunks = sector.Get_All_Chunks();
-            for (auto [chunkLoc, chunk] : *chunks) {
+        for (auto sector : *sectors) {
+            chunks_t* chunks = sector.second.Get_All_Chunks();
+            for (auto pair : *chunks) {
 
                 glm::ivec3 offset = glm::vec3(
-                    chunkLoc.X() * CHUNK_SIZE_X + sectorLoc.X() * SECTR_SIZE_X,
-                    chunkLoc.Y() * CHUNK_SIZE_Y,
-                    chunkLoc.Z() * CHUNK_SIZE_Z + sectorLoc.Z() * SECTR_SIZE_Z
+                    pair.first.X() * CHUNK_SIZE_X + sector.first.X() * SECTR_SIZE_X,
+                    pair.first.Y() * CHUNK_SIZE_Y,
+                    pair.first.Z() * CHUNK_SIZE_Z + sector.first.Z() * SECTR_SIZE_Z
                 );
 
                 shader.Set_Vec3("vertex_offset", offset);
 
-                chunk.Draw_Mesh();
+                pair.second.Draw_Mesh();
             }
         };
 

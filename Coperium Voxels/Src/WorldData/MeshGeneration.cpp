@@ -198,7 +198,7 @@ void Chunk::Generate_Mesh(
      *                           CENTRAL
      * ======================================================================
      */
-    // Internal cubes processing (same as before)
+     // Internal cubes processing (same as before)
     for (int x = MIN_ID_V_X + 1; x < MAX_ID_V_X; x++) {
         for (int y = MIN_ID_V_Y + 1; y < MAX_ID_V_Y; y++) {
             for (int z = MIN_ID_V_Z + 1; z < MAX_ID_V_Z; z++) {
@@ -206,13 +206,13 @@ void Chunk::Generate_Mesh(
                 if (!voxel->IsSolid()) continue;
 
                 cube_faces_t flags = static_cast<cube_faces_t>(
-                    ((curr_c->Get_Voxel(glm::ivec3(x + 1, y     , z     ))->IsAir()) << 3) |  // RIGHT_FACE
-                    ((curr_c->Get_Voxel(glm::ivec3(x - 1, y     , z     ))->IsAir()) << 2) |  // LEFT_FACE
-                    ((curr_c->Get_Voxel(glm::ivec3(x    , y + 1 , z     ))->IsAir()) << 4) |  // TOP_FACE
-                    ((curr_c->Get_Voxel(glm::ivec3(x    , y - 1 , z     ))->IsAir()) << 5) |  // BOTTOM_FACE
-                    ((curr_c->Get_Voxel(glm::ivec3(x    , y     , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-                    ((curr_c->Get_Voxel(glm::ivec3(x    , y     , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-                );
+                    ((curr_c->Get_Voxel(glm::ivec3(x + 1, y, z))->IsAir()) << 3) |  // RIGHT_FACE
+                    ((curr_c->Get_Voxel(glm::ivec3(x - 1, y, z))->IsAir()) << 2) |  // LEFT_FACE
+                    ((curr_c->Get_Voxel(glm::ivec3(x, y + 1, z))->IsAir()) << 4) |  // TOP_FACE
+                    ((curr_c->Get_Voxel(glm::ivec3(x, y - 1, z))->IsAir()) << 5) |  // BOTTOM_FACE
+                    ((curr_c->Get_Voxel(glm::ivec3(x, y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                    ((curr_c->Get_Voxel(glm::ivec3(x, y, z - 1))->IsAir()) << 1)    // BACK_FACE
+                    );
 
                 Add_Cube_Mesh(
                     glm::ivec3(x, y, z),
@@ -230,22 +230,22 @@ void Chunk::Generate_Mesh(
      *                           Faces
      * ======================================================================
      */
-    // Top Set Faces
+     // Top Set Faces
     for (int x = MIN_ID_V_X + 1; x < MAX_ID_V_X; x++) {
         for (int z = MIN_ID_V_Z + 1; z < MAX_ID_V_Z; z++) {
             Voxel* voxel = Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, z), rel_loc_t::CHUNK_LOC);
             if (!voxel->IsSolid()) continue;
 
             cube_faces_t flags = static_cast<cube_faces_t>(
-                ((curr_c->Get_Voxel (glm::ivec3(x + 1   , MAX_ID_V_Y    , z     ))->IsAir()) << 3) |  // RIGHT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x - 1   , MAX_ID_V_Y    , z     ))->IsAir()) << 2) |  // LEFT_FACE
-                ((u_chunk != nullptr)                                                                ?
-                ((u_chunk->Get_Voxel(glm::ivec3(x       , MIN_ID_V_Y    , z     ))->IsAir()) << 4) :
-                (1 << 4))                                                                            |  // TOP_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y - 1, z     ))->IsAir()) << 5) |  // BOTTOM_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y    , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y    , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-            );
+                ((curr_c->Get_Voxel(glm::ivec3(x + 1, MAX_ID_V_Y, z))->IsAir()) << 3) |  // RIGHT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x - 1, MAX_ID_V_Y, z))->IsAir()) << 2) |  // LEFT_FACE
+                ((u_chunk != nullptr) ?
+                    ((u_chunk->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, z))->IsAir()) << 4) :
+                    (1 << 4)) |  // TOP_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y - 1, z))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, z - 1))->IsAir()) << 1)    // BACK_FACE
+                );
 
             Add_Cube_Mesh(
                 glm::ivec3(x, MAX_ID_V_Y, z),
@@ -264,15 +264,15 @@ void Chunk::Generate_Mesh(
             if (!voxel->IsSolid()) continue;
 
             cube_faces_t flags = static_cast<cube_faces_t>(
-                ((curr_c->Get_Voxel (glm::ivec3(x + 1   , MIN_ID_V_Y    , z     ))->IsAir()) << 3) |  // RIGHT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x - 1   , MIN_ID_V_Y    , z     ))->IsAir()) << 2) |  // LEFT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y + 1, z     ))->IsAir()) << 4) |  // TOP_FACE
-                ((d_chunk != nullptr)                                                                ?
-                ((d_chunk->Get_Voxel(glm::ivec3(x       , MAX_ID_V_Y    , z     ))->IsAir()) << 5) :
-                (1 << 5))                                                                            |  // BOTTOM_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y    , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y    , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-            );
+                ((curr_c->Get_Voxel(glm::ivec3(x + 1, MIN_ID_V_Y, z))->IsAir()) << 3) |  // RIGHT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x - 1, MIN_ID_V_Y, z))->IsAir()) << 2) |  // LEFT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y + 1, z))->IsAir()) << 4) |  // TOP_FACE
+                ((d_chunk != nullptr) ?
+                    ((d_chunk->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, z))->IsAir()) << 5) :
+                    (1 << 5)) |  // BOTTOM_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, z - 1))->IsAir()) << 1)    // BACK_FACE
+                );
 
             Add_Cube_Mesh(
                 glm::ivec3(x, MIN_ID_V_Y, z),
@@ -292,15 +292,15 @@ void Chunk::Generate_Mesh(
             if (!voxel->IsSolid()) continue;
 
             cube_faces_t flags = static_cast<cube_faces_t>(
-                ((curr_c->Get_Voxel (glm::ivec3(x + 1   , y     , MAX_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x - 1   , y     , MAX_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , y + 1 , MAX_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , y - 1 , MAX_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-                ((f_chunk != nullptr)                                                                ?
-                ((f_chunk->Get_Voxel(glm::ivec3(x       , y     , MIN_ID_V_Z    ))->IsAir()) << 0) :
-                (1 << 0))                                                                            |  // FRONT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , y     , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-            );
+                ((curr_c->Get_Voxel(glm::ivec3(x + 1, y, MAX_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x - 1, y, MAX_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, y + 1, MAX_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, y - 1, MAX_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((f_chunk != nullptr) ?
+                    ((f_chunk->Get_Voxel(glm::ivec3(x, y, MIN_ID_V_Z))->IsAir()) << 0) :
+                    (1 << 0)) |  // FRONT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+                );
 
             Add_Cube_Mesh(
                 glm::ivec3(x, y, MAX_ID_V_Z),
@@ -320,15 +320,15 @@ void Chunk::Generate_Mesh(
             if (!voxel->IsSolid()) continue;
 
             cube_faces_t flags = static_cast<cube_faces_t>(
-                ((curr_c->Get_Voxel (glm::ivec3(x + 1   , y     , MIN_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x - 1   , y     , MIN_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , y + 1 , MIN_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , y - 1 , MIN_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(x       , y     , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
-                ((b_chunk != nullptr)                                                                ?
-                ((b_chunk->Get_Voxel(glm::ivec3(x       , y     , MAX_ID_V_Z    ))->IsAir()) << 1) :
-                (1 << 1))                                                                               // BACK_FACE
-            );
+                ((curr_c->Get_Voxel(glm::ivec3(x + 1, y, MIN_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x - 1, y, MIN_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, y + 1, MIN_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, y - 1, MIN_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(x, y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((b_chunk != nullptr) ?
+                    ((b_chunk->Get_Voxel(glm::ivec3(x, y, MAX_ID_V_Z))->IsAir()) << 1) :
+                    (1 << 1))                                                                               // BACK_FACE
+                );
 
             Add_Cube_Mesh(
                 glm::ivec3(x, y, MIN_ID_V_Z),
@@ -349,14 +349,14 @@ void Chunk::Generate_Mesh(
 
             cube_faces_t flags = static_cast<cube_faces_t>(
                 ((r_chunk != nullptr) ?
-                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , y     , z     ))->IsAir()) << 3) :
-                (1 << 3))                                                                            |  // RIGHT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , y     , z     ))->IsAir()) << 2) |  // LEFT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y + 1 , z     ))->IsAir()) << 4) |  // TOP_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y - 1 , z     ))->IsAir()) << 5) |  // BOTTOM_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y     , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y     , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-            );
+                    ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, z))->IsAir()) << 3) :
+                    (1 << 3)) |  // RIGHT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, y, z))->IsAir()) << 2) |  // LEFT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y + 1, z))->IsAir()) << 4) |  // TOP_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y - 1, z))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, z - 1))->IsAir()) << 1)    // BACK_FACE
+                );
 
             Add_Cube_Mesh(
                 glm::ivec3(MAX_ID_V_X, y, z),
@@ -375,15 +375,15 @@ void Chunk::Generate_Mesh(
             if (!voxel->IsSolid()) continue;
 
             cube_faces_t flags = static_cast<cube_faces_t>(
-                ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X + 1  , y     , z     ))->IsAir()) << 3) |  // RIGHT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X + 1, y, z))->IsAir()) << 3) |  // RIGHT_FACE
                 ((l_chunk != nullptr) ?
-                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , y     , z     ))->IsAir()) << 2) :
-                (1 << 2))                                                                            |  // LEFT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y + 1 , z     ))->IsAir()) << 4) |  // TOP_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y - 1 , z     ))->IsAir()) << 5) |  // BOTTOM_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y     , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-                ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y     , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-            );
+                    ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, z))->IsAir()) << 2) :
+                    (1 << 2)) |  // LEFT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y + 1, z))->IsAir()) << 4) |  // TOP_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y - 1, z))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, z - 1))->IsAir()) << 1)    // BACK_FACE
+                );
 
             Add_Cube_Mesh(
                 glm::ivec3(MIN_ID_V_X, y, z),
@@ -400,23 +400,23 @@ void Chunk::Generate_Mesh(
      *                           Columns
      * ======================================================================
      */
-    // Front Right Collumn Faces
+     // Front Right Collumn Faces
     for (int y = MIN_ID_V_Y + 1; y < MAX_ID_V_Y; y++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , y     , MAX_ID_V_Z    ))->IsAir()) << 3) :
-            (1 << 3))                                                                                    |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , y     , MAX_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y + 1 , MAX_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y - 1 , MAX_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, MAX_ID_V_Z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, y, MAX_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y + 1, MAX_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y - 1, MAX_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , y     , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                    |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y     , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, y, MAX_ID_V_Z),
@@ -433,17 +433,17 @@ void Chunk::Generate_Mesh(
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X + 1  , y     , MAX_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X + 1, y, MAX_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , y     , MAX_ID_V_Z    ))->IsAir()) << 2) :
-            (1 << 2))                                                                                    |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y + 1 , MAX_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y - 1 , MAX_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MAX_ID_V_Z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y + 1, MAX_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y - 1, MAX_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , y     , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                    |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y     , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, y, MAX_ID_V_Z),
@@ -460,16 +460,16 @@ void Chunk::Generate_Mesh(
 
         cube_faces_t flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , y     , MAX_ID_V_Z    ))->IsAir()) << 3) :
-            (1 << 3))                                                                                    |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , y     , MIN_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y + 1 , MIN_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y - 1 , MIN_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , y     , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, MAX_ID_V_Z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, y, MIN_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y + 1, MIN_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y - 1, MIN_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , y     , MAX_ID_V_Z    ))->IsAir()) << 1):
-            (1 << 1))                                                                                        // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                        // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, y, MIN_ID_V_Z),
@@ -486,17 +486,17 @@ void Chunk::Generate_Mesh(
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X + 1  , y     , MIN_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X + 1, y, MIN_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , y     , MIN_ID_V_Z    ))->IsAir()) << 2) :
-            (1 << 2))                                                                                    |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y + 1 , MIN_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y - 1 , MIN_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , y     , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, y, MIN_ID_V_Z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y + 1, MIN_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y - 1, MIN_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , y     , MAX_ID_V_Z    ))->IsAir()) << 1):
-            (1 << 1))                                                                                        // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                        // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, y, MIN_ID_V_Z),
@@ -510,23 +510,23 @@ void Chunk::Generate_Mesh(
      *                           TOP ROWS
      * ======================================================================
      */
-    // Top front row Faces
+     // Top front row Faces
     for (int x = MIN_ID_V_X + 1; x < MAX_ID_V_X; x++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(x + 1   , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x - 1   , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x + 1, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x - 1, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(x       , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 4) :
-            (1 << 4))                                                                                    |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y - 1, MAX_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((u_chunk->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y - 1, MAX_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(x       , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                    |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y    , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(x, MAX_ID_V_Y, MAX_ID_V_Z),
@@ -543,17 +543,17 @@ void Chunk::Generate_Mesh(
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(x + 1   , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x - 1   , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x + 1, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x - 1, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(x       , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 4) :
-            (1 << 4))                                                                                    |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y - 1, MIN_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MAX_ID_V_Y    , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((u_chunk->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y - 1, MIN_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(x       , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 1) :
-            (1 << 1))                                                                                        // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                        // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(x, MAX_ID_V_Y, MIN_ID_V_Z),
@@ -565,23 +565,23 @@ void Chunk::Generate_Mesh(
     }
 
 
-     // Top Right row Faces
+    // Top Right row Faces
     for (int z = MIN_ID_V_Z + 1; z < MAX_ID_V_Z; z++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , z     ))->IsAir()) << 3) :
-            (1 << 3))                                                                                    |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , MAX_ID_V_Y    , z     ))->IsAir()) << 2) |  // LEFT_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, MAX_ID_V_Y, z))->IsAir()) << 2) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , z     ))->IsAir()) << 4) :
-            (1 << 4))                                                                                    |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y - 1, z     ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((u_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y - 1, z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z),
@@ -592,23 +592,23 @@ void Chunk::Generate_Mesh(
         );
     }
 
-     // Top Left row Faces
+    // Top Left row Faces
     for (int z = MIN_ID_V_Z + 1; z < MAX_ID_V_Z; z++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , z     ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , z     ))->IsAir()) << 2) :
-            (1 << 2))                                                                                    |  // LEFT_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , z     ))->IsAir()) << 4) :
-            (1 << 4))                                                                                    |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y - 1, z     ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((u_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y - 1, z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, z),
@@ -624,24 +624,24 @@ void Chunk::Generate_Mesh(
      *                           BOTTOM ROWS
      * ======================================================================
      */
-    
-    // Bottom front row Faces
+
+     // Bottom front row Faces
     for (int x = MIN_ID_V_X + 1; x < MAX_ID_V_X; x++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(x + 1   , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x - 1   , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y + 1, MAX_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-            ((d_chunk != nullptr)                                                                        ?
-            ((d_chunk->Get_Voxel(glm::ivec3(x       , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 5) :
-            (1 << 5))                                                                                    |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x + 1, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x - 1, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y + 1, MAX_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+            ((d_chunk != nullptr) ?
+                ((d_chunk->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(x       , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                    |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y    , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(x, MIN_ID_V_Y, MAX_ID_V_Z),
@@ -658,17 +658,17 @@ void Chunk::Generate_Mesh(
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(x + 1   , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x - 1   , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y + 1, MIN_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
-            ((d_chunk != nullptr)                                                                        ?
-            ((d_chunk->Get_Voxel(glm::ivec3(x       , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 5) :
-            (1 << 5))                                                                                    |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(x       , MIN_ID_V_Y    , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x + 1, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x - 1, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y + 1, MIN_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
+            ((d_chunk != nullptr) ?
+                ((d_chunk->Get_Voxel(glm::ivec3(x, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(x       , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 1) :
-            (1 << 1))                                                                                        // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(x, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                        // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(x, MIN_ID_V_Y, MIN_ID_V_Z),
@@ -680,23 +680,23 @@ void Chunk::Generate_Mesh(
     }
 
 
-     // Bottom Right row Faces
+    // Bottom Right row Faces
     for (int z = MIN_ID_V_Z + 1; z < MAX_ID_V_Z; z++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , z     ))->IsAir()) << 3) :
-            (1 << 3))                                                                                    |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , MIN_ID_V_Y    , z     ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y + 1, z     ))->IsAir()) << 4) |  // TOP_FACE
-            ((d_chunk != nullptr)                                                                        ?
-            ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , z     ))->IsAir()) << 5) :
-            (1 << 5))                                                                                    |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , z + 1 ))->IsAir()) << 0) |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , z - 1 ))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, MIN_ID_V_Y, z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y + 1, z))->IsAir()) << 4) |  // TOP_FACE
+            ((d_chunk != nullptr) ?
+                ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, z),
@@ -707,23 +707,23 @@ void Chunk::Generate_Mesh(
         );
     }
 
-     // Bottom Left row Faces
+    // Bottom Left row Faces
     for (int z = MIN_ID_V_Z + 1; z < MAX_ID_V_Z; z++) {
         Voxel* voxel = Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z), rel_loc_t::CHUNK_LOC);
         if (!voxel->IsSolid()) continue;
 
         cube_faces_t flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , z         ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , z         ))->IsAir()) << 2) :
-            (1 << 2))                                                                                        |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y + 1, z         ))->IsAir()) << 4) |  // TOP_FACE
-            ((d_chunk != nullptr)                                                                            ?
-            ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , z         ))->IsAir()) << 5) :
-            (1 << 5))                                                                                        |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , z + 1     ))->IsAir()) << 0) |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , z - 1     ))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y + 1, z))->IsAir()) << 4) |  // TOP_FACE
+            ((d_chunk != nullptr) ?
+                ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z + 1))->IsAir()) << 0) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
 
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, z),
@@ -742,28 +742,28 @@ void Chunk::Generate_Mesh(
      * ======================================================================
      */
 
-    // TOP RIGHT FRONT CORNER
+     // TOP RIGHT FRONT CORNER
 
     Voxel* voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
-    if (voxel->IsSolid()){
+    if (voxel->IsSolid()) {
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 3) :
-            (1 << 3))                                                                                            |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 4) :
-            (1 << 4))                                                                                            |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y - 1, MAX_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((u_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y - 1, MAX_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                            |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
         Add_Cube_Mesh(
-            glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z), 
-            voxel->GetColour(), 
+            glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z),
+            voxel->GetColour(),
             vertex_mesh, index_mesh,
             vertex_offset, index_offset,
             flags
@@ -776,19 +776,19 @@ void Chunk::Generate_Mesh(
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
 
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X + 1  , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X + 1, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 2) :
-            (1 << 2))                                                                                            |  // LEFT_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 4) :
-            (1 << 4))                                                                                            |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y - 1, MAX_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
+                ((u_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y - 1, MAX_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                            |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z),
             voxel->GetColour(),
@@ -804,18 +804,18 @@ void Chunk::Generate_Mesh(
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 3) :
-            (1 << 3))                                                                                            |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 4) :
-            (1 << 4))                                                                                            |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y - 1, MIN_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((u_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y - 1, MIN_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 1) :
-            (1 << 1))                                                                                               // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                               // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z),
             voxel->GetColour(),
@@ -830,19 +830,19 @@ void Chunk::Generate_Mesh(
     if (voxel->IsSolid()) {
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 2) :
-            (1 << 2))                                                                                            |  // LEFT_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
             ((u_chunk != nullptr) ?
-            ((u_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 4) :
-            (1 << 4))                                                                                            |  // TOP_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y - 1, MIN_ID_V_Z    ))->IsAir()) << 5) |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((u_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 4) :
+                (1 << 4)) |  // TOP_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y - 1, MIN_ID_V_Z))->IsAir()) << 5) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 1) :
-            (1 << 1))                                                                                               // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                               // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z),
             voxel->GetColour(),
@@ -860,26 +860,26 @@ void Chunk::Generate_Mesh(
      */
 
 
-    
-    // BOTTOM RIGHT FRONT CORNER
+
+     // BOTTOM RIGHT FRONT CORNER
     voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
     if (voxel->IsSolid()) {
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
 
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 3) :
-            (1 << 3))                                                                                            |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y + 1, MAX_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y + 1, MAX_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
             ((d_chunk != nullptr) ?
-            ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 5) :
-            (1 << 5))                                                                                            |  // BOTTOM_FACE
+                ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                            |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z),
             voxel->GetColour(),
@@ -894,19 +894,19 @@ void Chunk::Generate_Mesh(
     if (voxel->IsSolid()) {
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X + 1  , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X + 1, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 2) :
-            (1 << 2))                                                                                            |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y + 1, MAX_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y + 1, MAX_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
             ((d_chunk != nullptr) ?
-            ((d_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 5) :
-            (1 << 5))                                                                                            |  // BOTTOM_FACE
+                ((d_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
             ((f_chunk != nullptr) ?
-            ((f_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 0) :
-            (1 << 0))                                                                                            |  // FRONT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
-        );
+                ((f_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 0) :
+                (1 << 0)) |  // FRONT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z - 1))->IsAir()) << 1)    // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z),
             voxel->GetColour(),
@@ -921,18 +921,18 @@ void Chunk::Generate_Mesh(
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
             ((r_chunk != nullptr) ?
-            ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 3) :
-            (1 << 3))                                                                                            |  // RIGHT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X - 1  , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 2) |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y + 1, MIN_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
+                ((r_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 3) :
+                (1 << 3)) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X - 1, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 2) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y + 1, MIN_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
             ((d_chunk != nullptr) ?
-            ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 5) :
-            (1 << 5))                                                                                            |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((d_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 1) :
-            (1 << 1))                                                                                               // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                               // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z),
             voxel->GetColour(),
@@ -947,19 +947,19 @@ void Chunk::Generate_Mesh(
     if (voxel->IsSolid()) {
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X  + 1  , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 3) |  // RIGHT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X + 1, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 3) |  // RIGHT_FACE
             ((l_chunk != nullptr) ?
-            ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 2) :
-            (1 << 2))                                                                                            |  // LEFT_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y + 1, MIN_ID_V_Z    ))->IsAir()) << 4) |  // TOP_FACE
+                ((l_chunk->Get_Voxel(glm::ivec3(MAX_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 2) :
+                (1 << 2)) |  // LEFT_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y + 1, MIN_ID_V_Z))->IsAir()) << 4) |  // TOP_FACE
             ((d_chunk != nullptr) ?
-            ((d_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MAX_ID_V_Y    , MIN_ID_V_Z    ))->IsAir()) << 5) :
-            (1 << 5))                                                                                            |  // BOTTOM_FACE
-            ((curr_c->Get_Voxel (glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
+                ((d_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MAX_ID_V_Y, MIN_ID_V_Z))->IsAir()) << 5) :
+                (1 << 5)) |  // BOTTOM_FACE
+            ((curr_c->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z + 1))->IsAir()) << 0) |  // FRONT_FACE
             ((b_chunk != nullptr) ?
-            ((b_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X      , MIN_ID_V_Y    , MAX_ID_V_Z    ))->IsAir()) << 1) :
-            (1 << 1))                                                                                               // BACK_FACE
-        );
+                ((b_chunk->Get_Voxel(glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MAX_ID_V_Z))->IsAir()) << 1) :
+                (1 << 1))                                                                                               // BACK_FACE
+            );
         Add_Cube_Mesh(
             glm::ivec3(MIN_ID_V_X, MIN_ID_V_Y, MIN_ID_V_Z),
             voxel->GetColour(),
@@ -987,4 +987,3 @@ void Chunk::Generate_Mesh(
     mesh.Add_Vertex_Set(1, 1, 1);
 
 }
-
