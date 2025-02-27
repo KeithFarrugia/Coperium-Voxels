@@ -80,7 +80,7 @@ public:
 
     voxels_t* Get_All_Voxels();
 
-    void Generate_Mesh(World& w, const chunk_loc_t chunk_id, const sector_loc_t sector_id);
+    void Generate_Mesh(World& w, const chunk_loc_t chunk_id, const sector_loc_t sector_id, const Chunk& generic_chunk);
     void Draw_Mesh();
 private:
     Coil::Basic_Mesh mesh;

@@ -12,9 +12,9 @@
 #include <IMGUI/imgui_impl_opengl3.h>
 #include "WorldData/Create_Generic_Chunks.h"
 
-constexpr int GRID_SIZE_F_X = 16;
+constexpr int GRID_SIZE_F_X = 128;
 constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 16;
+constexpr int GRID_SIZE_F_Z = 128;
 
 constexpr int GRID_SIZE_S_X = 0;
 constexpr int GRID_SIZE_S_Y = 0;
@@ -91,7 +91,7 @@ int main() {
     for (auto sector : *sectors) {
         chunks_t* chunks = sector.second.Get_All_Chunks();
         for (auto pair : *chunks) {
-            pair.second.Generate_Mesh(w, pair.first, sector.first);
+            pair.second.Generate_Mesh(w, pair.first, sector.first, generic_chunk);
         }
     }
     end = std::chrono::high_resolution_clock::now();
