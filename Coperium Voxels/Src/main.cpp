@@ -5,132 +5,77 @@
 #include <COIL/Camera/Fly Camera/Fly_Camera.h>
 
 #include <iostream>
-#include <iomanip>
-#include <chrono>  // For FPS calculation
+#include <chrono>
 #include "WorldData/World.h"
-#include <IMGUI/imgui_impl_glfw.h>
-#include <IMGUI/imgui_impl_opengl3.h>
 #include "WorldData/Create_Generic_Chunks.h"
+#include "Voxel Stuff.h"
+#include "Imgui_setup.h"
 
-constexpr int GRID_SIZE_F_X = 128;
-constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 128;
+void setupShader(Coil::Shader& shader) {
+    shader.Add_Shaders({
+        Coil::shader_info_t{"compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER},
+        Coil::shader_info_t{"compact_v2.frag", Coil::shader_type_t::FRAGMENT_SHADER}
+        });
+    shader.Compile_And_Link();
+}
 
-constexpr int GRID_SIZE_S_X = 0;
-constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = 0;
-int main() {
-
-    Coil::Logger::init_logger(Coil::LOG_TO_FILE);
-    Coil::Initialise_Opengl();
-    Coil::Initialise_GLAD();
-
-
-
-    Coil::Window window("Voxel Test Case", 640, 480);
+void setupWindow(Coil::Window& window) {
     window.FF_Clockwise();
     window.EnableDepthTest();
     window.EnableCulling();
     glfwSwapInterval(0);
+}
 
-    Coil::Shader shader(std::string("Basic"));
-    World w;
-    //w.Create_Voxel(vox_data_t{
-    //    glm::ivec3(0, 0, 0),                // position
-    //    glm::ivec3(15, 15, 15),  // color
-    //    voxel_type_t::NORMAL,               // type
-    //    true,                               // solid
-    //    false,                              // transparency
-    //    rel_loc_t::WORLD_LOC                // Relative
-    //});
-    //w.Create_Voxel(vox_data_t{
-    //    glm::ivec3(-2, 0, 0),                // position
-    //    glm::ivec3(0, 0, 15),  // color
-    //    voxel_type_t::NORMAL,               // type
-    //    true,                               // solid
-    //    false,                              // transparency
-    //    rel_loc_t::WORLD_LOC                // Relative
-    //});
-    //w.Create_Voxel(vox_data_t{
-    //    glm::ivec3(-1, 0, 0),                // position
-    //    glm::ivec3(0, 0, 15),  // color
-    //    voxel_type_t::NORMAL,               // type
-    //    true,                               // solid
-    //    false,                              // transparency
-    //    rel_loc_t::WORLD_LOC                // Relative
-    //});
-
-    Chunk generic_chunk = Chunk();
-    Create_Air_Chunk(generic_chunk);
-
-    auto start = std::chrono::high_resolution_clock::now();
-    for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
-        for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
-            for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
-                vox_data_t som = vox_data_t{
-                        glm::ivec3(x, y, z),                // position
-                        glm::ivec3(x, (int)(y / 4.0f), z),  // color
-                        voxel_type_t::NORMAL,               // type
-                        true,                               // solid
-                        false,                              // transparency
-                        rel_loc_t::WORLD_LOC                // Relative
-                };
-                w.Create_Voxel(som);
-                //w.Get_Voxel(glm::ivec3(x, y, z), rel_loc_t::WORLD_LOC)->Display();
-            }
-        }
-    }
-
+void calculateFPS(int& frames, auto& start, float& fps) {
+    frames++;
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
-        << duration.count() << " seconds." << std::endl;
-
-    start = std::chrono::high_resolution_clock::now();
-    sectors_t* sectors = w.Get_All_Sectrs();
-    for (auto sector : *sectors) {
-        chunks_t* chunks = sector.second.Get_All_Chunks();
-        for (auto pair : *chunks) {
-            pair.second.Generate_Mesh(w, pair.first, sector.first, generic_chunk);
-        }
+    std::chrono::duration<float> duration = end - start;
+    if (duration.count() >= 1.0f) {
+        fps = frames / duration.count();
+        frames = 0;
+        start = end;
     }
-    end = std::chrono::high_resolution_clock::now();
-     duration = end - start;
-    std::cout << "Time taken to Generate Mesh: " << std::fixed << std::setprecision(6)
-        << duration.count() << " seconds." << std::endl;
-
-    
+}
 
 
+
+
+
+/* ============================================================================
+ *                                  MAIN
+ * ============================================================================
+ */
+
+
+int main() {
+    Coil::Logger::init_logger(Coil::LOG_TO_FILE);
+    Coil::Initialise_Opengl();
+    Coil::Initialise_GLAD();
+
+    Coil::Window window("Voxel Test Case", 640, 480);
+    setupWindow(window);
+
+    World w;
+    generate_blocks_and_mesh(w);
+
+    Coil::Shader shader("Basic");
+    setupShader(shader);
 
     Coil::Fly_Camera camera(window, 0, -1, 1);
     camera.Take_Over_All_Input();
 
-    shader.Add_Shaders(
-        Coil::shader_list_t{
-            Coil::shader_info_t{"compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER},
-            Coil::shader_info_t{"compact_v2.frag", Coil::shader_type_t::FRAGMENT_SHADER}
-        });
-    shader.Compile_And_Link();
+    // Initialize ImGui
+    InitializeImGui(window);
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window.Get_Window(), true);
-    ImGui_ImplOpenGL3_Init("#version 130");
-    io.WantCaptureMouse = true;
-    io.WantCaptureKeyboard = false;
-
-    // Variables for FPS calculation
+    // FPS and color state
     float fps = 0.0f;
     int frames = 0;
-    start = std::chrono::high_resolution_clock::now();
-
-
+    auto start = std::chrono::high_resolution_clock::now();
     float color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };  // Default to green color
 
-    
+    GLuint vertex_offset = shader.Get_Uniform("vertex_offset");
+
+    // Main rendering loop
     while (!window.Is_Closed()) {
         int width, height;
         window.Get_Size(width, height);
@@ -141,80 +86,33 @@ int main() {
 
         glm::mat4 model = glm::mat4(1.0f);
 
+        // Use shader and set matrices
         shader.Use();
         shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
         shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         shader.Set_Matrix4("model", model);
 
-        for (auto sector : *sectors) {
-            chunks_t* chunks = sector.second.Get_All_Chunks();
-            for (auto pair : *chunks) {
-
-                glm::ivec3 offset = glm::vec3(
-                    pair.first.X() * CHUNK_SIZE_X + sector.first.X() * SECTR_SIZE_X,
-                    pair.first.Y() * CHUNK_SIZE_Y,
-                    pair.first.Z() * CHUNK_SIZE_Z + sector.first.Z() * SECTR_SIZE_Z
-                );
-
-                shader.Set_Vec3("vertex_offset", offset);
-
-                pair.second.Draw_Mesh();
-            }
-        };
+        // Render voxels
+        render_voxels(w, shader, vertex_offset);
 
         // Calculate FPS
-        frames++;
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> duration = end - start;
-        if (duration.count() >= 1.0f) {
-            fps = frames / duration.count();
-            frames = 0;
-            start = end;
-        }
+        calculateFPS(frames, start, fps);
 
-        // Start ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        // Render ImGui frame
+        RenderImGuiFrame(fps, color);
 
-        // Display FPS in the top left
-        ImGui::SetNextWindowPos(ImVec2(10, 10));  // Top-left corner
-        ImGui::Begin("FPS Window", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Text("FPS: %.1f", fps);
-        ImGui::End();
-
-        // Color Picker UI (Color Wheel Style)
-        ImGui::SetNextWindowPos(ImVec2(10, 50));  // Below the FPS counter
-        ImGui::Begin("Color Picker", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-
-        // ImGui ColorPicker (with color wheel image)
-        ImGui::ColorPicker4("Pick a Color", color, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview | ImGuiColorEditFlags_PickerHueWheel);
-
-        ImGui::End();
-
-        // Render ImGui
-        ImGui::Render();
-        ImDrawData* draw_data = ImGui::GetDrawData();
-        if (draw_data != nullptr) {
-            ImGui_ImplOpenGL3_RenderDrawData(draw_data);
-        }
-
-        // Swap buffers
+        // Swap buffers and update camera
         window.SwapBuffers();
-
-        // Poll events and update camera
         glfwPollEvents();
         camera.Update();
     }
 
     // Cleanup ImGui
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    CleanupImGui();
 
+    // Cleanup window and terminate GLFW
     window.Del();
     glfwTerminate();
 
     return 0;
 }
-

@@ -538,6 +538,8 @@
     <ClInclude Include="Src\Data Structure\AVL_DataStructure.h" />
     <ClInclude Include="Src\Data Structure\IDataStructure.h" />
     <ClInclude Include="Src\Data Structure\UM_DataStructure.h" />
+    <ClInclude Include="Src\Imgui_setup.h" />
+    <ClInclude Include="Src\Voxel Stuff.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
     <ClInclude Include="Src\WorldData\CommonWD.h" />
     <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h" />

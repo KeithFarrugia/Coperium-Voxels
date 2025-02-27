@@ -36,12 +36,19 @@ public:
 
     // --------------------------------- Uniform Handlers
     int  Get_Uniform (const char* uniform_name                              ) const;
-    void Set_Bool    (const char* uniform_name, const bool           value  ) const;
-    void Set_Int     (const char* uniform_name, const GLint          value  ) const;
-    void Set_Float   (const char* uniform_name, const GLfloat        value  ) const;
-    void Set_Vec3    (const char* uniform_name, const glm::vec3      value  ) const;
-    void Set_Vec4    (const char* uniform_name, const glm::vec4      value  ) const;
-    void Set_Matrix4 (const char* uniform_name, const glm::mat4      value  ) const;
+    void Set_Bool    (const char* uniform_name, const bool          value   ) const;
+    void Set_Int     (const char* uniform_name, const GLint         value   ) const;
+    void Set_Float   (const char* uniform_name, const GLfloat       value   ) const;
+    void Set_Vec3    (const char* uniform_name, const glm::vec3     value   ) const;
+    void Set_Vec4    (const char* uniform_name, const glm::vec4     value   ) const;
+    void Set_Matrix4 (const char* uniform_name, const glm::mat4     value   ) const;
+
+    void Set_Bool   (GLuint location,           const bool          value   ) const;
+    void Set_Int    (GLuint location,           const GLint         value   ) const;
+    void Set_Float  (GLuint location,           const GLfloat       value   ) const;
+    void Set_Vec3   (GLuint location,           const glm::vec3     vector  ) const;
+    void Set_Vec4   (GLuint location,           const glm::vec4     value   ) const;
+    void Set_Matrix4(GLuint location,           const glm::mat4     value   ) const;
 private:
 
 

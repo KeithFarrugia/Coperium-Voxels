@@ -1163,6 +1163,12 @@
     <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Voxel Stuff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui_setup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />
