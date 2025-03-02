@@ -12,40 +12,40 @@ constexpr int COMPACT_CUBE_ELEMENTS     = 2;
 
 const GLfloat COMPACT_CUBE[] = {
     // Front Face
-    CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f,  0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f, -0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f, -0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),
+    CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
+    CLD::Compact(  0.5f,  0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
+    CLD::Compact(  0.5f, -0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
+    CLD::Compact( -0.5f, -0.5f,  0.5f ),    CCD::Compact( 1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
          
     // Back face
-    CLD::Compact(  0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
+    CLD::Compact(  0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
+    CLD::Compact( -0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
+    CLD::Compact( -0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
+    CLD::Compact(  0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
 
     // Left face
-    CLD::Compact( -0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
+    CLD::Compact( -0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
+    CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
+    CLD::Compact( -0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
+    CLD::Compact( -0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
 
     // Right face
-    CLD::Compact(  0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
+    CLD::Compact(  0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
+    CLD::Compact(  0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
+    CLD::Compact(  0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
+    CLD::Compact(  0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
 
     // Top face
-    CLD::Compact( -0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
+    CLD::Compact( -0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  1.0f,  0.0f,
+    CLD::Compact(  0.5f,  0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  1.0f,  0.0f,
+    CLD::Compact(  0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  1.0f,  0.0f,
+    CLD::Compact( -0.5f,  0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  1.0f,  0.0f,
 
     // Bottom face
-    CLD::Compact( -0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(  0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( -0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact( -0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f, -1.0f,  0.0f,
+    CLD::Compact(  0.5f, -0.5f,  0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f, -1.0f,  0.0f,
+    CLD::Compact(  0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f, -1.0f,  0.0f,
+    CLD::Compact( -0.5f, -0.5f, -0.5f ),    CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f, -1.0f,  0.0f
 };
 
 const GLuint COMPACT_CUBE_INDICES[] = {

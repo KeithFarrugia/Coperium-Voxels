@@ -883,6 +883,7 @@ void Chunk::Generate_Mesh(
 
     mesh.Add_Vertex_Set(0, 1, 0);
     mesh.Add_Vertex_Set(1, 1, 1);
+    mesh.Add_Vertex_Set(2, 3, 2);
 
 }
 

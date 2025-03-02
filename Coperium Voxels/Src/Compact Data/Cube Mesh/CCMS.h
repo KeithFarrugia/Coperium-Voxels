@@ -12,9 +12,9 @@
 #include "../Compact Location Data/CLD.h"
 #include "../Compact Colour Data/CCD.h"
 
-constexpr int FACE_INDEX_SIZE   = 6;
-constexpr int FACE_VERT_SIZE    = 8;
-constexpr int FACE_NUM_ELEMENTS = 2;
+constexpr int FACE_INDEX_SIZE   = 6;    // number of indices per face
+constexpr int FACE_VERT_SIZE    = 20;   // Length of face vertex array in floats
+constexpr int FACE_NUM_ELEMENTS = 5;    // Length of number of floats in a vertex
 
 typedef enum  {
     FRONT_FACE  =   0x1 << 0,  // 1st bit
@@ -32,45 +32,45 @@ typedef enum  {
 }cube_faces_t;
 
 const GLfloat FRONT_FACE_MESH   [] = {
-    CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
+    CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
+    CLD::Compact( 0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
+    CLD::Compact(-0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
 };
 
 const GLfloat BACK_FACE_MESH    [] = {
-    CLD::Compact( 0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact( 0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
+    CLD::Compact(-0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
+    CLD::Compact(-0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
+    CLD::Compact( 0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         0.0f,  0.0f, -1.0f,
 };
 
 const GLfloat LEFT_FACE_MESH    [] = {
-    CLD::Compact(-0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact(-0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
+    CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
+    CLD::Compact(-0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
+    CLD::Compact(-0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        -1.0f,  0.0f,  0.0f,
 };
 
 const GLfloat RIGHT_FACE_MESH   [] = {
-    CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
+    CLD::Compact( 0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
+    CLD::Compact( 0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
+    CLD::Compact( 0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),         1.0f,  0.0f,  0.0f,
 };
 
 const GLfloat TOP_FACE_MESH     [] = {
-    CLD::Compact(-0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact(-0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f,  1.0f,  0.0f,
+    CLD::Compact( 0.5f,  0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f,  1.0f,  0.0f,
+    CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f,  1.0f,  0.0f,
+    CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f,  1.0f,  0.0f,
 };
 
 const GLfloat BOTTOM_FACE_MESH  [] = {
-    CLD::Compact(-0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact( 0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),
-    CLD::Compact(-0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f)
+    CLD::Compact(-0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f, -1.0f,  0.0f,
+    CLD::Compact( 0.5f, -0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f, -1.0f,  0.0f,
+    CLD::Compact( 0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f, -1.0f,  0.0f,
+    CLD::Compact(-0.5f, -0.5f, -0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),          0.0f, -1.0f,  0.0f,
 };
 
 const GLuint FACE_INDEX_MESH    [] = { 0, 1, 2, 0, 2, 3 };

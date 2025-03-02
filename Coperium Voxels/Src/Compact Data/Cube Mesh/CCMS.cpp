@@ -19,7 +19,10 @@ void Add_Face(
         col.Scale(vert_colour.r/16, vert_colour.g/16, vert_colour.b/16);
 
         vertex_mesh[i]      = loc.To_Float();
-        vertex_mesh[i + 1]  = col.To_Float();
+        vertex_mesh[i + 1]  = col.To_Float(); 
+        vertex_mesh[i + 2]  = vertex_mesh[i + 2];  // Normal x
+        vertex_mesh[i + 3]  = vertex_mesh[i + 3];  // Normal y
+        vertex_mesh[i + 4]  = vertex_mesh[i + 4];  // Normal z
     }
 
     for (int i = 0; i < i_array_size; i++) {

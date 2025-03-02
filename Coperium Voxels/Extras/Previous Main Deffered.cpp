@@ -53,7 +53,7 @@ int main() {
     Coil::Initialise_Opengl();
     Coil::Initialise_GLAD();
 
-    Coil::Window window("Voxel Test Case", 1000, 1000);
+    Coil::Window window("Voxel Test Case", 640, 480);
     setupWindow(window);
 
     World w;
@@ -67,11 +67,11 @@ int main() {
     InitializeImGui(window);
 
     // FPS and color state
-    float   fps = 0.0f;
-    int     frames = 0;
-    auto    start = std::chrono::high_resolution_clock::now();
+    float   fps         = 0.0f;
+    int     frames      = 0;
+    auto    start       = std::chrono::high_resolution_clock::now();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.3f, 0.3f, 0.5f, 1.0f);
     float color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };  // Default to green color
 
     int width, height;
@@ -134,10 +134,10 @@ int main() {
         Coil::shader_info_t{"deferred.frag", Coil::shader_type_t::FRAGMENT_SHADER}
         });
     deferred_shader.Compile_And_Link();
-    deferred_shader.Use();
-    deferred_shader.Set_Int("gPosition", 0);
-    deferred_shader.Set_Int("gNormal", 1);
-    deferred_shader.Set_Int("gAlbedoSpec", 2);
+    deferred_shader.Use();  
+    deferred_shader.Set_Int("gPosition"     , 0);
+    deferred_shader.Set_Int("gNormal"       , 1);
+    deferred_shader.Set_Int("gAlbedoSpec"   , 2);
 
 
     GLuint vertex_offset = buffer_shader.Get_Uniform("vertex_offset");
@@ -146,7 +146,7 @@ int main() {
      * ============================================================================
      */
 
-     // Main rendering loop
+    // Main rendering loop
     while (!window.Is_Closed()) {
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -155,14 +155,14 @@ int main() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        buffer_shader.Use();
-        buffer_shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
-        buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
-        buffer_shader.Set_Matrix4("model", model);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            buffer_shader.Use();
+            buffer_shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
+            buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
+            buffer_shader.Set_Matrix4("model", model);
 
-        // Render voxels
-        render_voxels(w, buffer_shader, vertex_offset);
+            // Render voxels
+            render_voxels(w, buffer_shader, vertex_offset);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -207,6 +207,7 @@ int main() {
 
 
 
+
 unsigned int quadVAO = 0;
 unsigned int quadVBO;
 void renderQuad()
@@ -215,10 +216,10 @@ void renderQuad()
     {
         float quadVertices[] = {
             // positions        // texture Coords
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,  // Top Right
-             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // Bottom Right
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  // Top Left
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom Left
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);

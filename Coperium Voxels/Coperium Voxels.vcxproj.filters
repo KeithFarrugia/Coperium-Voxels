@@ -1599,6 +1599,12 @@
     <None Include="Resources\Shaders\compact_v2.vert" />
     <None Include="Resources\Shaders\compact_v2.frag" />
     <None Include="Readme.md" />
+    <None Include="Resources\Shaders\buffer.vert" />
+    <None Include="Resources\Shaders\buffer.frag" />
+    <None Include="Resources\Shaders\deferred.vert" />
+    <None Include="Resources\Shaders\deferred.frag" />
+    <None Include="Resources\Shaders\quad.vert" />
+    <None Include="Resources\Shaders\quad.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />
