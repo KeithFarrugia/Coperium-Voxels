@@ -6,10 +6,11 @@
 #include <chrono>
 #include "WorldData/Create_Generic_Chunks.h"
 #include <COIL/Shaders/Shader.h>
+#include "WorldData/Chunk Mesh Generation/Chunk Mesh.h"
 
-constexpr int GRID_SIZE_F_X = 128;
+constexpr int GRID_SIZE_F_X = 16;
 constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 128;
+constexpr int GRID_SIZE_F_Z = 16;
 
 constexpr int GRID_SIZE_S_X = 0;
 constexpr int GRID_SIZE_S_Y = 0;
@@ -44,10 +45,10 @@ void generate_blocks_and_mesh(World& world) {
 
     start = std::chrono::high_resolution_clock::now();
     sectors_t* sectors = world.Get_All_Sectrs();
-    for (auto sector : *sectors) {
+    for (sector_pair_t sector : *sectors) {
         chunks_t* chunks = sector.second.Get_All_Chunks();
-        for (auto pair : *chunks) {
-            pair.second.Generate_Mesh(world, pair.first, sector.first, generic_chunk);
+        for (chunk_pair_t chunk_pair : *chunks) {
+            Generate_Chunk_Mesh(world, chunk_pair, sector, generic_chunk);
         }
     }
     end = std::chrono::high_resolution_clock::now();

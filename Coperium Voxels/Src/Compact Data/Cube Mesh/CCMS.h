@@ -84,13 +84,26 @@ void Add_Face(
     int                     v_element_count ,
     int                     v_array_size    ,   int                     i_array_size
 );
-
-
+void Add_Face(
+    glm::vec3               vert_pos_offset ,   glm::vec3               vert_colour ,
+    std::vector<GLfloat>&   vertex_mesh     ,   std::vector<GLuint>&    index_mesh  ,
+    const GLfloat*          vertices        ,   const GLuint*           indexes     ,
+    int&                    v_offset        ,   int&                    i_offset    ,
+    int                     v_element_count ,
+    int                     v_array_size    ,   int                     i_array_size,
+    int                     scale
+);
 void Add_Cube_Mesh(
     glm::vec3               vert_pos_offset ,   glm::vec3               vert_colour,
     std::vector<GLfloat>&   vertex_mesh     ,   std::vector<GLuint>&    index_mesh,
     int&                    vertex_offset   ,   int&                    index_offset,
     uint8_t                 face_flags
+);
+void Add_Cube_Mesh(
+    glm::vec3               vert_pos_offset ,   glm::vec3               vert_colour,
+    std::vector<GLfloat>&   vertex_mesh     ,   std::vector<GLuint>&    index_mesh,
+    int&                    vertex_offset   ,   int&                    index_offset,
+    uint8_t                 face_flags      ,   int                     scale
 );
 
 #endif // !COMPACT_CUBE_MESH_SEPERABLE_H

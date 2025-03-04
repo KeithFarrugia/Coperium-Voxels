@@ -198,10 +198,11 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Get_Chunk_Neighbours.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_1_Mesh_Gen.cpp" />
     <ClCompile Include="Src\WorldData\World Opertions\Safe_Operations.h" />
     <ClCompile Include="Src\WorldData\Sector.cpp" />
     <ClCompile Include="Src\WorldData\Chunk.cpp" />
-    <ClCompile Include="Src\WorldData\MeshGeneration.cpp" />
     <ClCompile Include="Src\WorldData\Voxel.cpp" />
     <ClCompile Include="Src\WorldData\World Opertions\Location\Sector_Location.h" />
     <ClCompile Include="Src\WorldData\World.cpp" />
@@ -541,6 +542,7 @@
     <ClInclude Include="Src\Imgui_setup.h" />
     <ClInclude Include="Src\Voxel Stuff.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
+    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk Mesh.h" />
     <ClInclude Include="Src\WorldData\CommonWD.h" />
     <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h" />
     <ClInclude Include="Src\WorldData\World Opertions\Location\World_Loc_Conversion.h" />

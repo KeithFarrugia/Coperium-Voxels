@@ -141,9 +141,6 @@
     <ClCompile Include="Src\WorldData\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\MeshGeneration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\WorldData\World Opertions\Location\Chunk_Location.h">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -151,6 +148,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\WorldData\World Opertions\Location\Sector_Location.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_1_Mesh_Gen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Get_Chunk_Neighbours.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1167,6 +1170,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Imgui_setup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

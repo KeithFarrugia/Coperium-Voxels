@@ -2,176 +2,292 @@
 #include "../Compact Data/Cube Mesh/CCMS.h"
 
 /* ============================================================================
- * --------------------------- Get_X_Axis_Neighbours
- * Determines the left and right neighbouring chunks for a given chunk.
+ * --------------------------- Get_Right_Chunk
+ * Determines the right (positive X) neighbouring chunk for a given chunk.
  *
  * ------ Parameters ------
- * w: Reference to the world object containing all sectors and chunks.
- * chunk_id: The location ID of the current chunk within its sector.
- * sector_id: The location ID of the sector that contains the current chunk.
+ * w            : Reference the world object containing all sectors and chunks.
+ * chunk        : Pair of the current chunk's location and the chunk itself.
+ * sector       : Pair of the current sector's location and the sector itself.
+ * generic_chunk: A default chunk pointer if the neighbouring chunk is null.
  *
  * ------ Returns ------
- * A pointer to the left or right neighbouring chunk, or nullptr if not found.
- * ============================================================================
- */
-Chunk* Get_X_Neighbour(World& w, const chunk_loc_t chunk_id, const sector_loc_t sector_id, bool is_right) {
-    Sector* curr_s = w.Get_Sector(sector_id);
-
-    // Check if the current sector is valid
-    if (curr_s == nullptr) {
-        return nullptr;  // Sector does not exist
+ * A pointer to the neighbouring chunk in the positive X direction,
+ * or generic_chunk if not found.
+ * ============================================================================ */
+const Chunk* Get_Right_Chunk(
+    World& w,
+    const chunk_pair_t    chunk,
+    const sector_pair_t   sector,
+    const Chunk* generic_chunk
+) {
+    /* ---------------------------------------------
+     * current chunk is not at the edge
+     * --------------------------------------------- */
+    if (chunk.first.X() < MAX_ID_C_X) {
+        const Chunk* candidate = sector.second.Get_Chunk(
+            chunk_loc_t::Compact(glm::ivec3(
+                chunk.first.X() + 1, chunk.first.Y(), chunk.first.Z()
+            ))
+        );
+        return candidate ? candidate : generic_chunk;
     }
 
-    if (is_right) {
-        // If in the right-most sector
-        if (sector_id.X() == MAX_ID_S_X) {
-            return nullptr;  // No chunk on the right
-        }
-
-        // If chunk is in the right-most position in current sector
-        if (chunk_id.X() == MAX_ID_C_X) {
-            sector_loc_t r_sector_id = sector_loc_t::Compact(glm::ivec2(sector_id.X() + 1, sector_id.Z()));
-            Sector* right_sector = w.Get_Sector(r_sector_id);
-            if (right_sector == nullptr) {
-                return nullptr;  // Right sector does not exist
-            }
-            return right_sector->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(MIN_ID_C_X, chunk_id.Y(), chunk_id.Z())));
-        }
-        else {
-            // Right chunk in the same sector
-            Chunk* right_chunk = curr_s->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X() + 1, chunk_id.Y(), chunk_id.Z())));
-            return right_chunk;  // This will be nullptr if chunk doesn't exist
+    /* ---------------------------------------------
+     * current sector is not at the edge
+     * --------------------------------------------- */
+    if (sector.first.X() < MAX_ID_S_X) {
+        Sector* next_sector = w.Get_Sector(
+            sector_loc_t::Compact(glm::ivec2(
+                sector.first.X() + 1, sector.first.Z()
+            ))
+        );
+        if (next_sector) {
+            const Chunk* candidate = next_sector->Get_Chunk(
+                chunk_loc_t::Compact(glm::ivec3(
+                    MIN_ID_C_X, chunk.first.Y(), chunk.first.Z()
+                ))
+            );
+            return candidate ? candidate : generic_chunk;
         }
     }
-    else {
-        // If in the left-most sector
-        if (sector_id.X() == MIN_ID_S_X) {
-            return nullptr;  // No chunk on the left
-        }
 
-        // If chunk is in the left-most position in current sector
-        if (chunk_id.X() == MIN_ID_C_X) {
-            sector_loc_t l_sector_id = sector_loc_t::Compact(glm::ivec2(sector_id.X() - 1, sector_id.Z()));
-            Sector* left_sector = w.Get_Sector(l_sector_id);
-            if (left_sector == nullptr) {
-                return nullptr;  // Left sector does not exist
-            }
-            return left_sector->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(MAX_ID_C_X, chunk_id.Y(), chunk_id.Z())));
-        }
-        else {
-            // Left chunk in the same sector
-            Chunk* left_chunk = curr_s->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X() - 1, chunk_id.Y(), chunk_id.Z())));
-            return left_chunk;  // This will be nullptr if chunk doesn't exist
+    return generic_chunk;
+}
+/* ============================================================================
+ * --------------------------- Get_Left_Chunk
+ * Determines the left (negative X) neighbouring chunk for a given chunk.
+ *
+ * ------ Parameters ------
+ * w           : Reference to the world object containing all sectors and chunks.
+ * chunk       : Pair of the current chunk's location and the chunk itself.
+ * sector      : Pair of the current sector's location and the sector itself.
+ * generic_chunk: A default chunk pointer if the neighbouring chunk is null.
+ *
+ * ------ Returns ------
+ * A pointer to the neighbouring chunk in the negative X direction,
+ * or generic_chunk if not found.
+ * ============================================================================ */
+const Chunk* Get_Left_Chunk(
+    World& w,
+    const chunk_pair_t    chunk,
+    const sector_pair_t   sector,
+    const Chunk* generic_chunk
+) {
+    /* ---------------------------------------------
+     * current chunk is not at the edge
+     * --------------------------------------------- */
+    if (chunk.first.X() > MIN_ID_C_X) {
+        const Chunk* candidate = sector.second.Get_Chunk(
+            chunk_loc_t::Compact(glm::ivec3(
+                chunk.first.X() - 1, chunk.first.Y(), chunk.first.Z()
+            ))
+        );
+        return candidate ? candidate : generic_chunk;
+    }
+
+    /* ---------------------------------------------
+     * current sector is not at the edge
+     * --------------------------------------------- */
+    if (sector.first.X() > MIN_ID_S_X) {
+        Sector* next_sector = w.Get_Sector(
+            sector_loc_t::Compact(glm::ivec2(
+                sector.first.X() - 1, sector.first.Z()
+            ))
+        );
+        if (next_sector) {
+            const Chunk* candidate = next_sector->Get_Chunk(
+                chunk_loc_t::Compact(glm::ivec3(
+                    MAX_ID_C_X, chunk.first.Y(), chunk.first.Z()
+                ))
+            );
+            return candidate ? candidate : generic_chunk;
         }
     }
+
+    return generic_chunk;
 }
 
 /* ============================================================================
- * --------------------------- Get_Y_Axis_Neighbours
- * Determines the upper and lower neighbouring chunks for a given chunk.
+ * --------------------------- Get_Top_Chunk
+ * Determines the top (positive Y) neighbouring chunk for a given chunk.
  *
  * ------ Parameters ------
- * w: Reference to the world object containing all sectors and chunks.
- * chunk_id: The location ID of the current chunk within its sector.
- * sector_id: The location ID of the sector that contains the current chunk.
+ * w           : Reference to the world object containing all sectors and chunks.
+ * chunk       : Pair of the current chunk's location and the chunk itself.
+ * sector      : Pair of the current sector's location and the sector itself.
+ * generic_chunk: A default chunk pointer if the neighbouring chunk is null.
  *
  * ------ Returns ------
- * A pointer to the upper or lower neighbouring chunk, or nullptr if not found.
- * ============================================================================
- */
-Chunk* Get_Y_Neighbour(Sector* curr_s, const chunk_loc_t chunk_id, bool is_up) {
-    // Check if the current sector is valid
-    if (curr_s == nullptr) {
-        return nullptr;  // Sector does not exist
+ * A pointer to the neighbouring chunk in the positive Y direction,
+ * or generic_chunk if not found.
+ * ============================================================================ */
+const Chunk* Get_Top_Chunk(
+    World& w,
+    const chunk_pair_t    chunk,
+    const sector_pair_t   sector,
+    const Chunk* generic_chunk
+) {
+    /* ---------------------------------------------
+     * current chunk is not at the edge
+     * --------------------------------------------- */
+    if (chunk.first.Y() < MAX_ID_C_Y) {
+        const Chunk* candidate = sector.second.Get_Chunk(
+            chunk_loc_t::Compact(glm::ivec3(
+                chunk.first.X(), chunk.first.Y() + 1, chunk.first.Z()
+            ))
+        );
+        return candidate ? candidate : generic_chunk;
     }
 
-    if (is_up) {
-        // No chunks above the top
-        if (chunk_id.Y() == MAX_ID_C_Y) {
-            return nullptr;
-        }
-        else {
-            // Up chunk in the same sector
-            return curr_s->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X(), chunk_id.Y() + 1, chunk_id.Z())));
-        }
-    }
-    else {
-        // No chunks below the bottom
-        if (chunk_id.Y() == MIN_ID_C_Y) {
-            return nullptr;
-        }
-        else {
-            // Down chunk in the same sector
-            return curr_s->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X(), chunk_id.Y() - 1, chunk_id.Z())));
-        }
-    }
+    return generic_chunk;
 }
 
 /* ============================================================================
- * --------------------------- Get_Z_Axis_Neighbours
- * Determines the front and back neighbouring chunks for a given chunk.
+ * --------------------------- Get_Bot_Chunk
+ * Determines the bottom (negative Y) neighbouring chunk for a given chunk.
  *
  * ------ Parameters ------
- * w: Reference to the world object containing all sectors and chunks.
- * chunk_id: The location ID of the current chunk within its sector.
- * sector_id: The location ID of the sector that contains the current chunk.
+ * w           : Reference to the world object containing all sectors and chunks.
+ * chunk       : Pair of the current chunk's location and the chunk itself.
+ * sector      : Pair of the current sector's location and the sector itself.
+ * generic_chunk: A default chunk pointer if the neighbouring chunk is null.
  *
  * ------ Returns ------
- * A pointer to the front or back neighbouring chunk, or nullptr if not found.
- * ============================================================================
- */
-Chunk* Get_Z_Neighbour(World& w, const chunk_loc_t chunk_id, const sector_loc_t sector_id, bool is_front) {
-    Sector* curr_s = w.Get_Sector(sector_id);
-
-    // Check if the current sector is valid
-    if (curr_s == nullptr) {
-        return nullptr;  // Sector does not exist
+ * A pointer to the neighbouring chunk in the negative Y direction,
+ * or generic_chunk if not found.
+ * ============================================================================ */
+const Chunk* Get_Bot_Chunk(
+    World& w,
+    const chunk_pair_t    chunk,
+    const sector_pair_t   sector,
+    const Chunk* generic_chunk
+) {
+    /* ---------------------------------------------
+     * current chunk is not at the edge
+     * --------------------------------------------- */
+    if (chunk.first.Y() > MIN_ID_C_Y) {
+        const Chunk* candidate = sector.second.Get_Chunk(
+            chunk_loc_t::Compact(glm::ivec3(
+                chunk.first.X(), chunk.first.Y() - 1, chunk.first.Z()
+            ))
+        );
+        return candidate ? candidate : generic_chunk;
     }
 
-    if (is_front) {
-        // If in the front-most sector
-        if (sector_id.Z() == MAX_ID_S_Z) {
-            return nullptr;  // No chunk in front
-        }
+    return generic_chunk;
+}
 
-        // If chunk is in the front-most position in current sector
-        if (chunk_id.Z() == MAX_ID_C_Z) {
-            sector_loc_t f_sector_id = sector_loc_t::Compact(glm::ivec2(sector_id.X(), sector_id.Z() + 1));
-            Sector* front_sector = w.Get_Sector(f_sector_id);
-            if (front_sector == nullptr) {
-                return nullptr;  // Front sector does not exist
-            }
-            return front_sector->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X(), chunk_id.Y(), MIN_ID_C_Z)));
-        }
-        else {
-            // Front chunk in the same sector
-            return curr_s->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X(), chunk_id.Y(), chunk_id.Z() + 1)));
+/* ============================================================================
+ * --------------------------- Get_Front_Chunk
+ * Determines the front (positive Z) neighbouring chunk for a given chunk.
+ *
+ * ------ Parameters ------
+ * w           : Reference to the world object containing all sectors and chunks.
+ * chunk       : Pair of the current chunk's location and the chunk itself.
+ * sector      : Pair of the current sector's location and the sector itself.
+ * generic_chunk: A default chunk pointer if the neighbouring chunk is null.
+ *
+ * ------ Returns ------
+ * A pointer to the neighbouring chunk in the positive Z direction,
+ * or generic_chunk if not found.
+ * ============================================================================ */
+const Chunk* Get_Front_Chunk(
+    World& w,
+    const chunk_pair_t    chunk,
+    const sector_pair_t   sector,
+    const Chunk* generic_chunk
+) {
+    /* ---------------------------------------------
+     * current chunk is not at the edge
+     * --------------------------------------------- */
+    if (chunk.first.Z() < MAX_ID_C_Z) {
+        const Chunk* candidate = sector.second.Get_Chunk(
+            chunk_loc_t::Compact(glm::ivec3(
+                chunk.first.X(), chunk.first.Y(), chunk.first.Z() + 1
+            ))
+        );
+        return candidate ? candidate : generic_chunk;
+    }
+
+    /* ---------------------------------------------
+     * current sector is not at the edge
+     * --------------------------------------------- */
+    if (sector.first.Z() < MAX_ID_S_Z) {
+        Sector* next_sector = w.Get_Sector(
+            sector_loc_t::Compact(glm::ivec2(
+                sector.first.X(), sector.first.Z() + 1
+            ))
+        );
+        if (next_sector) {
+            const Chunk* candidate = next_sector->Get_Chunk(
+                chunk_loc_t::Compact(glm::ivec3(
+                    chunk.first.X(), chunk.first.Y(), MIN_ID_C_Z
+                ))
+            );
+            return candidate ? candidate : generic_chunk;
         }
     }
-    else {
-        // If in the back-most sector
-        if (sector_id.Z() == MIN_ID_S_Z) {
-            return nullptr;  // No chunk in the back
-        }
 
-        // If chunk is in the back-most position in current sector
-        if (chunk_id.Z() == MIN_ID_C_Z) {
-            sector_loc_t b_sector_id = sector_loc_t::Compact(glm::ivec2(sector_id.X(), sector_id.Z() - 1));
-            Sector* back_sector = w.Get_Sector(b_sector_id);
-            if (back_sector == nullptr) {
-                return nullptr;  // Back sector does not exist
-            }
-            return back_sector->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X(), chunk_id.Y(), MAX_ID_C_Z)));
-        }
-        else {
-            // Back chunk in the same sector
-            return curr_s->Get_Chunk(chunk_loc_t::Compact(glm::ivec3(chunk_id.X(), chunk_id.Y(), chunk_id.Z() - 1)));
+    return generic_chunk;
+}
+
+/* ============================================================================
+ * --------------------------- Get_Back_Chunk
+ * Determines the back (negative Z) neighbouring chunk for a given chunk.
+ *
+ * ------ Parameters ------
+ * w           : Reference to the world object containing all sectors and chunks.
+ * chunk       : Pair of the current chunk's location and the chunk itself.
+ * sector      : Pair of the current sector's location and the sector itself.
+ * generic_chunk: A default chunk pointer if the neighbouring chunk is null.
+ *
+ * ------ Returns ------
+ * A pointer to the neighbouring chunk in the negative Z direction,
+ * or generic_chunk if not found.
+ * ============================================================================ */
+const Chunk* Get_Back_Chunk(
+    World& w,
+    const chunk_pair_t    chunk,
+    const sector_pair_t   sector,
+    const Chunk* generic_chunk
+) {
+    /* ---------------------------------------------
+     * current chunk is not at the edge
+     * --------------------------------------------- */
+    if (chunk.first.Z() > MIN_ID_C_Z) {
+        const Chunk* candidate = sector.second.Get_Chunk(
+            chunk_loc_t::Compact(glm::ivec3(
+                chunk.first.X(), chunk.first.Y(), chunk.first.Z() - 1
+            ))
+        );
+        return candidate ? candidate : generic_chunk;
+    }
+
+    /* ---------------------------------------------
+     * current sector is not at the edge
+     * --------------------------------------------- */
+    if (sector.first.Z() > MIN_ID_S_Z) {
+        Sector* next_sector = w.Get_Sector(
+            sector_loc_t::Compact(glm::ivec2(
+                sector.first.X(), sector.first.Z() - 1
+            ))
+        );
+        if (next_sector) {
+            const Chunk* candidate = next_sector->Get_Chunk(
+                chunk_loc_t::Compact(glm::ivec3(
+                    chunk.first.X(), chunk.first.Y(), MAX_ID_C_Z
+                ))
+            );
+            return candidate ? candidate : generic_chunk;
         }
     }
+
+    return generic_chunk;
 }
 
 void Chunk::Generate_Mesh(
-    World& w, const chunk_loc_t chunk_id, const sector_loc_t sector_id, const Chunk& generic_chunk
+    World& w, const chunk_pair_t chunk, const sector_pair_t sector, const Chunk& generic_chunk
 ) {
 
     std::vector<GLfloat>    vertex_mesh;
@@ -181,25 +297,18 @@ void Chunk::Generate_Mesh(
     int vertex_offset = 0;
     int index_offset = 0;
 
-    Sector* curr_s = w.Get_Sector(sector_id);
-    Chunk* curr_c = curr_s->Get_Chunk(chunk_id);
+    Sector* curr_s = &sector.second;
+    Chunk* curr_c = &chunk.second;
 
     // Get neighbouring chunks in X, Y, and Z directions
-    Chunk* r_chunk = Get_X_Neighbour(w, chunk_id, sector_id, true);
-    Chunk* l_chunk = Get_X_Neighbour(w, chunk_id, sector_id, false);
+    const Chunk* r_chunk = Get_Right_Chunk  (w, chunk, sector, &generic_chunk);
+    const Chunk* l_chunk = Get_Left_Chunk   (w, chunk, sector , &generic_chunk);
 
-    Chunk* u_chunk = Get_Y_Neighbour(curr_s, chunk_id, true);
-    Chunk* d_chunk = Get_Y_Neighbour(curr_s, chunk_id, false);
+    const Chunk* u_chunk = Get_Top_Chunk    (w, chunk, sector, &generic_chunk);
+    const Chunk* d_chunk = Get_Bot_Chunk    (w, chunk, sector, &generic_chunk);
 
-    Chunk* f_chunk = Get_Z_Neighbour(w, chunk_id, sector_id, true);
-    Chunk* b_chunk = Get_Z_Neighbour(w, chunk_id, sector_id, false);
-
-    if (r_chunk == nullptr) r_chunk = const_cast<Chunk*>(&generic_chunk);
-    if (l_chunk == nullptr) l_chunk = const_cast<Chunk*>(&generic_chunk);
-    if (u_chunk == nullptr) u_chunk = const_cast<Chunk*>(&generic_chunk);
-    if (d_chunk == nullptr) d_chunk = const_cast<Chunk*>(&generic_chunk);
-    if (f_chunk == nullptr) f_chunk = const_cast<Chunk*>(&generic_chunk);
-    if (b_chunk == nullptr) b_chunk = const_cast<Chunk*>(&generic_chunk);
+    const Chunk* f_chunk = Get_Front_Chunk  (w, chunk, sector, &generic_chunk);
+    const Chunk* b_chunk = Get_Back_Chunk   (w, chunk, sector, &generic_chunk);
 
     /* ======================================================================
      *                           CENTRAL
@@ -691,7 +800,7 @@ void Chunk::Generate_Mesh(
 
     // TOP RIGHT FRONT CORNER
 
-    Voxel* voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
+    const Voxel* voxel = Get_Voxel(glm::ivec3(MAX_ID_V_X, MAX_ID_V_Y, MAX_ID_V_Z), rel_loc_t::CHUNK_LOC);
     if (voxel->IsSolid()){
         cube_faces_t flags = static_cast<cube_faces_t>(0);
         flags = static_cast<cube_faces_t>(

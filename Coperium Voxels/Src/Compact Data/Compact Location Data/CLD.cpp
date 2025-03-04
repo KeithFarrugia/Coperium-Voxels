@@ -217,7 +217,22 @@ void CLD::Shift(const float x, const float y, const float z){
     Set_Y(Get_Y() + y);
     Set_Z(Get_Z() + z);
 }
-
+/* ============================================================================
+ * --------------------------- Scale
+ * Scales the X, Y, and Z components by a given factor.
+ *
+ * ------ Parameters ------
+ * factor: The multiplier to scale each component.
+ *
+ * This function multiplies the current X, Y, and Z values by the factor,
+ * and updates the internal data accordingly.
+ * ============================================================================
+ */
+void CLD::Scale(const float f) {
+    Set_X(Get_X() * f);
+    Set_Y(Get_Y() * f);
+    Set_Z(Get_Z() * f);
+}
 /* ============================================================================
  * --------------------------- Compact
  * Static method to create a compacted float from three float components.

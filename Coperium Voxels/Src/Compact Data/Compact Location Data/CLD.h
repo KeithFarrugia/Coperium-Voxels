@@ -39,6 +39,7 @@ public:
     void    Shift       ( const float x, 
                           const float y,
                           const float z);
+    void    Scale       ( const float f);
 
     static float Compact( const float x, 
                           const float y,
