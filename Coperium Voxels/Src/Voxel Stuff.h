@@ -8,8 +8,8 @@
 #include <COIL/Shaders/Shader.h>
 #include "WorldData/Chunk Mesh Generation/Chunk Mesh.h"
 
-constexpr int GRID_SIZE_F_X = 16;
-constexpr int GRID_SIZE_F_Y = 64;
+constexpr int GRID_SIZE_F_X = 32;
+constexpr int GRID_SIZE_F_Y = 61;
 constexpr int GRID_SIZE_F_Z = 16;
 
 constexpr int GRID_SIZE_S_X = 0;
@@ -18,6 +18,7 @@ constexpr int GRID_SIZE_S_Z = 0;
 
 
 void generate_blocks_and_mesh(World& world) {
+    bool done_one = false;
     Chunk generic_chunk = Chunk();
     Create_Air_Chunk(generic_chunk);
 
@@ -48,7 +49,12 @@ void generate_blocks_and_mesh(World& world) {
     for (sector_pair_t sector : *sectors) {
         chunks_t* chunks = sector.second.Get_All_Chunks();
         for (chunk_pair_t chunk_pair : *chunks) {
-            Generate_Chunk_Mesh(world, chunk_pair, sector, generic_chunk);
+            if (!done_one) {
+                Generate_Chunk_Mesh(world, chunk_pair, sector, generic_chunk, 4);
+                done_one = true;
+            }else {
+                Generate_Chunk_Mesh(world, chunk_pair, sector, generic_chunk);
+            }
         }
     }
     end = std::chrono::high_resolution_clock::now();

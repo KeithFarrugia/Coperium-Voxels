@@ -71,7 +71,7 @@ int main() {
     int     frames = 0;
     auto    start = std::chrono::high_resolution_clock::now();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
     float color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };  // Default to green color
 
     int width, height;

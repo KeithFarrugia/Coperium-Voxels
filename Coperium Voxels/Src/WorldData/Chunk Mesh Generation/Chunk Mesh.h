@@ -79,6 +79,7 @@ const neighbouring_chunks_t get_chunk_neighbours(
     World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);
 
 void Generate_Chunk_Mesh(World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);
+void Generate_Chunk_Mesh(World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk, int l_o_d);
 
 
 #endif // !CHUNK_MESH_GENERATION_H

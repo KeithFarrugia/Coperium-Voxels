@@ -42,14 +42,16 @@ void Add_Face(
     int                     scale
 ){
 
+    float centre_offset = (scale - 1.0f) / 2.0f;
     vertex_mesh.insert(vertex_mesh.end(), vertices, vertices + v_array_size);
-
     for (size_t i = vertex_mesh.size() - v_array_size; i < vertex_mesh.size(); i += v_element_count) {
         CLD loc(vertex_mesh[i]);
         CCD col(vertex_mesh[i + 1]);
 
-        loc.Shift(vert_pos_offset.x+ scale, vert_pos_offset.y+ scale, vert_pos_offset.z+ scale);
-        loc.Scale((float)scale);
+        loc.Scale(scale);
+        loc.Shift(centre_offset, centre_offset, centre_offset);
+        loc.Shift(vert_pos_offset.x, vert_pos_offset.y, vert_pos_offset.z);
+
         col.Scale(vert_colour.r/16, vert_colour.g/16, vert_colour.b/16);
 
         vertex_mesh[i]      = loc.To_Float();
