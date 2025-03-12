@@ -13,7 +13,11 @@
 #include "World Opertions/Location/World_Loc_Data.h"
 #include "World Opertions/Location/World_Loc_Conversion.h"
 
-
+typedef enum class lod_Level_t : int {
+    UNSET   = -1,   NORMAL  =  0,
+    LOD_2   =  2,   LOD_4   =  4,
+    LOD_8   =  8,   LOD_16  = 16
+}lod_Level_t;
 
 
 typedef enum {
@@ -23,13 +27,23 @@ typedef enum {
 
 
 typedef struct vox_data_t {
-    glm::ivec3  position;
-    glm::ivec3  colour;
-    int         type;
-    bool        solid;
-    bool        transparency;
-    rel_loc_t   rel = rel_loc_t::WORLD_LOC;
+    glm::ivec3  position        = glm::ivec3(0);
+    glm::ivec3  colour          = glm::ivec3(0);
+    int         type            = AIR;
+    bool        solid           = false;
+    bool        transparency    = false;
+    rel_loc_t   rel             = rel_loc_t::WORLD_LOC;
 }vox_data_t;
+
+
+typedef struct chunk_data_t {
+    lod_Level_t l_o_d;
+    bool        updated;
+}chunk_data_t;
+
+typedef struct world_data_t {
+
+}world_data_t;
 
 
 

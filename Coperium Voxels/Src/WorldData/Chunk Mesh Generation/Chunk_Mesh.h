@@ -3,6 +3,7 @@
 #define CHUNK_MESH_GENERATION_H
 
 #include "../World.h"
+#include <COIL/Camera/Camera.h>
 
 typedef enum n_chunk_t {
     LEFT_NEIGH      = 0,
@@ -78,8 +79,12 @@ typedef struct neighbouring_chunks_t {
 const neighbouring_chunks_t get_chunk_neighbours(
     World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);
 
-void Generate_Chunk_Mesh(World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);
-void Generate_Chunk_Mesh(World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk, int l_o_d);
+void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk);
+void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk, int l_o_d);
+
+void Generate_Single_Chunk(World& world, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const glm::vec3& camera_pos);
+void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera);
+
 
 
 #endif // !CHUNK_MESH_GENERATION_H

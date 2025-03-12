@@ -32,7 +32,7 @@ private:
 
     sectors_t sectors;
 
-
+    world_data_t world_data;
 };
 
 
@@ -49,6 +49,8 @@ public:
 
     void Create_Voxel(vox_data_t data);
     void Create_Chunk(glm::ivec3 pos, rel_loc_t rel);
+
+    void Add_Chunk   (glm::ivec3 chunk_id, const Chunk& chunk);
 
     void Remove_Voxel(glm::ivec3 pos, rel_loc_t rel);
     void Remove_Chunk(glm::ivec3 pos, rel_loc_t rel);
@@ -80,11 +82,23 @@ public:
 
     voxels_t* Get_All_Voxels();
 
-    //void Generate_Mesh(World& w, const chunk_pair_t chunk, const sector_pair_t sector, const Chunk& generic_chunk);
-    void Draw_Mesh();
-public:
+    Coil::Basic_Mesh& Get_Mesh();
+    void Set_Mesh(const Coil::Basic_Mesh& newMesh);
+
+    void Draw_Mesh(); 
+
+
+    chunk_data_t& Get_Chunk_Data();          // Non-const reference
+    const chunk_data_t& Get_Chunk_Data() const;    // Const reference
+    void Set_Chunk_Data(const chunk_data_t& new_data);
+
+
+    void serialize  (std::ostream& out  );
+    void deserialize(std::istream& in   );
+private:
     Coil::Basic_Mesh mesh;
     voxels_t voxels;
+    chunk_data_t chunk_data;
 };
 
 

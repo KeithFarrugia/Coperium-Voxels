@@ -112,8 +112,9 @@ Sector* World::Get_Sector(sector_loc_t id){
  * ============================================================================
  */
 void World::Create_Voxel(vox_data_t data) {
+    glm::ivec3 res = Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::SECTOR_LOC);
     sector_loc_t loc = sector_loc_t::Compact(
-        Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::SECTOR_LOC)
+        res
     );
 
     Sector* s = sectors.Find(loc);

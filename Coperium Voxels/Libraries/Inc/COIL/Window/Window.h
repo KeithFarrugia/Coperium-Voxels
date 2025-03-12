@@ -3,7 +3,7 @@
 #define COIL_WINDOW_H
 
 // --------------------------------- External Includes
-#include <GLAD/glad.h>
+#include <GLFW/glfw3.h>
 #include <functional>
 #include <vector>
 #include <mutex>

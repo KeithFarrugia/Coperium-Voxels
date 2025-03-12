@@ -156,6 +156,30 @@
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Get_Chunk_Neighbours.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Voxel_Operations.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_N_Mesh_Gen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Calc_LOD.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Gen_Chunk_Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk_Management\Set_Neighbours_Update.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk_Management\Unload_Chunks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk_Management\Load_Chunks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk_Management\Update_Chunks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
@@ -1172,7 +1196,16 @@
     <ClInclude Include="Src\Imgui_setup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk Mesh.h">
+    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk_Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Operations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Sector_Operations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WorldData\Chunk_Management\Manage_Chunks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1611,6 +1644,8 @@
     <None Include="Resources\Shaders\deferred.frag" />
     <None Include="Resources\Shaders\quad.vert" />
     <None Include="Resources\Shaders\quad.frag" />
+    <None Include="teapot.vox" />
+    <None Include="monu1.vox" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />

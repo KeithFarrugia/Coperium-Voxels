@@ -200,6 +200,14 @@
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Get_Chunk_Neighbours.cpp" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_1_Mesh_Gen.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_N_Mesh_Gen.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Calc_LOD.h" />
+    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Gen_Chunk_Mesh.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Set_Neighbours_Update.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Load_Chunks.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Unload_Chunks.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Update_Chunks.cpp" />
+    <ClCompile Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Voxel_Operations.h" />
     <ClCompile Include="Src\WorldData\World Opertions\Safe_Operations.h" />
     <ClCompile Include="Src\WorldData\Sector.cpp" />
     <ClCompile Include="Src\WorldData\Chunk.cpp" />
@@ -542,10 +550,13 @@
     <ClInclude Include="Src\Imgui_setup.h" />
     <ClInclude Include="Src\Voxel Stuff.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
-    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk Mesh.h" />
+    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk_Mesh.h" />
+    <ClInclude Include="Src\WorldData\Chunk_Management\Manage_Chunks.h" />
     <ClInclude Include="Src\WorldData\CommonWD.h" />
     <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h" />
     <ClInclude Include="Src\WorldData\World Opertions\Location\World_Loc_Conversion.h" />
+    <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Operations.h" />
+    <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Sector_Operations.h" />
     <ClInclude Include="Src\WorldData\World.h" />
     <ClInclude Include="Src\WorldData\World Opertions\Location\World_Loc_Data.h" />
     <ClInclude Include="Src\WorldData\World Opertions\World_Constants.h" />
@@ -694,6 +705,7 @@
     <None Include="Libraries\Inc\GLM\gtx\vector_angle.inl" />
     <None Include="Libraries\Inc\GLM\gtx\vector_query.inl" />
     <None Include="Libraries\Inc\GLM\gtx\wrap.inl" />
+    <None Include="monu1.vox" />
     <None Include="Readme.md" />
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\basic.vert" />
@@ -705,6 +717,7 @@
     <None Include="Resources\Shaders\deferred.vert" />
     <None Include="Resources\Shaders\quad.frag" />
     <None Include="Resources\Shaders\quad.vert" />
+    <None Include="teapot.vox" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Extras\Testing Conversion.txt" />

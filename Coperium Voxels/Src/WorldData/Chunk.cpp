@@ -5,7 +5,7 @@
  * Constructor for Chunk class, initializing a new chunk
  * ============================================================================
  */
-Chunk::Chunk() {
+Chunk::Chunk() : chunk_data({ lod_Level_t::UNSET, true}) {  // Default LOD to 1.0
     voxels.resize(MAX_VOX_LOC);
     mesh = Coil::Basic_Mesh();
 }
@@ -15,8 +15,10 @@ Chunk::Chunk() {
  * Copy Constructor
  * ============================================================================
  */
-Chunk::Chunk(const Chunk& other){
+Chunk::Chunk(const Chunk& other) {
     voxels = other.voxels;
+    mesh = other.mesh;
+    chunk_data= other.chunk_data;
 }
 
 /* ============================================================================
@@ -119,6 +121,24 @@ voxels_t* Chunk::Get_All_Voxels() {
 }
 
 
+/* ============================================================================
+ * --------------------------- Get_Mesh
+ * Returns a reference to the mesh
+ * ============================================================================
+ */
+Coil::Basic_Mesh& Chunk::Get_Mesh() {
+    return mesh;
+}
+
+/* ============================================================================
+ * --------------------------- Set_Mesh
+ * Sets a new mesh for the chunk
+ * ============================================================================
+ */
+void Chunk::Set_Mesh(const Coil::Basic_Mesh& newMesh) {
+    mesh = newMesh;
+}
+
 
 
 /* ============================================================================
@@ -129,4 +149,42 @@ voxels_t* Chunk::Get_All_Voxels() {
 
 void Chunk::Draw_Mesh(){
     mesh.Draw_Mesh(false);
+}
+
+
+/* ============================================================================
+ * --------------------------- Get_Chunk_Data (Reference)
+ * Returns a reference to the chunk data so it can be modified directly.
+ * ============================================================================
+ */
+chunk_data_t& Chunk::Get_Chunk_Data() {
+    return chunk_data;
+}
+
+const chunk_data_t& Chunk::Get_Chunk_Data() const {
+    return chunk_data;
+}
+
+
+/* ============================================================================
+ * --------------------------- Set_Chunk_Data
+ * Sets a new chunk data structure.
+ * ============================================================================
+ */
+void Chunk::Set_Chunk_Data(const chunk_data_t& new_data) {
+    chunk_data = new_data;
+}
+
+void Chunk::serialize(std::ostream& out) {
+    size_t size = voxels.size();
+    out.write(reinterpret_cast<const char*>(&size), sizeof(size)); // write vector size
+    out.write(reinterpret_cast<const char*>(voxels.data()), size * sizeof(Voxel)); // write voxel data
+}
+
+// Deserialize the chunk
+void Chunk::deserialize(std::istream& in) {
+    size_t size;
+    in.read(reinterpret_cast<char*>(&size), sizeof(size)); // read vector size
+    voxels.resize(size);
+    in.read(reinterpret_cast<char*>(voxels.data()), size * sizeof(Voxel)); // read voxel data
 }

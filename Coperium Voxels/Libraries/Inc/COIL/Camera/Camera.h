@@ -2,13 +2,10 @@
 #ifndef COIL_CAMERA_H
 #define COIL_CAMERA_H
 #include <GLM/glm.hpp>
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 #include <queue>
 
-#include "../Utility.h"
 #include "../Window/Window.h"
 
 

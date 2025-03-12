@@ -1,3 +1,4 @@
+#include <COIL/Utility/Initializer.h>
 #include <COIL/Utility.h>
 #include <COIL/Shaders/Shader.h>
 #include <COIL/Mesh/Basic_Mesh.h>
@@ -57,10 +58,12 @@ int main() {
     setupWindow(window);
 
     World w;
-    generate_blocks_and_mesh(w);
+    VoxData voxData = readVoxFile("teapot.vox");
+    importVoxelsToWorld(w, voxData);
+    //generate_blocks(w);
 
 
-    Coil::Fly_Camera camera(window, 0, -1, 1);
+    Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
 
     // Initialize ImGui
@@ -85,7 +88,7 @@ int main() {
     // - position color buffer
     glGenTextures(1, &gPosition);
     glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB10_A2, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_10_10_10_2, NULL);;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
@@ -93,7 +96,7 @@ int main() {
     // - normal color buffer
     glGenTextures(1, &gNormal);
     glBindTexture(GL_TEXTURE_2D, gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB10_A2, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_10_10_10_2, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
@@ -101,7 +104,7 @@ int main() {
     // - color + specular color buffer
     glGenTextures(1, &gColorSpec);
     glBindTexture(GL_TEXTURE_2D, gColorSpec);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB10_A2, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_10_10_10_2, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gColorSpec, 0);
@@ -145,8 +148,9 @@ int main() {
      *                                  Render
      * ============================================================================
      */
-
-     // Main rendering loop
+    //Update_Chunks(w, camera);
+    //Testing_STUFF(w, camera);
+    // Main rendering loop
     while (!window.Is_Closed()) {
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -161,7 +165,7 @@ int main() {
         buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         buffer_shader.Set_Matrix4("model", model);
 
-        // Render voxels
+        Generate_All_Chunk_Meshes(w, camera);
         render_voxels(w, buffer_shader, vertex_offset);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -182,6 +186,7 @@ int main() {
         // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
         glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
         // Calculate FPS
         calculateFPS(frames, start, fps);

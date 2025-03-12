@@ -12,6 +12,7 @@
 
 // --------------------------------- Internal Includes
 #include "../Utility.h"
+#include <GLAD/glad.h>
 
 namespace Coil {
 
