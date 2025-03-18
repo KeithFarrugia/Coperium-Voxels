@@ -16,7 +16,7 @@ constexpr int FACE_INDEX_SIZE   = 6;    // number of indices per face
 constexpr int FACE_VERT_SIZE    = 20;   // Length of face vertex array in floats
 constexpr int FACE_NUM_ELEMENTS = 5;    // Length of number of floats in a vertex
 
-typedef enum  {
+typedef enum cube_faces_t : uint8_t {
     FRONT_FACE  =   0x1 << 0,  // 1st bit
     BACK_FACE   =   0x1 << 1,  // 2nd bit
     LEFT_FACE   =   0x1 << 2,  // 3rd bit
@@ -28,9 +28,26 @@ typedef enum  {
                     LEFT_FACE   | 
                     RIGHT_FACE  | 
                     TOP_FACE    | 
-                    BOTTOM_FACE
-}cube_faces_t;
+                    BOTTOM_FACE,
+    FRONT_SHIFT  = 0,
+    BACK_SHIFT   = 1,
+    LEFT_SHIFT   = 2,
+    RIGHT_SHIFT  = 3,
+    TOP_SHIFT    = 4,
+    BOTTOM_SHIFT = 5
 
+}cube_faces_t;
+inline cube_faces_t operator|(cube_faces_t lhs, cube_faces_t rhs) {
+    return static_cast<cube_faces_t>(
+        static_cast<std::underlying_type_t<cube_faces_t>>(lhs) |
+        static_cast<std::underlying_type_t<cube_faces_t>>(rhs)
+        );
+}
+
+inline cube_faces_t& operator|=(cube_faces_t& lhs, cube_faces_t rhs) {
+    lhs = lhs | rhs;
+    return lhs;
+}
 const GLfloat FRONT_FACE_MESH   [] = {
     CLD::Compact(-0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,
     CLD::Compact( 0.5f,  0.5f,  0.5f), CCD::Compact(1.0f, 1.0f, 1.0f),        0.0f,  0.0f,  1.0f,

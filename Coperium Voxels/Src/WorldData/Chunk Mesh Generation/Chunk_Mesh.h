@@ -4,6 +4,8 @@
 
 #include "../World.h"
 #include <COIL/Camera/Camera.h>
+#include "../../Compact Data/Cube Mesh/CCMS.h"
+#include <bitset>
 
 typedef enum n_chunk_t {
     LEFT_NEIGH      = 0,
@@ -75,7 +77,10 @@ typedef struct neighbouring_chunks_t {
 
 } neighbouring_chunks_t;
 
-
+extern int total_faces_generated;
+static inline int Count_Set_Bits(cube_faces_t flags) {
+    return std::bitset<8>(static_cast<uint8_t>(flags)).count();
+}
 const neighbouring_chunks_t get_chunk_neighbours(
     World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);
 
@@ -84,7 +89,7 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, con
 
 void Generate_Single_Chunk(World& world, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const glm::vec3& camera_pos);
 void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera);
-
+void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera);
 
 
 #endif // !CHUNK_MESH_GENERATION_H

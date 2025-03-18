@@ -59,10 +59,8 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
                 if (num_air >= l_o_d * l_o_d * l_o_d) continue;
 
                 // Check neighboring faces for chunk boundaries
-                bool 
-                    right_face  = false, top_face = false, front_face   = false,
-                    left_face   = false, bot_face = false, back_face    = false;
-
+                cube_faces_t flags_air      = static_cast<cube_faces_t>(0);
+                cube_faces_t flags_solid    = static_cast<cube_faces_t>(0);
                 Chunk
                     * r_c = c_neighbours.Get_Right  (x + l_o_d - 1),
                     * t_c = c_neighbours.Get_Up     (y + l_o_d - 1),
@@ -71,28 +69,53 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
                     * d_c = c_neighbours.Get_Down   (y),
                     * b_c = c_neighbours.Get_Back   (z);
 
+                cube_faces_t lod_flags = static_cast<cube_faces_t>(
+                    ((r_c->Get_Chunk_Data().l_o_d >= l_o_d)) << RIGHT_SHIFT     |
+                    ((l_c->Get_Chunk_Data().l_o_d >= l_o_d)) << LEFT_SHIFT      |
+                    ((t_c->Get_Chunk_Data().l_o_d >= l_o_d)) << TOP_SHIFT       |
+                    ((d_c->Get_Chunk_Data().l_o_d >= l_o_d)) << BOTTOM_SHIFT    |
+                    ((f_c->Get_Chunk_Data().l_o_d >= l_o_d)) << FRONT_SHIFT     |
+                    ((b_c->Get_Chunk_Data().l_o_d >= l_o_d)) << BACK_SHIFT
+                );
+                using u8 = std::underlying_type_t<cube_faces_t>;
                 for (int i = 0; i < l_o_d; i++) {
                     for (int j = 0; j < l_o_d; j++) {
-                        right_face  |= r_c->Get_Voxel(glm::ivec3(vox_inc_x(x, l_o_d), y + i, z + j))->IsAir();
-                        left_face   |= l_c->Get_Voxel(glm::ivec3(vox_dec_x(x, l_o_d), y + i, z + j))->IsAir();
-                        top_face    |= t_c->Get_Voxel(glm::ivec3(x + i, vox_inc_y(y, l_o_d), z + j))->IsAir();
-                        bot_face    |= d_c->Get_Voxel(glm::ivec3(x + i, vox_dec_y(y, l_o_d), z + j))->IsAir();
-                        front_face  |= f_c->Get_Voxel(glm::ivec3(x + i, y + j, vox_inc_z(z, l_o_d)))->IsAir();
-                        back_face   |= b_c->Get_Voxel(glm::ivec3(x + i, y + j, vox_dec_z(z, l_o_d)))->IsAir();
+                        bool right_is_block     = r_c->Get_Voxel({ vox_inc_x(x, l_o_d), y + i, z + j })->IsAir();
+                        bool left_is_block      = l_c->Get_Voxel({ vox_dec_x(x, l_o_d), y + i, z + j })->IsAir();
+                        bool top_is_block       = t_c->Get_Voxel({ x + i, vox_inc_y(y, l_o_d), z + j })->IsAir();
+                        bool bottom_is_block    = d_c->Get_Voxel({ x + i, vox_dec_y(y, l_o_d), z + j })->IsAir();
+                        bool front_is_block     = f_c->Get_Voxel({ x + i, y + j, vox_inc_z(z, l_o_d) })->IsAir();
+                        bool back_is_block      = b_c->Get_Voxel({ x + i, y + j, vox_dec_z(z, l_o_d) })->IsAir();
+
+                        flags_air |= static_cast<cube_faces_t>(
+                            (static_cast<u8>(right_is_block ) << RIGHT_SHIFT    ) |
+                            (static_cast<u8>(left_is_block  ) << LEFT_SHIFT     ) |
+                            (static_cast<u8>(top_is_block   ) << TOP_SHIFT      ) |
+                            (static_cast<u8>(bottom_is_block) << BOTTOM_SHIFT   ) |
+                            (static_cast<u8>(front_is_block ) << FRONT_SHIFT    ) |
+                            (static_cast<u8>(back_is_block  ) << BACK_SHIFT     )
+                        );
+
+                        // Update block presence flag
+                        flags_solid |= static_cast<cube_faces_t>(
+                            (static_cast<u8>(!right_is_block ) << RIGHT_SHIFT    ) |
+                            (static_cast<u8>(!left_is_block  ) << LEFT_SHIFT     ) |
+                            (static_cast<u8>(!top_is_block   ) << TOP_SHIFT      ) |
+                            (static_cast<u8>(!bottom_is_block) << BOTTOM_SHIFT   ) |
+                            (static_cast<u8>(!front_is_block ) << FRONT_SHIFT    ) |
+                            (static_cast<u8>(!back_is_block  ) << BACK_SHIFT     )
+                        );
                     }
                 }
-
-                cube_faces_t flags = static_cast<cube_faces_t>(
-                    (right_face << 3) |
-                    (left_face  << 2) |
-                    (top_face   << 4) |
-                    (bot_face   << 5) |
-                    (front_face << 0) |
-                    (back_face  << 1)
+                // --- Final Flag Register ---
+                // For each face, if the neighbor's LOD is high (lod_flags set) and there is a block (flags_solid set)
+                // then we cull (set final flag bit to 0); otherwise, we keep the air flag bit.
+                cube_faces_t final_flags = static_cast<cube_faces_t>(
+                    static_cast<u8>(flags_air) & ~(static_cast<u8>(lod_flags) & static_cast<u8>(flags_solid))
                 );
-
+                total_faces_generated += Count_Set_Bits(final_flags); // Track the total faces
                 // Add the cube mesh with the smoothed average color
-                Add_Cube_Mesh(glm::ivec3(x, y, z), average_color, vertex_mesh, index_mesh, vertex_offset, index_offset, flags, l_o_d);
+                Add_Cube_Mesh(glm::ivec3(x, y, z), average_color, vertex_mesh, index_mesh, vertex_offset, index_offset, final_flags, l_o_d);
             }
         }
     }

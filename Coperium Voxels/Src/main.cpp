@@ -58,7 +58,7 @@ int main() {
     setupWindow(window);
 
     World w;
-    VoxData voxData = readVoxFile("teapot.vox");
+    VoxData voxData = readVoxFile("monu1.vox");
     importVoxelsToWorld(w, voxData);
     //generate_blocks(w);
 
@@ -151,6 +151,16 @@ int main() {
     //Update_Chunks(w, camera);
     //Testing_STUFF(w, camera);
     // Main rendering loop
+
+    auto meshGenStart = std::chrono::high_resolution_clock::now();  // Start time
+
+    Generate_All_Chunk_Meshes_LOD_PASS(w, camera);
+
+    auto meshGenEnd = std::chrono::high_resolution_clock::now();  // End time
+
+    std::chrono::duration<double, std::milli> meshGenDuration = meshGenEnd - meshGenStart;
+    std::cout << "Generate_All_Chunk_Meshes took " << meshGenDuration.count() << " ms\n";
+
     while (!window.Is_Closed()) {
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -165,7 +175,6 @@ int main() {
         buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         buffer_shader.Set_Matrix4("model", model);
 
-        Generate_All_Chunk_Meshes(w, camera);
         render_voxels(w, buffer_shader, vertex_offset);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

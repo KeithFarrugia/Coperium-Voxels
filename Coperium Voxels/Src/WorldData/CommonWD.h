@@ -19,6 +19,19 @@ typedef enum class lod_Level_t : int {
     LOD_8   =  8,   LOD_16  = 16
 }lod_Level_t;
 
+constexpr bool operator>=(lod_Level_t lhs, lod_Level_t rhs) {
+    return static_cast<int>(lhs) >= static_cast<int>(rhs);
+}
+
+// Compare a lod_Level_t with an int.
+constexpr bool operator>=(lod_Level_t lhs, int rhs) {
+    return static_cast<int>(lhs) >= rhs;
+}
+
+// Compare an int with a lod_Level_t.
+constexpr bool operator>=(int lhs, lod_Level_t rhs) {
+    return lhs >= static_cast<int>(rhs);
+}
 
 typedef enum {
     AIR,
