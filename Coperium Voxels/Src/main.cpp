@@ -58,7 +58,7 @@ int main() {
     setupWindow(window);
 
     World w;
-    VoxData voxData = readVoxFile("monu1.vox");
+    VoxData voxData = readVoxFile("teapot.vox");
     importVoxelsToWorld(w, voxData);
     //generate_blocks(w);
 
@@ -88,7 +88,7 @@ int main() {
     // - position color buffer
     glGenTextures(1, &gPosition);
     glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB10_A2, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_10_10_10_2, NULL);;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
