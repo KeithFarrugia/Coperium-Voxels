@@ -7,7 +7,7 @@ constexpr glm::vec3 HALF_CHUNK = glm::vec3(
     CHUNK_SIZE_Z * 0.5f
 );
 
-constexpr float chunk_unload_rad = 4;
+constexpr float chunk_unload_rad = 10;
 float unload_treshold = chunk_unload_rad * CHUNK_SIZE_X * chunk_unload_rad * CHUNK_SIZE_Z;
 
 /* ============================================================================
@@ -44,44 +44,44 @@ void Unload_Chunk(const sector_pair_t& sector_pair, const chunk_pair_t& chunk_pa
  * ============================================================================
  */
 void Unload_Far_Chunks(World& world, const glm::ivec3& curr_position) {
-    //const glm::vec2 camPosXZ = glm::vec2(curr_position.x, curr_position.z);  // Only XZ components
+    const glm::vec2 camPosXZ = glm::vec2(curr_position.x, curr_position.z);  // Only XZ components
 
-    //sectors_t* sectors = world.Get_All_Sectrs();
+    sectors_t* sectors = world.Get_All_Sectrs();
 
-    //for (auto sector_pair : *sectors) {
-    //    glm::ivec3 offset = glm::ivec3(
-    //        sector_pair.first.X() * SECTR_SIZE_X,
-    //        0,
-    //        sector_pair.first.Z() * SECTR_SIZE_Z
-    //    );
+    for (auto sector_pair : *sectors) {
+        glm::ivec3 offset = glm::ivec3(
+            sector_pair.first.X() * SECTR_SIZE_X,
+            0,
+            sector_pair.first.Z() * SECTR_SIZE_Z
+        );
 
-    //    auto* chunks = sector_pair.second.Get_All_Chunks();
+        auto* chunks = sector_pair.second.Get_All_Chunks();
 
-    //    // Collect chunks to unload
-    //    std::vector<chunk_loc_t> chunks_to_remove;
+        // Collect chunks to unload
+        std::vector<chunk_loc_t> chunks_to_remove;
 
-    //    for (auto chunk_pair : *chunks) {
-    //        glm::vec2 chunk_posXZ(
-    //            offset.x + chunk_pair.first.X() * CHUNK_SIZE_X,
-    //            offset.z + chunk_pair.first.Z() * CHUNK_SIZE_Z
-    //        );
+        for (auto chunk_pair : *chunks) {
+            glm::vec2 chunk_posXZ(
+                offset.x + chunk_pair.first.X() * CHUNK_SIZE_X,
+                offset.z + chunk_pair.first.Z() * CHUNK_SIZE_Z
+            );
 
-    //        glm::vec2 chunk_centerXZ = chunk_posXZ + glm::vec2(HALF_CHUNK.x, HALF_CHUNK.z);
-    //        float distSq = glm::distance2(camPosXZ, chunk_centerXZ);
+            glm::vec2 chunk_centerXZ = chunk_posXZ + glm::vec2(HALF_CHUNK.x, HALF_CHUNK.z);
+            float distSq = glm::distance2(camPosXZ, chunk_centerXZ);
 
-    //        if (distSq > unload_treshold) {
-    //            Unload_Chunk(sector_pair, chunk_pair);
-    //            chunks_to_remove.push_back(chunk_pair.first);
-    //        }
-    //    }
+            if (distSq > unload_treshold) {
+                Unload_Chunk(sector_pair, chunk_pair);
+                chunks_to_remove.push_back(chunk_pair.first);
+            }
+        }
 
-    //    // Remove chunks after iteration
-    //    for (const auto& chunk_loc : chunks_to_remove) {
-    //        sector_pair.second.Remove_Chunk(glm::ivec3(chunk_loc.X(), chunk_loc.Y(), chunk_loc.Z()), rel_loc_t::CHUNK_LOC);
-    //        Set_Neighbours_to_Update(world, 
-    //            glm::ivec3(sector_pair.first.X(),       0       , sector_pair.first .Z()), 
-    //            glm::ivec3(chunk_loc        .X(), chunk_loc.Y() , chunk_loc         .Z())
-    //        );
-    //    }
-    //}
+        // Remove chunks after iteration
+        for (const auto& chunk_loc : chunks_to_remove) {
+            sector_pair.second.Remove_Chunk(glm::ivec3(chunk_loc.X(), chunk_loc.Y(), chunk_loc.Z()), rel_loc_t::CHUNK_LOC);
+            Set_Neighbours_to_Update(world, 
+                glm::ivec3(sector_pair.first.X(),       0       , sector_pair.first .Z()), 
+                glm::ivec3(chunk_loc        .X(), chunk_loc.Y() , chunk_loc         .Z())
+            );
+        }
+    }
 }

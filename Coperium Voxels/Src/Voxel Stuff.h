@@ -11,13 +11,13 @@
 #include "WorldData/World Opertions/Wrap Operations/Wrap_Chunk_Sector_Operations.h"
 #include "WorldData/Chunk_Management/Manage_Chunks.h"
 
-constexpr int GRID_SIZE_F_X = 32;
+constexpr int GRID_SIZE_F_X = 128;
 constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 16;
+constexpr int GRID_SIZE_F_Z = 128;
 
-constexpr int GRID_SIZE_S_X = 0;
+constexpr int GRID_SIZE_S_X = -128;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = 0;
+constexpr int GRID_SIZE_S_Z = -128;
 
 glm::ivec3 last_position;
 #include <iostream>
@@ -127,31 +127,49 @@ void generate_blocks(World& world) {
 
 
 
-void render_voxels(World& world, Coil::Shader& shader, GLuint vertex_offset) {
-    auto start_time = std::chrono::high_resolution_clock::now();  // Start timing
+void render_voxels(World& world, Coil::Shader& shader, GLuint vertex_offset, const Coil::Camera& camera) {
+    auto start_time = std::chrono::high_resolution_clock::now();
 
+    // Precompute camera values for this frame.
+    glm::vec3 camPos = camera.Get_Position();
+    glm::vec3 camFront = camera.Get_Front(); // assumed normalized
+
+    // Get all sectors from the world.
     sectors_t* sectors = world.Get_All_Sectrs();
     for (auto sector : *sectors) {
+        // (Optional) Sector-level culling could be inserted here if sectors have bounding volumes.
+
+        // Get the chunks for this sector.
         chunks_t* chunks = sector.second.Get_All_Chunks();
         for (auto pair : *chunks) {
 
-            glm::ivec3 offset = glm::vec3(
+            // Compute the world-space offset for this chunk.
+            glm::ivec3 offset = glm::ivec3(
                 pair.first.X() * CHUNK_SIZE_X + sector.first.X() * SECTR_SIZE_X,
                 pair.first.Y() * CHUNK_SIZE_Y,
                 pair.first.Z() * CHUNK_SIZE_Z + sector.first.Z() * SECTR_SIZE_Z
             );
-            shader.Set_Vec3(vertex_offset, offset);
 
+            // Compute vector from the camera's position to the chunk.
+            glm::vec3 camToChunk = glm::vec3(offset) - camPos;
+
+            // Dot product with the normalized camera front.
+            // No need to normalize camToChunk since sign of dot product is sufficient.
+            if (glm::dot(camToChunk, camFront) <= 0.0f) {
+                continue; // Skip rendering this chunk if it's behind the camera.
+            }
+
+            // Otherwise, set the shader uniform and draw the mesh.
+            shader.Set_Vec3(vertex_offset, offset);
             pair.second.Draw_Mesh();
         }
-    };
+    }
 
-    auto end_time = std::chrono::high_resolution_clock::now();  // End timing
-
-    // Calculate the duration in milliseconds
+    auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 
-    //std::cout << "render_voxels took " << duration << " ms" << std::endl;
+    // Optional: print or log the rendering time.
+    // std::cout << "render_voxels took " << duration << " microseconds." << std::endl;
 }
 
 #endif // !VOXEL_STUFF_H

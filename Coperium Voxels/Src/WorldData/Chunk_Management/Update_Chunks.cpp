@@ -22,5 +22,5 @@ void Update_Chunks(World& world, Coil::Camera& camera) {
     Unload_Far_Chunks(world, curr_position);
 
     // Load new chunks near the current chunk.
-    LoadNewChunks(world, current_sector, current_chunk);
+    //LoadNewChunks(world, current_sector, current_chunk);
 }

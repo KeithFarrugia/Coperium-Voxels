@@ -58,9 +58,9 @@ int main() {
     setupWindow(window);
 
     World w;
-    VoxData voxData = readVoxFile("teapot.vox");
-    importVoxelsToWorld(w, voxData);
-    //generate_blocks(w);
+    VoxData voxData = readVoxFile("monu1.vox");
+    //importVoxelsToWorld(w, voxData);
+    generate_blocks(w);
 
 
     Coil::Fly_Camera camera(window, 0, 65, 0);
@@ -154,7 +154,6 @@ int main() {
 
     auto meshGenStart = std::chrono::high_resolution_clock::now();  // Start time
 
-    Generate_All_Chunk_Meshes_LOD_PASS(w, camera);
 
     auto meshGenEnd = std::chrono::high_resolution_clock::now();  // End time
 
@@ -174,8 +173,9 @@ int main() {
         buffer_shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
         buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         buffer_shader.Set_Matrix4("model", model);
-
-        render_voxels(w, buffer_shader, vertex_offset);
+        Update_Chunks(w, camera);
+        Generate_All_Chunk_Meshes_LOD_PASS(w, camera);
+        render_voxels(w, buffer_shader, vertex_offset, camera);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
