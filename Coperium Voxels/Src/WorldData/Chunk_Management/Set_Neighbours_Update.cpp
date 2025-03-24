@@ -24,7 +24,7 @@ const Offset offsets[] = {
  */
 #include <iostream> // For printing
 
-void Set_Neighbours_to_Update(
+void Set_Neighbours_to_Update_Debug(
     World& world, const glm::ivec3& sector, const glm::ivec3& chunk
 ) {
     std::cout << "Starting Chunk: (" << chunk.x << ", " << chunk.y << ", " << chunk.z
@@ -88,3 +88,46 @@ void Set_Neighbours_to_Update(
     }
 }
 
+void Set_Neighbours_to_Update(
+    World& world, const glm::ivec3& sector, const glm::ivec3& chunk
+) {
+    if (
+        Sector* curr_sector =
+        world.Get_Sector(sector, rel_loc_t::SECTOR_LOC)
+        ) {
+        if (
+            Chunk* curr_chunk =
+            curr_sector->Get_Chunk(chunk, rel_loc_t::CHUNK_LOC)
+            ) {
+            curr_chunk->Get_Chunk_Data().updated = true;
+        }
+    }
+
+    for (auto off : offsets) {
+        glm::ivec3
+            n_sector_pos = glm::ivec3(0),
+            n_chunk_pos = glm::ivec3(0);
+
+        wrap_chunk_sec_x(
+            sector.x, chunk.x, off.dx, n_sector_pos.x, n_chunk_pos.x
+        );
+        wrap_chunk_sec_y(
+            sector.y, chunk.y, off.dy, n_sector_pos.y, n_chunk_pos.y
+        );
+        wrap_chunk_sec_z(
+            sector.z, chunk.z, off.dz, n_sector_pos.z, n_chunk_pos.z
+        );
+
+        if (
+            Sector* n_sector =
+            world.Get_Sector(n_sector_pos, rel_loc_t::SECTOR_LOC)
+            ) {
+            if (
+                Chunk* n_chunk =
+                n_sector->Get_Chunk(n_chunk_pos, rel_loc_t::CHUNK_LOC)
+                ) {
+                n_chunk->Get_Chunk_Data().updated = true;
+            }
+        }
+    }
+}

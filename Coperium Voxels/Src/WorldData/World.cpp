@@ -168,6 +168,19 @@ void World::Create_Sector(glm::ivec3 pos, rel_loc_t rel) {
         Sector()
     );
 }
+/* ============================================================================
+ * --------------------------- Create_Sector
+ * Creates a new sector at the specified position and relative location.
+ *
+ * ------ Parameters ------
+ * id :   precompacted location.
+ * ============================================================================
+ */
+void World::Create_Sector(sector_loc_t id){
+    sectors.Insert(
+        id, Sector()
+    );
+}
 
 /* ============================================================================
  * --------------------------- Remove_Voxel

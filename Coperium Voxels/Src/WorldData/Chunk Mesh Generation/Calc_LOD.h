@@ -12,7 +12,7 @@
 
 
 
-inline constexpr float THRESH_SQ0 = 0.0f * 0.0f;
+inline constexpr float THRESH_SQ0 = 1000.0f * 1000.0f;
 inline constexpr float THRESH_SQ1 = 1000.0f * 1000.0f;
 inline constexpr float THRESH_SQ2 = 3000.0f * 3000.0f;
 inline constexpr float THRESH_SQ3 = 8000.0f * 8000.0f;

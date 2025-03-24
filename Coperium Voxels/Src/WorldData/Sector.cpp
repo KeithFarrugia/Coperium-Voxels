@@ -137,6 +137,10 @@ void Sector::Add_Chunk(glm::ivec3 chunk_id, const Chunk& chunk) {
     chunks.Insert(chunk_loc_t::Compact(chunk_id), chunk);
 }
 
+void Sector::Add_Chunk(chunk_loc_t chunk_id, const Chunk& chunk){
+    chunks.Insert(chunk_id, chunk);
+}
+
 /* ============================================================================
  * --------------------------- Remove_Voxel
  * Removes a voxel from the sector at the specified position and hierarchy.

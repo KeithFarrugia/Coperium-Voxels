@@ -79,7 +79,7 @@ typedef struct neighbouring_chunks_t {
 
 extern int total_faces_generated;
 static inline int Count_Set_Bits(cube_faces_t flags) {
-    return std::bitset<8>(static_cast<uint8_t>(flags)).count();
+    return static_cast<int>(std::bitset<8>(static_cast<uint8_t>(flags)).count());
 }
 const neighbouring_chunks_t get_chunk_neighbours(
     World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);

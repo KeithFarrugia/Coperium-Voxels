@@ -198,13 +198,17 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\Source.cpp" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Get_Chunk_Neighbours.cpp" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_1_Mesh_Gen.cpp" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_N_Mesh_Gen.cpp" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Calc_LOD.h" />
     <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Gen_Chunk_Mesh.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Load_All_Chunks.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Set_Neighbours_Update.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Load_Chunks.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Store_&amp;_Read.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Store_All_Chunks.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Unload_Chunks.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Update_Chunks.cpp" />
     <ClCompile Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Voxel_Operations.h" />
@@ -216,6 +220,7 @@
     <ClCompile Include="Src\WorldData\World.cpp" />
     <ClCompile Include="Src\WorldData\World Opertions\Location\Chunk_Location.h" />
     <ClCompile Include="Src\WorldData\World Opertions\Location\Voxel_Location.h" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h" />
@@ -554,6 +559,7 @@
     <ClInclude Include="Src\WorldData\Chunk_Management\Manage_Chunks.h" />
     <ClInclude Include="Src\WorldData\CommonWD.h" />
     <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h" />
+    <ClInclude Include="Src\WorldData\Chunk_Management\WorldManager.h" />
     <ClInclude Include="Src\WorldData\World Opertions\Location\World_Loc_Conversion.h" />
     <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Operations.h" />
     <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Sector_Operations.h" />

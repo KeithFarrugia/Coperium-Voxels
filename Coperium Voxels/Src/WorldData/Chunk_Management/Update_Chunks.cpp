@@ -1,6 +1,7 @@
 #include "Manage_Chunks.h"
+#include "../Create_Generic_Chunks.h"
 
-void Update_Chunks(World& world, Coil::Camera& camera) {
+void Update_Chunks(WorldManager& wm, Coil::Camera& camera) {
     // Compute camera position once and round.
     const glm::vec3 camera_pos = camera.Get_Position();
     const glm::ivec3 curr_position(
@@ -19,8 +20,8 @@ void Update_Chunks(World& world, Coil::Camera& camera) {
         << "Current Chunk    : (" << current_chunk.x << ", " << current_chunk.y << ", " << current_chunk.z << ")\n";
 
     // Unload far away chunks.
-    Unload_Far_Chunks(world, curr_position);
+    Unload_Far_Chunks(wm, curr_position);
 
     // Load new chunks near the current chunk.
-    //LoadNewChunks(world, current_sector, current_chunk);
+    Load_New_Chunks(wm, current_sector, current_chunk, Create_Solid_Chunk_Func);
 }

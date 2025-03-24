@@ -7,7 +7,7 @@ constexpr glm::vec3 HALF_CHUNK = glm::vec3(
     CHUNK_SIZE_Z * 0.5f
 );
 
-constexpr float chunk_unload_rad = 10;
+constexpr float chunk_unload_rad = 1;
 float unload_treshold = chunk_unload_rad * CHUNK_SIZE_X * chunk_unload_rad * CHUNK_SIZE_Z;
 
 /* ============================================================================
@@ -30,20 +30,23 @@ void Unload_Chunk(const sector_pair_t& sector_pair, const chunk_pair_t& chunk_pa
  * --------------------------- Unload_Far_Chunks
  * Iterates over all chunks in the world and unloads any chunk whose center
  * is farther from the camera than the specified unload radius (in chunks).
+ * Before unloading, each chunk is stored to disk.
  *
  * ------ Parameters ------
+ * world_name:           The name of the world (used for saving chunk files).
  * world:                The world object managing sectors and chunks.
  * curr_position:        The current camera position (rounded to integers).
- * unloadRadiusInChunks: The unload radius specified in chunk units.
  *
  * ------ Operation ------
  * For each chunk, the world position is computed and its center is determined
  * by adding HALF_CHUNK. The squared distance from the camera to the chunk
  * center is computed and compared to a threshold derived from the unload
- * radius. If the distance is greater, the chunk is unloaded.
+ * radius. If the distance is greater, the chunk is first stored to disk,
+ * then unloaded.
  * ============================================================================
  */
-void Unload_Far_Chunks(World& world, const glm::ivec3& curr_position) {
+void Unload_Far_Chunks(WorldManager& wm, const glm::ivec3& curr_position) {
+    World& world = wm.Get_World();
     const glm::vec2 camPosXZ = glm::vec2(curr_position.x, curr_position.z);  // Only XZ components
 
     sectors_t* sectors = world.Get_All_Sectrs();
@@ -70,17 +73,21 @@ void Unload_Far_Chunks(World& world, const glm::ivec3& curr_position) {
             float distSq = glm::distance2(camPosXZ, chunk_centerXZ);
 
             if (distSq > unload_treshold) {
+                // Attempt to store the chunk before unloading it.
+                Store_Chunk(wm.Get_World_Name(), sector_pair, chunk_pair);
+                // Unload the chunk.
                 Unload_Chunk(sector_pair, chunk_pair);
                 chunks_to_remove.push_back(chunk_pair.first);
             }
         }
 
-        // Remove chunks after iteration
+        // Remove chunks after iteration and update neighbours.
         for (const auto& chunk_loc : chunks_to_remove) {
             sector_pair.second.Remove_Chunk(glm::ivec3(chunk_loc.X(), chunk_loc.Y(), chunk_loc.Z()), rel_loc_t::CHUNK_LOC);
-            Set_Neighbours_to_Update(world, 
-                glm::ivec3(sector_pair.first.X(),       0       , sector_pair.first .Z()), 
-                glm::ivec3(chunk_loc        .X(), chunk_loc.Y() , chunk_loc         .Z())
+            Set_Neighbours_to_Update(
+                world,
+                glm::ivec3(sector_pair.first.X(), 0, sector_pair.first.Z()),
+                glm::ivec3(chunk_loc.X(), chunk_loc.Y(), chunk_loc.Z())
             );
         }
     }

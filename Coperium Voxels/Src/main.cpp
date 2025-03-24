@@ -56,12 +56,13 @@ int main() {
 
     Coil::Window window("Voxel Test Case", 1000, 1000);
     setupWindow(window);
-
-    World w;
-    VoxData voxData = readVoxFile("monu1.vox");
-    //importVoxelsToWorld(w, voxData);
-    generate_blocks(w);
-
+    WorldManager teapot_world(std::string("Flat"));
+    VoxData voxData = readVoxFile("teapot.vox");
+   
+    //importVoxelsToWorld(teapot_world.Get_World(), voxData);
+    generate_blocks(teapot_world.Get_World());
+    //Load_All_Chunks(teapot_world);
+    //return 0;
 
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
@@ -173,9 +174,9 @@ int main() {
         buffer_shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
         buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         buffer_shader.Set_Matrix4("model", model);
-        Update_Chunks(w, camera);
-        Generate_All_Chunk_Meshes_LOD_PASS(w, camera);
-        render_voxels(w, buffer_shader, vertex_offset, camera);
+        Update_Chunks(teapot_world, camera);
+        Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera);
+        render_voxels(teapot_world.Get_World(), buffer_shader, vertex_offset, camera);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

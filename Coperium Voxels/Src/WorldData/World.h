@@ -22,6 +22,8 @@ public:
     void Create_Chunk   (glm::ivec3 pos, rel_loc_t rel);
     void Create_Sector  (glm::ivec3 pos, rel_loc_t rel);
 
+    void Create_Sector  (sector_loc_t id);
+
     void Remove_Voxel   (glm::ivec3 pos, rel_loc_t rel);
     void Remove_Chunk   (glm::ivec3 pos, rel_loc_t rel);
     void Remove_Sector  (glm::ivec3 pos, rel_loc_t rel);
@@ -50,7 +52,8 @@ public:
     void Create_Voxel(vox_data_t data);
     void Create_Chunk(glm::ivec3 pos, rel_loc_t rel);
 
-    void Add_Chunk   (glm::ivec3 chunk_id, const Chunk& chunk);
+    void Add_Chunk   (glm::ivec3 chunk_id , const Chunk& chunk);
+    void Add_Chunk   (chunk_loc_t chunk_id, const Chunk& chunk);
 
     void Remove_Voxel(glm::ivec3 pos, rel_loc_t rel);
     void Remove_Chunk(glm::ivec3 pos, rel_loc_t rel);
