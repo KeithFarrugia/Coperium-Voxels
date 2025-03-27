@@ -89,7 +89,7 @@ public:
     void Set_Mesh(const Coil::Basic_Mesh& newMesh);
 
     void Draw_Mesh(); 
-
+    void Set_Cube(glm::ivec3 pos, vox_data_t data);
 
     chunk_data_t& Get_Chunk_Data();          // Non-const reference
     const chunk_data_t& Get_Chunk_Data() const;    // Const reference

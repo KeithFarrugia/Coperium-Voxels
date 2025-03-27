@@ -151,6 +151,11 @@ void Chunk::Draw_Mesh(){
     mesh.Draw_Mesh(false);
 }
 
+void Chunk::Set_Cube(glm::ivec3 pos, vox_data_t data){
+    voxels[voxel_loc_t::Compact(pos).location] = Voxel(data);
+    chunk_data.updated = true;
+}
+
 
 /* ============================================================================
  * --------------------------- Get_Chunk_Data (Reference)

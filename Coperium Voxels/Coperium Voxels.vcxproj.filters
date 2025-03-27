@@ -1226,6 +1226,9 @@
     <ClInclude Include="Src\WorldData\Chunk_Management\WorldManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Animation Stuff\Game_of_Life.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\Lib\glfw3.lib" />

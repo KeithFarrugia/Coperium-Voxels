@@ -74,8 +74,16 @@ void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera) {
     printf("Number of faces: %d\n", total_faces_generated);
 }
 
+void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, int& call_counter, bool check_mov, int update_interval) {
+    // Only update when callCounter mod update_interval equals 0.
+    if ((call_counter % update_interval) != 0) {
+        call_counter++;
+        return;
+    }
 
-void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera) {
+    // Reset callCounter to 1 so that counting starts from 1 each update cycle.
+    call_counter = 1;
+
     const glm::vec3 camera_pos = camera.Get_Position();
     const glm::ivec3 curr_position(
         glm::round(camera_pos.x),
@@ -83,10 +91,15 @@ void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera) {
         glm::round(camera_pos.z)
     );
 
-    if (curr_position == last_pos) { return; }
+    // If checking for movement is enabled, only proceed if the camera has moved.
+    if (check_mov && curr_position == last_pos) {
+        return;
+    }
     last_pos = curr_position;
 
-    // Iterate over all sectors and chunks
+    bool changed = false;  // Flag to track if any changes occurred
+
+    // Iterate over all sectors and chunks to update LOD values.
     sectors_t* sectors = world.Get_All_Sectrs();
     for (sector_pair_t sector_pair : *sectors) {
         chunks_t* chunks = sector_pair.second.Get_All_Chunks();
@@ -100,21 +113,26 @@ void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera) {
             }
         }
     }
+
+    // Generate chunk meshes for updated chunks.
     for (sector_pair_t sector_pair : *sectors) {
         chunks_t* chunks = sector_pair.second.Get_All_Chunks();
         for (chunk_pair_t chunk_pair : *chunks) {
             if (chunk_pair.second.Get_Chunk_Data().updated) {
-
                 if (chunk_pair.second.Get_Chunk_Data().l_o_d == lod_Level_t::NORMAL) {
                     Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c);
-
-                }else {
+                }
+                else {
                     Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c, static_cast<int>(chunk_pair.second.Get_Chunk_Data().l_o_d));
                 }
-
                 chunk_pair.second.Get_Chunk_Data().updated = false;
+                changed = true;
             }
         }
     }
-    printf("Number of faces: %d\n", total_faces_generated);
+
+    // Print only if something changed.
+    if (changed) {
+        printf("Number of faces: %d\n", total_faces_generated);
+    }
 }

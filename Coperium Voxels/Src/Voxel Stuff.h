@@ -11,13 +11,13 @@
 #include "WorldData/World Opertions/Wrap Operations/Wrap_Chunk_Sector_Operations.h"
 #include "WorldData/Chunk_Management/Manage_Chunks.h"
 
-constexpr int GRID_SIZE_F_X = 128;
-constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 128;
+constexpr int GRID_SIZE_F_X = 32;
+constexpr int GRID_SIZE_F_Y = 1;
+constexpr int GRID_SIZE_F_Z = 32;
 
-constexpr int GRID_SIZE_S_X = -128;
+constexpr int GRID_SIZE_S_X = 0;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = -128;
+constexpr int GRID_SIZE_S_Z = 0;
 
 glm::ivec3 last_position;
 #include <iostream>
@@ -106,7 +106,7 @@ void generate_blocks(World& world) {
             for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
                 vox_data_t som = vox_data_t{
                         glm::ivec3(x, y, z),                // position
-                        glm::ivec3(x, (int)(y / 4.0f), z),  // color
+                        glm::ivec3(0,0,0),  // color
                         voxel_type_t::NORMAL,               // type
                         true,                               // solid
                         false,                              // transparency
@@ -172,4 +172,94 @@ void render_voxels(World& world, Coil::Shader& shader, GLuint vertex_offset, con
     // std::cout << "render_voxels took " << duration << " microseconds." << std::endl;
 }
 
+const std::vector<glm::ivec3> directions = {
+    glm::ivec3(1, 0, 0),
+    glm::ivec3(-1, 0, 0),
+    glm::ivec3(0, 0, 1),
+    glm::ivec3(0, 0, -1)
+};
+
+// Global variables
+static std::queue<glm::ivec3> cubes;
+static bool initialized = false;
+
+// Initializes the animation, called once
+void Init_Lightning_Animation() {
+    if (!initialized) {
+        srand(static_cast<unsigned>(time(0))); // Seed RNG once
+        cubes.push(glm::ivec3(0, 0, 0)); // Add initial block
+        initialized = true;
+    }
+}
+
+// Returns a random valid direction avoiding already colored blocks
+glm::ivec3 getValidDirection(World& world, glm::ivec3 pos) {
+    std::vector<glm::ivec3> validDirections;
+
+    for (const auto& dir : directions) {
+        glm::ivec3 newPos = pos + dir;
+        Voxel* voxel = world.Get_Voxel(newPos, rel_loc_t::WORLD_LOC);
+        if (voxel && voxel->IsAir()) continue; // Skip air blocks
+
+        if (voxel) {
+            // Check if voxel is already colored
+            if (voxel->GetR() == 3 && voxel->GetG() == 3 && voxel->GetB() == 6)
+                continue; // Already part of the trail, ignore
+        }
+
+        validDirections.push_back(dir);
+    }
+
+    if (validDirections.empty()) return glm::ivec3(0, 0, 0); // No valid move
+
+    return validDirections[rand() % validDirections.size()]; // Pick a random valid direction
+}
+
+// Lightning animation function
+void Lightning_Animation(WorldManager& wm) {
+    static int callCounter = 0;
+    callCounter++;
+
+    if (callCounter < 200) return;
+    callCounter = 0;
+
+    World& world = wm.Get_World();
+
+    if (!initialized) Init_Lightning_Animation();
+    if (cubes.empty()) return;
+
+    glm::ivec3 pos = cubes.front();
+    cubes.pop();
+
+    Chunk* chunk = world.Get_Chunk(pos, rel_loc_t::WORLD_LOC);
+    if (chunk) {
+        Voxel* voxel = chunk->Get_Voxel(Convert_Loc_2_Offset(pos, rel_loc_t::WORLD_LOC, rel_loc_t::CHUNK_LOC));
+        if (!voxel->IsAir()) {
+            voxel->SetR(3);
+            voxel->SetG(3);
+            voxel->SetB(6);
+            chunk->Get_Chunk_Data().updated = true;
+        }
+        else {
+            return;
+        }
+    }
+
+    int branchChance = rand() % 100; // Random chance for branching
+
+    int branches = (branchChance < 30) ? 2 : 1; // 30% chance to branch into two directions
+
+    for (int i = 0; i < branches; ++i) {
+        glm::ivec3 dir = getValidDirection(world, pos);
+        if (dir == glm::ivec3(0, 0, 0)) return; // No valid move
+
+        glm::ivec3 newPos = pos + dir;
+        cubes.push(newPos);
+
+        std::cout << "New cube at position: ("
+            << newPos.x << ", "
+            << newPos.y << ", "
+            << newPos.z << ")" << std::endl;
+    }
+}
 #endif // !VOXEL_STUFF_H

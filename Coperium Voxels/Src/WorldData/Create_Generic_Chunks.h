@@ -41,7 +41,7 @@ inline Chunk Create_Air_Chunk() {
             for (int x = 0; x < CHUNK_SIZE_X; ++x) {
                 vox_data_t data;
                 data.position = glm::ivec3(x, y, z);
-                data.colour = glm::ivec3(255, 255, 255); // Default colour for air.
+                data.colour = glm::ivec3(0, 0, 0); // Default colour for air.
                 data.type = voxel_type_t::AIR;
                 data.solid = false;
                 data.transparency = true;
