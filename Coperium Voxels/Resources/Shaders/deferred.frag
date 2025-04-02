@@ -23,7 +23,7 @@ void main()
     float Specular = texture(gAlbedoSpec, TexCoords).a;
     
     // Ambient lighting (constant base light)
-    vec3 ambient = Diffuse * 0.3;
+    vec3 ambient = Diffuse * 0.2;
     
     // Directional diffuse lighting (using Lambert's law)
     // Note: Use -sunDir because sunDir is the direction of the incoming light.

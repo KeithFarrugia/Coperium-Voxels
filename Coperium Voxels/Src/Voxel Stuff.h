@@ -11,13 +11,13 @@
 #include "WorldData/World Opertions/Wrap Operations/Wrap_Chunk_Sector_Operations.h"
 #include "WorldData/Chunk_Management/Manage_Chunks.h"
 
-constexpr int GRID_SIZE_F_X = 32;
+constexpr int GRID_SIZE_F_X = 64;
 constexpr int GRID_SIZE_F_Y = 1;
-constexpr int GRID_SIZE_F_Z = 32;
+constexpr int GRID_SIZE_F_Z = 70;
 
-constexpr int GRID_SIZE_S_X = 0;
+constexpr int GRID_SIZE_S_X = -64;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = 0;
+constexpr int GRID_SIZE_S_Z = -70;
 
 glm::ivec3 last_position;
 #include <iostream>
@@ -121,10 +121,6 @@ void generate_blocks(World& world) {
     std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
         << duration.count() << " seconds." << std::endl;
 }
-
-
-
-
 
 
 void render_voxels(World& world, Coil::Shader& shader, GLuint vertex_offset, const Coil::Camera& camera) {

@@ -556,6 +556,7 @@
     <ClInclude Include="Src\Imgui_setup.h" />
     <ClInclude Include="Src\Voxel Stuff.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
+    <ClInclude Include="Src\VoxelModel_Loader.h" />
     <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk_Mesh.h" />
     <ClInclude Include="Src\WorldData\Chunk_Management\Manage_Chunks.h" />
     <ClInclude Include="Src\WorldData\CommonWD.h" />

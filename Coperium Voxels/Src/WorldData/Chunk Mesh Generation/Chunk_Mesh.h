@@ -89,7 +89,7 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, con
 
 void Generate_Single_Chunk(World& world, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const glm::vec3& camera_pos);
 void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera);
-void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, int& call_counter, bool check_mov = true, int update_interval = 1);
+void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, bool check_mov, int update_interval_ms);
 
 
 #endif // !CHUNK_MESH_GENERATION_H

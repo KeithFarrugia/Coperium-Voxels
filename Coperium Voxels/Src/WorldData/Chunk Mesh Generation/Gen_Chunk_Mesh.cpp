@@ -1,6 +1,7 @@
 #include "Chunk_Mesh.h"
 #include "Calc_LOD.h"
 #include "../Create_Generic_Chunks.h"
+#include <chrono>
 int total_faces_generated = 0;
 glm::ivec3 last_pos;
 Chunk generic_c = Create_Air_Chunk();
@@ -74,16 +75,37 @@ void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera) {
     printf("Number of faces: %d\n", total_faces_generated);
 }
 
-void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, int& call_counter, bool check_mov, int update_interval) {
-    // Only update when callCounter mod update_interval equals 0.
-    if ((call_counter % update_interval) != 0) {
-        call_counter++;
-        return;
+void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, bool check_mov, int update_interval_ms) {
+    // Static variables to track time between calls.
+    static auto last_frame_time = std::chrono::steady_clock::now();
+    static float timeAccumulator = 0.0f;
+    static bool firstCall = true;
+
+    // Calculate elapsed time since the last call.
+    auto now = std::chrono::steady_clock::now();
+    float dt = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_frame_time).count();
+    last_frame_time = now;
+
+    // On the first call, force an update by setting the accumulator high.
+    if (firstCall) {
+        timeAccumulator = update_interval_ms / 1000.0f;
+        firstCall = false;
+    }
+    else {
+        timeAccumulator += dt;
     }
 
-    // Reset callCounter to 1 so that counting starts from 1 each update cycle.
-    call_counter = 1;
+    // Convert update interval to seconds.
+    const float update_interval_sec = update_interval_ms / 1000.0f;
 
+    // Only update when enough time has been accumulated.
+    if (timeAccumulator < update_interval_sec)
+        return;
+
+    // Subtract the update interval from the accumulator (carry over any excess time).
+    timeAccumulator -= update_interval_sec;
+
+    // Get the current camera position.
     const glm::vec3 camera_pos = camera.Get_Position();
     const glm::ivec3 curr_position(
         glm::round(camera_pos.x),
@@ -91,10 +113,11 @@ void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, int&
         glm::round(camera_pos.z)
     );
 
-    // If checking for movement is enabled, only proceed if the camera has moved.
-    if (check_mov && curr_position == last_pos) {
+    // Check if movement is enabled and if the camera hasn't moved.
+    // Assuming last_pos is a global or static variable of type glm::ivec3.
+    static glm::ivec3 last_pos = curr_position;
+    if (check_mov && curr_position == last_pos)
         return;
-    }
     last_pos = curr_position;
 
     bool changed = false;  // Flag to track if any changes occurred
@@ -123,7 +146,8 @@ void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, int&
                     Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c);
                 }
                 else {
-                    Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c, static_cast<int>(chunk_pair.second.Get_Chunk_Data().l_o_d));
+                    Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c,
+                        static_cast<int>(chunk_pair.second.Get_Chunk_Data().l_o_d));
                 }
                 chunk_pair.second.Get_Chunk_Data().updated = false;
                 changed = true;
@@ -131,7 +155,7 @@ void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, int&
         }
     }
 
-    // Print only if something changed.
+    // Print information only if something changed.
     if (changed) {
         printf("Number of faces: %d\n", total_faces_generated);
     }

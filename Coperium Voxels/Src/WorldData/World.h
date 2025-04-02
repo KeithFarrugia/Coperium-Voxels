@@ -111,12 +111,13 @@ public:
      Voxel(const Voxel& other);
      Voxel(const vox_data_t voxelData);
     ~Voxel();
-    void SetSolid       (bool       s);
-    void SetTransparency(bool       t);
-    void SetR           (uint8_t    r);
-    void SetG           (uint8_t    g);
-    void SetB           (uint8_t    b);
-    void SetType        (uint32_t   t);
+    void SetSolid       (bool           s       );
+    void SetTransparency(bool           t       );
+    void SetR           (uint8_t        r       );
+    void SetG           (uint8_t        g       );
+    void SetB           (uint8_t        b       );
+    void SetColour      (glm::ivec3&    colour  );
+    void SetType        (uint32_t       t       );
 
     // Getters
     bool        IsSolid         () const;

@@ -12,6 +12,7 @@
 #include "Voxel Stuff.h"
 #include "Imgui_setup.h"
 #include "Animation Stuff/Game_of_Life.h"
+#include "VoxelModel_Loader.h"
 
 void setupShader(Coil::Shader& shader) {
     shader.Add_Shaders({
@@ -55,17 +56,20 @@ int main() {
     Coil::Initialise_Opengl();
     Coil::Initialise_GLAD();
 
-    Coil::Window window("Voxel Test Case", 1000, 1000);
+    Coil::Window window("Voxel Test Case", 1500, 1000);
     setupWindow(window);
+
     WorldManager world_1(std::string("W1"));
-    WorldManager world_2(std::string("W2"));
     //VoxData voxData = readVoxFile("teapot.vox");
-   
-    //importVoxelsToWorld(teapot_world.Get_World(), voxData);
-    generate_blocks(world_1.Get_World());
-    generate_blocks(world_2.Get_World());
+    //GameOfLife gol(64, 64, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 500);
+    //
+    // 
+    //importVoxelsToWorld(world_1.Get_World(), voxData);
+    //generate_blocks(world_1.Get_World());
     //Load_All_Chunks(teapot_world);
     //return 0;
+    VoxelImporter importer;
+    importer.LoadAndImport("Minecraft.txt", world_1.Get_World(), VoxelColorMode::HEIGHT_MAP);
 
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
@@ -78,7 +82,7 @@ int main() {
     int     frames = 0;
     auto    start = std::chrono::high_resolution_clock::now();
 
-    glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     float color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };  // Default to green color
 
     int width, height;
@@ -170,12 +174,14 @@ int main() {
         glm::ivec3(2, 0, 2),
 
     };
-    InitializeGameOfLife(world_1.Get_World(), initial_live_voxels); bool useWorldA = true;
+
+
+
     std::chrono::duration<double, std::milli> meshGenDuration = meshGenEnd - meshGenStart;
     std::cout << "Generate_All_Chunk_Meshes took " << meshGenDuration.count() << " ms\n";
 
     int call_counter_a = 0;
-    int call_counter_b = 0;
+    Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 500);
     while (!window.Is_Closed()) {
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -191,18 +197,11 @@ int main() {
         buffer_shader.Set_Matrix4("model", model);
         //Update_Chunks(teapot_world, camera);
         //Lightning_Animation(teapot_world);
-        if (useWorldA) {
-            UpdateGameOfLife(world_1.Get_World(), world_2.Get_World(), &temp_c, useWorldA);
-        }
-        else {
-            UpdateGameOfLife(world_2.Get_World(), world_1.Get_World(), &temp_c, useWorldA);
-        }
-        World& renderWorld = useWorldA ? world_1.Get_World() : world_2.Get_World();
-        int& callcounter = useWorldA ? call_counter_a : call_counter_b;
-        Generate_All_Chunk_Meshes_LOD_PASS(renderWorld, camera, callcounter, false, 500);
+        
+        //gol.Update(world_1, glm::ivec3(-64,0,-64), glm::ivec3(64, 0, 64));
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
-        render_voxels(renderWorld, buffer_shader, vertex_offset, camera);
+        render_voxels(world_1.Get_World(), buffer_shader, vertex_offset, camera);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

@@ -98,7 +98,20 @@ void Voxel::SetB(uint8_t b) {
     data &= ~(0xF << 18); // Clear the 4 bits for blue (bits 18 to 21)
     data |= ((b & 0xF) << 18); // Set blue bits (bits 18 to 21)
 }
-
+/* ============================================================================
+ * --------------------------- SetColour
+ * Sets the colour components (R, G, B) of the voxel from a glm::ivec3.
+ * Each value should be within the range [0, 15] as they are stored in 4 bits.
+ *
+ * ------ Parameters ------
+ * colour: A glm::ivec3 containing the R, G, B values (each in range 0-15).
+ * ============================================================================
+ */
+void Voxel::SetColour(glm::ivec3& colour) {
+    SetR(colour.r);
+    SetG(colour.g);
+    SetB(colour.b);
+}
 /* ============================================================================
  * --------------------------- SetType
  * Sets the type of the voxel (occupying the least significant 17 bits).

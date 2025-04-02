@@ -1,248 +1,184 @@
-#pragma once
-#ifndef GAME_OF_LIFE_H
-#define GAME_OF_LIFE_H
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+#include <chrono>
 
-#include "../WorldData/World.h"
-// Computes the neighbour chunk for a given offset (dx, dy, dz)
-// relative to the current chunk. Returns generic_chunk if no valid neighbour exists.
+using namespace std;
+using namespace std::chrono;
 
+struct Cell {
+    int  x, y;
+    bool alive   = false;
+    bool changed = false;
 
-typedef struct full_neigh_chunk_t {
-    Chunk* neighbor_chunks[3][3][3][2];
-    full_neigh_chunk_t() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
-                    for (int n = 0; n < 2; n++) {
-                        neighbor_chunks[i][j][k][n] = nullptr;
-                    }
+    bool operator==(const Cell& other) const {
+        return x == other.x && y == other.y;
+    }
+};
+
+// Hash function for unordered_map
+struct CellHash {
+    size_t operator()(const Cell& c) const {
+        return hash<int>()(c.x) ^ hash<int>()(c.y);
+    }
+};
+
+class GameOfLife {
+private:
+    unordered_map<Cell, Cell, CellHash> cells;
+    int                                 width, height;
+    milliseconds                        update_interval;
+    steady_clock::time_point            last_update_time;
+    int                                 min_x, max_x, min_y, max_y; // Play area bounds
+
+    vector<Cell> getNeighbours(const Cell& cell) {
+        vector<Cell> neighbours;
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) continue; // Skip the cell itself
+                int nx = cell.x + dx;
+                int ny = cell.y + dy;
+
+                // Ensure neighbours are within bounds
+                if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y) {
+                    neighbours.push_back({ nx, ny });
                 }
             }
         }
+        return neighbours;
     }
-    inline Chunk* Get_Neighbour(glm::ivec3 index, glm::ivec3 pos) {
-        //printf("%d, %d, %d\n", index.x, index.y, index.z);
-        int n_or_c = static_cast<int>(
-            pos.x <= MAX_ID_V_X && pos.x >= MIN_ID_V_X &&
-            pos.y <= MAX_ID_V_Y && pos.y >= MIN_ID_V_Y &&
-            pos.z <= MAX_ID_V_Z && pos.z >= MIN_ID_V_Z
+
+public:
+    GameOfLife(int w, int h, const vector<Cell>& init_cells, int mill_sec_interval) {
+        init(w, h, init_cells, mill_sec_interval);
+    }
+
+    void init(int w, int h, const vector<Cell>& init_cells, int mill_sec_interval) {
+        width = w;
+        height = h;
+        cells.clear();
+        update_interval = milliseconds(mill_sec_interval);
+        last_update_time = steady_clock::now();
+
+        // Default play area bounds
+        min_x = 0;
+        max_x = width - 1;
+        min_y = 0;
+        max_y = height - 1;
+
+        for (const auto& cell : init_cells) {
+            if (cell.x >= min_x && cell.x <= max_x && cell.y >= min_y && cell.y <= max_y) {
+                cells[cell] = { cell.x, cell.y, true, true };
+            }
+        }
+    }
+
+    void Update_Game() {
+        unordered_map<Cell, int, CellHash> neighbour_count;
+        unordered_map<Cell, Cell, CellHash> new_cells;
+
+        for (auto& [_, cell] : cells) {
+            cell.changed = false;
+            for (const auto& neighbour : getNeighbours(cell)) {
+                neighbour_count[neighbour]++;
+            }
+        }
+
+        // Apply rules and track changes
+        for (const auto& [cell, count] : neighbour_count) {
+            if (cell.x < min_x || cell.x > max_x || cell.y < min_y || cell.y > max_y) {
+                continue; // Prevents cells from growing outside the play area
+            }
+
+            bool was_alive = cells.count(cell) && cells[cell].alive;
+            bool now_alive = (count == 3 || (count == 2 && was_alive));
+
+            if (was_alive != now_alive) {
+                new_cells[cell] = { cell.x, cell.y, now_alive, true };
+            } else if (was_alive) {
+                new_cells[cell] = { cell.x, cell.y, true, false };
+            }
+        }
+
+        cells = move(new_cells);
+    }
+
+    inline glm::ivec3 Lerp(const glm::ivec3& a, const glm::ivec3& b, float t)
+    {
+        return glm::ivec3(
+            (int)(a.r + t * (b.r - a.r)),
+            (int)(a.g + t * (b.g - a.g)),
+            (int)(a.b + t * (b.b - a.b))
         );
-        return neighbor_chunks[index.x][index.y][index.z][n_or_c];
-    }
-}full_neigh_chunk_t;
-
-
-
-
-
-
-
-
-const Chunk* Get_Chunk_Neighbour(
-    World& w,
-    chunk_pair_t chunk,
-    sector_pair_t sector,
-    const Chunk* generic_chunk,
-    int dx, int dy, int dz
-) {
-    // Get current chunk position
-    glm::ivec3 current_pos(chunk.first.X(), chunk.first.Y(), chunk.first.Z());
-    glm::ivec3 new_pos = current_pos + glm::ivec3(dx, dy, dz);
-
-    // Start with the current sector
-    int sector_x = sector.first.X();
-    int sector_z = sector.first.Z();
-    int local_x = new_pos.x;
-    int local_z = new_pos.z;
-
-    // Handle X-axis transitions
-    if (new_pos.x < MIN_ID_C_X) {
-        if (sector_x > MIN_ID_S_X) {
-            sector_x--; local_x = MAX_ID_C_X;
-
-        } else { return generic_chunk; }
-
-    } else if (new_pos.x > MAX_ID_C_X) {
-        if (sector_x < MAX_ID_S_X) {
-            sector_x++; local_x = MIN_ID_C_X;
-
-        } else { return generic_chunk; }
     }
 
-    // Handle Z-axis transitions
-    if (new_pos.z < MIN_ID_C_Z) {
-        if (sector_z > MIN_ID_S_Z) {
-            sector_z--; local_z = MAX_ID_C_Z;
-        }else { return generic_chunk; }
+    void Update_World(WorldManager& world, glm::ivec3 min_cube, glm::ivec3 max_cube)
+    {
+        // Adjust play area
+        min_x = min_cube.x;
+        max_x = max_cube.x;
+        min_y = min_cube.z; // your code calls the z dimension "y" in the simulation
+        max_y = max_cube.z;
 
-    } else if (new_pos.z > MAX_ID_C_Z) {
-        if (sector_z < MAX_ID_S_Z) {
-            sector_z++;
-            local_z = MIN_ID_C_Z;
+        // Define 8-bit colors
+        glm::ivec3 royal_blue(65, 105, 225);
+        glm::ivec3 crimson(220, 20, 60);
 
-        } else { return generic_chunk; }
-    }
+        // Get all sectors from the world
+        sectors_t* sectors = world.Get_World().Get_All_Sectrs();
+        for (sector_pair_t sector_pair : *sectors) {
+            chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+            for (chunk_pair_t chunk_pair : *chunks) {
 
-    // Handle Y-axis (no sector transitions allowed)
-    if (new_pos.y < MIN_ID_C_Y || new_pos.y > MAX_ID_C_Y) {
-        return generic_chunk;
-    }
+                glm::ivec3 offset(
+                    chunk_pair.first.X() * CHUNK_SIZE_X + sector_pair.first.X() * SECTR_SIZE_X,
+                    chunk_pair.first.Y() * CHUNK_SIZE_Y,
+                    chunk_pair.first.Z() * CHUNK_SIZE_Z + sector_pair.first.Z() * SECTR_SIZE_Z
+                );
 
-    // Get the target sector only once
-    Sector* target_sector = &sector.second;
-    if (sector_x != sector.first.X() || sector_z != sector.first.Z()) {
-        target_sector = w.Get_Sector(sector_loc_t::Compact(glm::ivec2(sector_x, sector_z)));
-        if (!target_sector)
-            return generic_chunk;
-    }
+                // Iterate over the local voxel coords in this chunk
+                for (int local_x = MIN_ID_V_X; local_x <= MAX_ID_V_X; local_x++) {
+                    for (int local_z = MIN_ID_V_Z; local_z <= MAX_ID_V_Z; local_z++) {
+                        // Compute simulation cell coords
+                        int sim_x = offset.x + local_x;
+                        int sim_y = offset.z + local_z;
 
-    // Retrieve the chunk
-    const Chunk* candidate = target_sector->Get_Chunk(
-        chunk_loc_t::Compact(glm::ivec3(local_x, new_pos.y, local_z))
-    );
-    return candidate ? candidate : generic_chunk;
-}
+                        // Skip out-of-bounds
+                        if (sim_x < min_x || sim_x > max_x || sim_y < min_y || sim_y > max_y)
+                            continue;
 
+                        Cell sim_cell{ sim_x, sim_y };
+                        auto it = cells.find(sim_cell);
+                        if (it != cells.end() && it->second.changed) {
+                            // Default to black
+                            glm::ivec3 finalColor4(0, 0, 0);
 
+                            // If alive, compute gradient color, then quantize to 4-bit
+                            if (it->second.alive) {
+                                // Simple left-to-right gradient
+                                float t = 0.0f;
+                                if (max_x != min_x) {
+                                    t = float(sim_x - min_x) / float(max_x - min_x);
+                                }
 
+                                // Get the 8-bit interpolated color
+                                glm::ivec3 color8 = Lerp(royal_blue, crimson, t);
 
+                                // Now scale to 4-bit range [0..15]
+                                finalColor4.r = (color8.r * 15) / 255;
+                                finalColor4.g = (color8.g * 15) / 255;
+                                finalColor4.b = (color8.b * 15) / 255;
 
-
-
-
-// Computes the full set of neighbour chunks.
-// The result is stored in a 3x3x3 array where the center (index [1][1][1]) is the current chunk.
-// The indices correspond to offsets: index 0 = -1, 1 = 0, 2 = +1 in each axis.
-void Get_Full_Chunk_Neighbours(
-    World& w,
-    chunk_pair_t chunk,
-    sector_pair_t sector,
-    const Chunk* generic_chunk,
-    full_neigh_chunk_t& neighbour_set
-) {
-    for (int dx = -1; dx <= 1; dx++) {
-        for (int dy = -1; dy <= 1; dy++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                glm::ivec3 index = glm::ivec3(dx + 1, dy + 1, dz + 1);
-
-                neighbour_set.neighbor_chunks[index.x][index.y][index.z][1] = 
-                    &chunk.second;
-                neighbour_set.neighbor_chunks[index.x][index.y][index.z][0] = 
-                    const_cast<Chunk*>(
-                        Get_Chunk_Neighbour(w, chunk, sector, generic_chunk, dx, dy, dz)
-                    );
-            }
-        }
-    }
-}
-constexpr inline glm::ivec3 wrap_voxel_position(const glm::ivec3& pos, const glm::ivec3& offset) {
-    int new_x = MIN_ID_V_X + (((pos.x - MIN_ID_V_X) + offset.x) & MASK_VOXELS_X);
-    int new_y = MIN_ID_V_Y + (((pos.y - MIN_ID_V_Y) + offset.y) & MASK_VOXELS_Y);
-    int new_z = MIN_ID_V_Z + (((pos.z - MIN_ID_V_Z) + offset.z) & MASK_VOXELS_Z);
-    return glm::ivec3(new_x, new_y, new_z);
-}
-// Count alive neighbours for a voxel at local voxel coordinates (x, y, z)
-// in the current chunk. Uses the precomputed full neighbour chunk array.
-// For voxels near the chunk boundary, we "wrap" the coordinate to the appropriate edge.
-// Count alive neighbours for a voxel at local coordinates (x, y, z)
-// using the precomputed full neighbour set.
-int CountAliveNeighbours(full_neigh_chunk_t& n_set, int x, int y, int z) {
-    int alive_count = 0;
-
-    for (int dx = -1; dx <= 1; dx++) {
-        for (int dy = -1; dy <= 1; dy++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                if (dx == 0 && dy == 0 && dz == 0) continue;
-                glm::ivec3 index = glm::ivec3(dx, dy, dz);
-                glm::ivec3 neighbour_pos_w = wrap_voxel_position(glm::ivec3(x, y, z), index);
-                glm::ivec3 neighbour_pos_h = glm::ivec3(x, y, z) + index;
-                Chunk* target_chunk = n_set.Get_Neighbour(index + glm::ivec3(1), neighbour_pos_h);
-                if (!target_chunk) continue;
-
-                const Voxel* neighbour_voxel = target_chunk->Get_Voxel(neighbour_pos_w, rel_loc_t::CHUNK_LOC);
-                if (neighbour_voxel && neighbour_voxel->GetR() > 0)
-                    alive_count++;
-            }
-        }
-    }
-    return alive_count;
-}
-
-void UpdateGameOfLife(World& source_world, World& dest_world, Chunk* generic_chunk, bool& toggle) {
-    static int callCounter = 0;
-    if (callCounter < 1000) {
-        callCounter++;
-        return;
-    }
-    callCounter = 0;
-    toggle = !toggle;
-    sectors_t* sectors = source_world.Get_All_Sectrs();
-    if (!sectors) return;
-
-    for (auto sector_pair : *sectors) {
-        Sector* dest_sector = dest_world.Get_Sector(sector_pair.first);
-
-        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
-
-        for (auto chunk_pair : *chunks) {
-            Chunk* dest_chunk = dest_sector->Get_Chunk(chunk_pair.first);
-            full_neigh_chunk_t neighbour_set;
-            Get_Full_Chunk_Neighbours(source_world, chunk_pair, sector_pair, generic_chunk, neighbour_set);
-
-            for (int x = 0; x < CHUNK_SIZE_X; x++) {
-                for (int y = 0; y < 1; y++) {
-                    for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-                        glm::ivec3 vox_loc = glm::ivec3(x, y, z);
-                        Voxel* src_voxel = chunk_pair.second.Get_Voxel(vox_loc);
-                        Voxel* dest_voxel = dest_chunk->Get_Voxel(vox_loc);
-
-                        dest_voxel->SetR(src_voxel->GetR());
-                        dest_voxel->SetG(src_voxel->GetG());
-                        dest_voxel->SetB(src_voxel->GetB());
-
-                        if (src_voxel->IsAir()) { continue; }
-
-
-                        int alive_count = CountAliveNeighbours(neighbour_set, x, y, z);
-
-                        if (src_voxel->GetR() > 0) {  // Alive
-                            if (alive_count < 2 || alive_count > 3) {
-                                dest_voxel->SetR(0); dest_voxel->SetG(0); dest_voxel->SetB(0); // Death
-                                dest_chunk->Get_Chunk_Data().updated = true;
+                                // Alternatively: finalColor4.r = color8.r >> 4; etc.
                             }
-                        }
-                        else {  // Dead
-                            if (alive_count == 3) {
-                                dest_voxel->SetR(15); dest_voxel->SetG(15); dest_voxel->SetB(15); // Birth
-                                dest_chunk->Get_Chunk_Data().updated = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-void InitializeGameOfLife(World& world, const std::vector<glm::ivec3>& live_voxel_coords) {
-    // First, get all sectors and set all voxels to dead (optional)
-    sectors_t* sectors = world.Get_All_Sectrs();
-    if (!sectors)
-        return;
 
-    // Iterate through all sectors and chunks to set every voxel to "dead" (black)
-    for (auto sector_pair : *sectors) {
-        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
-        if (!chunks)
-            continue;
-        for (auto chunk_pair : *chunks) {
-            for (int x = 0; x < CHUNK_SIZE_X; x++) {
-                for (int y = 0; y < CHUNK_SIZE_Y; y++) {
-                    for (int z = 0; z < CHUNK_SIZE_Z; z++) {
-                        Voxel* voxel = chunk_pair.second.Get_Voxel(glm::ivec3(x, y, z));
-                        if (voxel) {
-                            voxel->SetR(0);
-                            voxel->SetG(0);
-                            voxel->SetB(0);
+                            // Set the voxel color with 4-bit channels
+                            chunk_pair.second
+                                .Get_Voxel(glm::ivec3(local_x, 0, local_z))
+                                ->SetColour(finalColor4);
+
+                            chunk_pair.second.Get_Chunk_Data().updated = true;
                         }
                     }
                 }
@@ -250,15 +186,14 @@ void InitializeGameOfLife(World& world, const std::vector<glm::ivec3>& live_voxe
         }
     }
 
-    // Now, for each provided world coordinate, find the corresponding voxel and set it to "alive" (white)
-    for (const auto& world_coord : live_voxel_coords) {
-        glm::ivec3 local_coord;
-        Voxel* voxel = world.Get_Voxel(world_coord, rel_loc_t::WORLD_LOC);
-        if (voxel) {
-            voxel->SetR(15);  // Maximum red component (white)
-            voxel->SetG(15);
-            voxel->SetB(15);
+    void Update(WorldManager& world, glm::ivec3 min_cube, glm::ivec3 max_cube) {
+        auto now     = steady_clock::now();
+        auto elapsed = duration_cast<milliseconds>(now - last_update_time);
+
+        if (elapsed >= update_interval) {
+            last_update_time = now;
+            Update_Game();
+            Update_World(world, min_cube, max_cube);
         }
     }
-}
-#endif // !GAME_OF_LIFE_H
+};
