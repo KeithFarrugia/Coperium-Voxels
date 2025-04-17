@@ -61,15 +61,15 @@ int main() {
 
     WorldManager world_1(std::string("W1"));
     //VoxData voxData = readVoxFile("teapot.vox");
-    //GameOfLife gol(64, 64, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 500);
+    //GameOfLife gol(64, 64, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 50);
     //
     // 
-    //importVoxelsToWorld(world_1.Get_World(), voxData);
+   //importVoxelsToWorld(world_1.Get_World(), voxData);
     //generate_blocks(world_1.Get_World());
     //Load_All_Chunks(teapot_world);
     //return 0;
     VoxelImporter importer;
-    importer.LoadAndImport("Minecraft.txt", world_1.Get_World(), VoxelColorMode::HEIGHT_MAP);
+    importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);
 
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
@@ -181,7 +181,7 @@ int main() {
     std::cout << "Generate_All_Chunk_Meshes took " << meshGenDuration.count() << " ms\n";
 
     int call_counter_a = 0;
-    Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 500);
+    Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
     while (!window.Is_Closed()) {
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -201,6 +201,7 @@ int main() {
         //gol.Update(world_1, glm::ivec3(-64,0,-64), glm::ivec3(64, 0, 64));
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
+        //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
         render_voxels(world_1.Get_World(), buffer_shader, vertex_offset, camera);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

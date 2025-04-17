@@ -15,7 +15,8 @@
 enum class VoxelColorMode {
     ROYAL_BLUE,
     SKY_BLUE,
-    HEIGHT_MAP
+    HEIGHT_MAP,
+    TERRAIN
 };
 
 class VoxelImporter {
@@ -55,6 +56,71 @@ public:
             int green = static_cast<int>(factor * 15);  // From 0 to 15 (green increases)
             return glm::ivec3(0, green, blue);  // Blue and Green transition
         }
+        case VoxelColorMode::TERRAIN: {
+            if (y < 0) {
+                return glm::ivec3(0, 0, 15);  // Max Royal Blue for below 0
+            }
+
+            // Transition from blue to a less-saturated green (levels 0 to 48)
+            if (y < 48) {
+                float factor = y / 48.0f;
+                int blue = static_cast<int>((1.0f - factor) * 15);
+                // Reduced saturation: green ranges from about 4 to 11
+                int green = std::clamp(static_cast<int>(factor * 7 + 4 + (std::rand() % 5 - 2)), 0, 15);
+                int red = std::clamp(static_cast<int>(factor * 3 + (std::rand() % 4 - 2)), 0, 15);
+                return glm::ivec3(red, green, blue);
+            }
+
+            // Transition from less-saturated green to a brownish-grey tone (levels 48 to 56)
+            if (y < 56) {
+                float factor = (y - 48) / 8.0f;
+                // Updated start color to match the new green (approximate color at y == 48)
+                glm::ivec3 sColor(3, 11, 0);
+                glm::ivec3 eColor(8, 8, 8);     // Target brownish-grey tone at y == 56
+                int red = static_cast<int>(sColor.r * (1.0f - factor) + eColor.r * factor);
+                int green = static_cast<int>(sColor.g * (1.0f - factor) + eColor.g * factor);
+                int blue = static_cast<int>(sColor.b * (1.0f - factor) + eColor.b * factor);
+                // Apply a uniform random offset to keep the tone consistent
+                int offset = std::rand() % 5 - 2;
+                red = std::clamp(red + offset, 0, 15);
+                green = std::clamp(green + offset, 0, 15);
+                blue = std::clamp(blue + offset, 0, 15);
+                return glm::ivec3(red, green, blue);
+            }
+
+            // Smooth transition from brownish-grey to stone (levels 56 to 80)
+            if (y < 80) {
+                float factor = (y - 56) / 24.0f;
+                glm::ivec3 sColor(8, 8, 8);      // Color at y == 56
+                glm::ivec3 eColor(12, 12, 12);    // Target stone tone at y == 80
+                int red = static_cast<int>(sColor.r * (1.0f - factor) + eColor.r * factor);
+                int green = static_cast<int>(sColor.g * (1.0f - factor) + eColor.g * factor);
+                int blue = static_cast<int>(sColor.b * (1.0f - factor) + eColor.b * factor);
+                int offset = std::rand() % 5 - 2;
+                red = std::clamp(red + offset, 0, 15);
+                green = std::clamp(green + offset, 0, 15);
+                blue = std::clamp(blue + offset, 0, 15);
+                return glm::ivec3(red, green, blue);
+            }
+
+            // For y >= 80, transition to full white with slight uniform random variation
+            if (y >= 80) {
+                int base = 15;
+                int offset = std::rand() % 3 - 1;
+                int red = std::clamp(base + offset, 0, 15);
+                int green = std::clamp(base + offset, 0, 15);
+                int blue = std::clamp(base + offset, 0, 15);
+                return glm::ivec3(red, green, blue);
+            }
+        }
+
+
+
+
+
+
+
+
         }
         return glm::ivec3(0, 0, 0);  // Default (should never reach here)
     }
