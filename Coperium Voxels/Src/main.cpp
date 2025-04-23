@@ -52,6 +52,8 @@ Chunk temp_c = Create_Air_Chunk();
 
 
 int main() {
+    bool r_was_pressed = false;
+
     Coil::Logger::init_logger(Coil::LOG_TO_FILE);
     Coil::Initialise_Opengl();
     Coil::Initialise_GLAD();
@@ -65,11 +67,11 @@ int main() {
     //
     // 
    //importVoxelsToWorld(world_1.Get_World(), voxData);
-    //generate_blocks(world_1.Get_World());
+    generate_blocks_colour(world_1.Get_World());
     //Load_All_Chunks(teapot_world);
     //return 0;
-    VoxelImporter importer;
-    importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);
+    //VoxelImporter importer;
+    //importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);
 
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
@@ -183,7 +185,15 @@ int main() {
     int call_counter_a = 0;
     Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
     while (!window.Is_Closed()) {
-
+        if (glfwGetKey(window.Get_Window(), GLFW_KEY_R) == GLFW_PRESS) {
+            if (!r_was_pressed) {
+                Randomly_Delete_Chunk(world_1);
+                r_was_pressed = true;
+            }
+        }
+        else {
+            r_was_pressed = false;
+        }
         glm::mat4 model = glm::mat4(1.0f);
 
         // Use shader and set matrices
@@ -202,7 +212,7 @@ int main() {
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
         //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
-        render_voxels(world_1.Get_World(), buffer_shader, vertex_offset, camera);
+        render_voxels(world_1.Get_World(), buffer_shader, vertex_offset, camera, false);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

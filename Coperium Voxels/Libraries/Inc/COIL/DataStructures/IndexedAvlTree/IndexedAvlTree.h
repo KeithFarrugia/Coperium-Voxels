@@ -343,50 +343,49 @@ namespace Coil {
          * The new subhead node
          * ============================================================================
          */
-        void Delete_Node(const id_type& id, std::unique_ptr<node_t>& node) {
-
-            if (!node) {
-                return;
-            }
+        void Delete_Node(const id_type& id,
+            std::unique_ptr<node_t>& node) {
+            if (!node) return;
 
             if (node->id == id) {
-
                 if (node->children[L] && node->children[R]) {
+                    // 1) find the in-order successor
+                    node_t* succ = Find_Min(node->children[R].get());
 
-                    node_t* temp =
-                        Find_Min(node->children[R].get());
+                    // 2) stash its key
+                    id_type succ_id = succ->id;
+                    data_type succ_dt = succ->data;
 
-                    node->id = temp->id;
-                    node->data = temp->data;
+                    // 3) overwrite this node
+                    node->id = succ_id;
+                    node->data = succ_dt;
 
-                    Delete_Node(node->id, node->children[R]);
-
+                    // 4) now delete the *original* successor
+                    Delete_Node(succ_id, node->children[R]);
                 }
                 else if (node->children[L]) {
                     node = std::move(node->children[L]);
-
                 }
                 else if (node->children[R]) {
                     node = std::move(node->children[R]);
-
                 }
                 else {
                     node.reset();
+                    return;
                 }
-
             }
             else {
-                Delete_Node(id, id < node->id ? node->children[0] : node->children[1]);
+                Delete_Node(id,
+                    (id < node->id
+                        ? node->children[L]
+                        : node->children[R]));
             }
 
-            if (node) {
-                node->height =
-                    1 + std::max(
-                        Get_Height(node->children[0].get()),
-                        Get_Height(node->children[1].get())
-                    );
-                node = Balance(node);
-            }
+            // re-compute height & rebalance
+            node->height = 1 + std::max(
+                Get_Height(node->children[L].get()),
+                Get_Height(node->children[R].get()));
+            node = Balance(node);
         }
 
         /* ============================================================================

@@ -5,6 +5,7 @@
 #include "../World.h"
 #include <COIL/Camera/Camera.h>
 #include "WorldManager.h"
+#include <random>
 
 const std::string WORLD_SAVES_DIR = "World_Saves";
 
@@ -16,7 +17,11 @@ void Set_Neighbours_to_Update(World& world, const glm::ivec3& sector, const glm:
 void Load_New_Chunks    (WorldManager& wm,const glm::ivec3& current_sector, const glm::ivec3& current_chunk, void (*create_chunk_func)(Chunk&, glm::ivec3 offset));
 void Unload_Far_Chunks  (WorldManager& wm, const glm::ivec3& curr_position);
 
+
 void Update_Chunks(WorldManager& wm, Coil::Camera& camera);
+
 void Load_All_Chunks (WorldManager& wm);
 void Store_All_Chunks(WorldManager& wm);
+void Randomly_Delete_Chunk(WorldManager& wm);
+
 #endif // !CHUNK_MANAGEMENT_H

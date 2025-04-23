@@ -21,8 +21,8 @@ enum class VoxelColorMode {
 
 class VoxelImporter {
 public:
-    VoxelImporter() {
-        std::srand(std::time(0));  // Seed random number generator
+    VoxelImporter(){
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
     }
 
     // Function to determine voxel color based on mode

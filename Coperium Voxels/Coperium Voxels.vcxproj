@@ -207,6 +207,7 @@
     <ClCompile Include="Src\WorldData\Chunk_Management\Load_All_Chunks.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Set_Neighbours_Update.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Load_Chunks.cpp" />
+    <ClCompile Include="Src\WorldData\Chunk_Management\Random Delete.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Store_&amp;_Read.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Store_All_Chunks.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Unload_Chunks.cpp" />

@@ -7,14 +7,17 @@ using namespace std;
 using namespace std::chrono;
 
 struct Cell {
-    int  x, y;
-    bool alive   = false;
-    bool changed = false;
-
+    int  x          = 0;
+    int  y          = 0;
+    bool alive      = false;
+    bool changed    = false;
+    Cell(int x_val = 0, int y_val = 0, bool alive_val = false, bool changed_val = false)
+        : x(x_val), y(y_val), alive(alive_val), changed(changed_val) {}
     bool operator==(const Cell& other) const {
         return x == other.x && y == other.y;
     }
 };
+
 
 // Hash function for unordered_map
 struct CellHash {

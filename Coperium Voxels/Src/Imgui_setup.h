@@ -21,7 +21,6 @@ void InitializeImGui(Coil::Window& window) {
     io.WantCaptureMouse = true;
     io.WantCaptureKeyboard = false;
 }
-
 void RenderImGuiFrame(float fps, float color[4]) {
     // Start ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -34,14 +33,13 @@ void RenderImGuiFrame(float fps, float color[4]) {
     ImGui::Text("FPS: %.1f", fps);
     ImGui::End();
 
-    // Color Picker UI (Color Wheel Style)
-    //ImGui::SetNextWindowPos(ImVec2(10, 50));  // Below the FPS counter
-    //ImGui::Begin("Color Picker", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-
-    //// ImGui ColorPicker (with color wheel image)
-    //ImGui::ColorPicker4("Pick a Color", color, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview | ImGuiColorEditFlags_PickerHueWheel);
-
+    // If you want the color picker, uncomment this section:
+    /*
+    ImGui::SetNextWindowPos(ImVec2(10, 50));  // Below the FPS counter
+    ImGui::Begin("Color Picker", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::ColorPicker4("Pick a Color", color, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview | ImGuiColorEditFlags_PickerHueWheel);
     ImGui::End();
+    */
 
     // Render ImGui
     ImGui::Render();
@@ -50,6 +48,7 @@ void RenderImGuiFrame(float fps, float color[4]) {
         ImGui_ImplOpenGL3_RenderDrawData(draw_data);
     }
 }
+
 
 void CleanupImGui() {
     ImGui_ImplOpenGL3_Shutdown();

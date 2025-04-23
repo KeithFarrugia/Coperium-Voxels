@@ -11,13 +11,21 @@
 #include "WorldData/World Opertions/Wrap Operations/Wrap_Chunk_Sector_Operations.h"
 #include "WorldData/Chunk_Management/Manage_Chunks.h"
 
-constexpr int GRID_SIZE_F_X = 64;
-constexpr int GRID_SIZE_F_Y = 1;
-constexpr int GRID_SIZE_F_Z = 70;
+//constexpr int GRID_SIZE_F_X = 64;
+//constexpr int GRID_SIZE_F_Y = 1;
+//constexpr int GRID_SIZE_F_Z = 70;
+//
+//constexpr int GRID_SIZE_S_X = -64;
+//constexpr int GRID_SIZE_S_Y = 0;
+//constexpr int GRID_SIZE_S_Z = -70;
 
-constexpr int GRID_SIZE_S_X = -64;
+constexpr int GRID_SIZE_F_X = 64;
+constexpr int GRID_SIZE_F_Y = 64;
+constexpr int GRID_SIZE_F_Z = 64;
+
+constexpr int GRID_SIZE_S_X = 0;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = -70;
+constexpr int GRID_SIZE_S_Z = 0;
 
 glm::ivec3 last_position;
 #include <iostream>
@@ -122,51 +130,79 @@ void generate_blocks(World& world) {
         << duration.count() << " seconds." << std::endl;
 }
 
+void generate_blocks_colour(World& world) {
 
-void render_voxels(World& world, Coil::Shader& shader, GLuint vertex_offset, const Coil::Camera& camera) {
-    auto start_time = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
+    for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
+        for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
+            for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
+                vox_data_t som = vox_data_t{
+                        glm::ivec3(x, y, z),                // position
+                        glm::ivec3(x, (int)(y / 4.0f), z),  // color
+                        voxel_type_t::NORMAL,               // type
+                        true,                               // solid
+                        false,                              // transparency
+                        rel_loc_t::WORLD_LOC                // Relative
+                };
+                world.Create_Voxel(som);
+            }
+        }
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
+        << duration.count() << " seconds." << std::endl;
+}
+// In your renderer or utility .cpp:
+void render_voxels(
+    World& world,
+    Coil::Shader& shader,
+    GLuint vertex_offset,
+    const Coil::Camera& camera,
+    bool use_camera_culling  // when true, skip chunks behind the camera
+) {
+    static size_t last_drawn_chunks = 0;
 
-    // Precompute camera values for this frame.
     glm::vec3 camPos = camera.Get_Position();
-    glm::vec3 camFront = camera.Get_Front(); // assumed normalized
+    glm::vec3 camFront = camera.Get_Front();  // assumed normalized
 
-    // Get all sectors from the world.
+    size_t drawn_chunks = 0;
+
     sectors_t* sectors = world.Get_All_Sectrs();
-    for (auto sector : *sectors) {
-        // (Optional) Sector-level culling could be inserted here if sectors have bounding volumes.
+    for (auto sector_pair : *sectors) {
+        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+        for (auto chunk_pair : *chunks) {
 
-        // Get the chunks for this sector.
-        chunks_t* chunks = sector.second.Get_All_Chunks();
-        for (auto pair : *chunks) {
-
-            // Compute the world-space offset for this chunk.
+            // compute world-space offset of this chunk
             glm::ivec3 offset = glm::ivec3(
-                pair.first.X() * CHUNK_SIZE_X + sector.first.X() * SECTR_SIZE_X,
-                pair.first.Y() * CHUNK_SIZE_Y,
-                pair.first.Z() * CHUNK_SIZE_Z + sector.first.Z() * SECTR_SIZE_Z
+                chunk_pair.first.X() * CHUNK_SIZE_X
+                + sector_pair.first.X() * SECTR_SIZE_X,
+                chunk_pair.first.Y() * CHUNK_SIZE_Y,
+                chunk_pair.first.Z() * CHUNK_SIZE_Z
+                + sector_pair.first.Z() * SECTR_SIZE_Z
             );
-
-            // Compute vector from the camera's position to the chunk.
-            glm::vec3 camToChunk = glm::vec3(offset) - camPos;
-
-            // Dot product with the normalized camera front.
-            // No need to normalize camToChunk since sign of dot product is sufficient.
-            if (glm::dot(camToChunk, camFront) <= 0.0f) {
-                continue; // Skip rendering this chunk if it's behind the camera.
+            glm::ivec3 chunk = glm::ivec3(chunk_pair.first.X(), chunk_pair.first.Y(), chunk_pair.first.Z());
+            if (use_camera_culling) {
+                glm::vec3 to_chunk = glm::vec3(offset) - camPos;
+                if (glm::dot(to_chunk, camFront) <= 0.0f) {
+                    continue;
+                }
             }
 
-            // Otherwise, set the shader uniform and draw the mesh.
             shader.Set_Vec3(vertex_offset, offset);
-            pair.second.Draw_Mesh();
+            chunk_pair.second.Draw_Mesh();
+            ++drawn_chunks;
         }
     }
 
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-
-    // Optional: print or log the rendering time.
-    // std::cout << "render_voxels took " << duration << " microseconds." << std::endl;
+    // only print when the count changes
+    if (drawn_chunks != last_drawn_chunks) {
+        std::cout << "Chunks drawn this frame: "
+            << drawn_chunks << std::endl;
+        last_drawn_chunks = drawn_chunks;
+    }
 }
+
 
 const std::vector<glm::ivec3> directions = {
     glm::ivec3(1, 0, 0),

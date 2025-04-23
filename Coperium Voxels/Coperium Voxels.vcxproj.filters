@@ -195,6 +195,9 @@
     <ClCompile Include="Src\WorldData\Chunk_Management\Store_All_Chunks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\WorldData\Chunk_Management\Random Delete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
