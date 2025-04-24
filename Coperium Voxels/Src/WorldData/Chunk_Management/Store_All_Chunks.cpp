@@ -10,7 +10,7 @@ void Store_All_Chunks(WorldManager& wm) {
     for (auto sector_pair : *sectors) {
         // sector_pair.first is a sector_loc_t, sector_pair.second is a pointer to the Sector
         sector_loc_t sector_loc = sector_pair.first;
-        Sector& sector = sector_pair.second;
+        Sector& sector = *(sector_pair.second.get());
 
 
         // Get all chunks in this sector

@@ -170,7 +170,7 @@ void render_voxels(
 
     sectors_t* sectors = world.Get_All_Sectrs();
     for (auto sector_pair : *sectors) {
-        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+        chunks_t* chunks = sector_pair.second.get()->Get_All_Chunks();
         for (auto chunk_pair : *chunks) {
 
             // compute world-space offset of this chunk
@@ -190,7 +190,7 @@ void render_voxels(
             }
 
             shader.Set_Vec3(vertex_offset, offset);
-            chunk_pair.second.Draw_Mesh();
+            chunk_pair.second.get()->Draw_Mesh();
             ++drawn_chunks;
         }
     }

@@ -61,18 +61,19 @@ int main() {
     Coil::Window window("Voxel Test Case", 1500, 1000);
     setupWindow(window);
 
-    WorldManager world_1(std::string("W1"));
+    WorldManager world_1(std::string("Flat"));
     //VoxData voxData = readVoxFile("teapot.vox");
     //GameOfLife gol(64, 64, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 50);
     //
     // 
    //importVoxelsToWorld(world_1.Get_World(), voxData);
-    generate_blocks_colour(world_1.Get_World());
+    //generate_blocks_colour(world_1.Get_World());
     //Load_All_Chunks(teapot_world);
-    //return 0;
-    //VoxelImporter importer;
-    //importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);
 
+    //return 0;
+    VoxelImporter importer;
+    importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);
+    //Load_All_Chunks(world_1);
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
 
@@ -205,13 +206,13 @@ int main() {
         buffer_shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
         buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
         buffer_shader.Set_Matrix4("model", model);
-        //Update_Chunks(teapot_world, camera);
+        //Update_Chunks(world_1, camera);
         //Lightning_Animation(teapot_world);
         
         //gol.Update(world_1, glm::ivec3(-64,0,-64), glm::ivec3(64, 0, 64));
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
-        //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
+        Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
         render_voxels(world_1.Get_World(), buffer_shader, vertex_offset, camera, false);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

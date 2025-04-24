@@ -19,7 +19,7 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
     for (int x = MIN_ID_V_X; x <= MAX_ID_V_X; x++) {
         for (int y = MIN_ID_V_Y; y <= MAX_ID_V_Y; y++) {
             for (int z = MIN_ID_V_Z; z <= MAX_ID_V_Z; z++) {
-                Voxel* voxel = chunk_pair.second.Get_Voxel(glm::ivec3(x, y, z), rel_loc_t::CHUNK_LOC);
+                Voxel* voxel = chunk_pair.second.get()->Get_Voxel(glm::ivec3(x, y, z), rel_loc_t::CHUNK_LOC);
                 if (!voxel->IsSolid()) continue;
 
                 cube_faces_t flags = static_cast<cube_faces_t>(
@@ -44,23 +44,23 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
         }
     }
 
-    chunk_pair.second.Get_Mesh().Clear_Mesh();
-    chunk_pair.second.Get_Mesh().Configure_Mesh(
+    chunk_pair.second.get()->Get_Mesh().Clear_Mesh();
+    chunk_pair.second.get()->Get_Mesh().Configure_Mesh(
         vertex_mesh.data(),
         sizeof(GLfloat),
         (GLsizei)vertex_mesh.size(),
         GL_FLOAT,
         FACE_NUM_ELEMENTS
     );
-    chunk_pair.second.Get_Mesh().Configure_Index_Buffer(
+    chunk_pair.second.get()->Get_Mesh().Configure_Index_Buffer(
         index_mesh.data(),
         sizeof(GLuint),
         (GLsizei)index_mesh.size()
     );
 
-    chunk_pair.second.Get_Mesh().Add_Vertex_Set(0, 1, 0);
-    chunk_pair.second.Get_Mesh().Add_Vertex_Set(1, 1, 1);
-    chunk_pair.second.Get_Mesh().Add_Vertex_Set(2, 3, 2);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(0, 1, 0);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(1, 1, 1);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 3, 2);
 
     //std::cout << "Total faces generated in this chunk: " << total_faces_generated << std::endl;
 }

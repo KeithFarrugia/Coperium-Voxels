@@ -24,7 +24,7 @@ const neighbouring_chunks_t get_chunk_neighbours(
         Get_Front_Chunk (w, chunk, sector, &generic_chunk),
         Get_Back_Chunk  (w, chunk, sector, &generic_chunk),
 
-        &chunk.second
+        chunk.second.get()
     );
 }
 
@@ -54,7 +54,7 @@ const Chunk* Get_Right_Chunk(
      * current chunk is not at the edge 
      * --------------------------------------------- */
     if (chunk.first.X() < MAX_ID_C_X) {
-        const Chunk* candidate = sector.second.Get_Chunk(
+        const Chunk* candidate = sector.second.get()->Get_Chunk(
             chunk_loc_t::Compact(glm::ivec3(
                 chunk.first.X() + 1, chunk.first.Y(), chunk.first.Z()
             ))
@@ -107,7 +107,7 @@ const Chunk* Get_Left_Chunk(
      * current chunk is not at the edge 
      * --------------------------------------------- */
     if (chunk.first.X() > MIN_ID_C_X) {
-        const Chunk* candidate = sector.second.Get_Chunk(
+        const Chunk* candidate = sector.second.get()->Get_Chunk(
             chunk_loc_t::Compact(glm::ivec3(
                 chunk.first.X() - 1, chunk.first.Y(), chunk.first.Z()
             ))
@@ -161,7 +161,7 @@ const Chunk* Get_Top_Chunk(
      * current chunk is not at the edge 
      * --------------------------------------------- */
     if (chunk.first.Y() < MAX_ID_C_Y) {
-        const Chunk* candidate = sector.second.Get_Chunk(
+        const Chunk* candidate = sector.second.get()->Get_Chunk(
             chunk_loc_t::Compact(glm::ivec3(
                 chunk.first.X(), chunk.first.Y() + 1, chunk.first.Z()
             ))
@@ -196,7 +196,7 @@ const Chunk* Get_Bot_Chunk(
      * current chunk is not at the edge
      * --------------------------------------------- */
     if (chunk.first.Y() > MIN_ID_C_Y) {
-        const Chunk* candidate = sector.second.Get_Chunk(
+        const Chunk* candidate = sector.second.get()->Get_Chunk(
             chunk_loc_t::Compact(glm::ivec3(
                 chunk.first.X(), chunk.first.Y() - 1, chunk.first.Z()
             ))
@@ -231,7 +231,7 @@ const Chunk* Get_Front_Chunk(
      * current chunk is not at the edge
      * --------------------------------------------- */
     if (chunk.first.Z() < MAX_ID_C_Z) {
-        const Chunk* candidate = sector.second.Get_Chunk(
+        const Chunk* candidate = sector.second.get()->Get_Chunk(
             chunk_loc_t::Compact(glm::ivec3(
                 chunk.first.X(), chunk.first.Y(), chunk.first.Z() + 1
             ))
@@ -285,7 +285,7 @@ const Chunk* Get_Back_Chunk(
      * current chunk is not at the edge
      * --------------------------------------------- */
     if (chunk.first.Z() > MIN_ID_C_Z) {
-        const Chunk* candidate = sector.second.Get_Chunk(
+        const Chunk* candidate = sector.second.get()->Get_Chunk(
             chunk_loc_t::Compact(glm::ivec3(
                 chunk.first.X(), chunk.first.Y(), chunk.first.Z() - 1
             ))

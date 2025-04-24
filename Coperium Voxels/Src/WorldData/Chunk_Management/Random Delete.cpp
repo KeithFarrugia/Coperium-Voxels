@@ -21,7 +21,7 @@ void Randomly_Delete_Chunk(WorldManager& wm) {
     std::vector<std::pair<sector_loc_t, chunk_loc_t>> all_chunks;
     for (auto sector_pair : *sectors) {
         sector_loc_t sector_loc = sector_pair.first;
-        auto* chunks = sector_pair.second.Get_All_Chunks(); // map<chunk_loc_t,Chunk>*
+        auto* chunks = sector_pair.second.get()->Get_All_Chunks(); // map<chunk_loc_t,Chunk>*
         for (auto chunk_pair : *chunks) {
             all_chunks.emplace_back(sector_loc, chunk_pair.first);
         }

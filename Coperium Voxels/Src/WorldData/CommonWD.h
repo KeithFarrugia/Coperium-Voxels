@@ -65,11 +65,11 @@ class Sector;
 class Chunk;
 class Voxel;
 
-typedef AvlTreeDataStructure <sector_loc_t, Sector>  sectors_t;
-typedef UnorderedMapDataStructure <chunk_loc_t , Chunk >  chunks_t;
+typedef AvlTreeDataStructure <sector_loc_t, std::shared_ptr<Sector>>  sectors_t;
+typedef AvlTreeDataStructure<chunk_loc_t, std::shared_ptr<Chunk>>  chunks_t;
 typedef std::vector<Voxel>                           voxels_t;
 
-typedef std::pair<chunk_loc_t   &   , Chunk &> chunk_pair_t;
-typedef std::pair<sector_loc_t  &   , Sector&> sector_pair_t;
+typedef std::pair<const chunk_loc_t, std::shared_ptr<Chunk>> chunk_pair_t;
+typedef std::pair<sector_loc_t  &   , std::shared_ptr<Sector>> sector_pair_t;
 
 #endif // !COMMON_WORLD_DATA

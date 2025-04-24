@@ -58,7 +58,7 @@ void Unload_Far_Chunks(WorldManager& wm, const glm::ivec3& curr_position) {
             sector_pair.first.Z() * SECTR_SIZE_Z
         );
 
-        auto* chunks = sector_pair.second.Get_All_Chunks();
+        auto* chunks = sector_pair.second.get()->Get_All_Chunks();
 
         // Collect chunks to unload
         std::vector<chunk_loc_t> chunks_to_remove;
@@ -83,7 +83,7 @@ void Unload_Far_Chunks(WorldManager& wm, const glm::ivec3& curr_position) {
 
         // Remove chunks after iteration and update neighbours.
         for (const auto& chunk_loc : chunks_to_remove) {
-            sector_pair.second.Remove_Chunk(glm::ivec3(chunk_loc.X(), chunk_loc.Y(), chunk_loc.Z()), rel_loc_t::CHUNK_LOC);
+            sector_pair.second.get()->Remove_Chunk(glm::ivec3(chunk_loc.X(), chunk_loc.Y(), chunk_loc.Z()), rel_loc_t::CHUNK_LOC);
             Set_Neighbours_to_Update(
                 world,
                 glm::ivec3(sector_pair.first.X(), 0, sector_pair.first.Z()),

@@ -131,7 +131,7 @@ public:
         // Get all sectors from the world
         sectors_t* sectors = world.Get_World().Get_All_Sectrs();
         for (sector_pair_t sector_pair : *sectors) {
-            chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+            chunks_t* chunks = sector_pair.second.get()->Get_All_Chunks();
             for (chunk_pair_t chunk_pair : *chunks) {
 
                 glm::ivec3 offset(
@@ -177,11 +177,11 @@ public:
                             }
 
                             // Set the voxel color with 4-bit channels
-                            chunk_pair.second
-                                .Get_Voxel(glm::ivec3(local_x, 0, local_z))
+                            chunk_pair.second.get()->
+                                Get_Voxel(glm::ivec3(local_x, 0, local_z))
                                 ->SetColour(finalColor4);
 
-                            chunk_pair.second.Get_Chunk_Data().updated = true;
+                            chunk_pair.second.get()->Get_Chunk_Data().updated = true;
                         }
                     }
                 }

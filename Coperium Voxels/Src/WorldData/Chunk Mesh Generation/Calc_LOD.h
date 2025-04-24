@@ -5,17 +5,17 @@
 #include <GLM/gtx/norm.hpp>
 #include "../World.h"
 
-//inline constexpr float THRESH_SQ0 = 50.0f * 50.0f;
-//inline constexpr float THRESH_SQ1 = 100.0f * 100.0f;
-//inline constexpr float THRESH_SQ2 = 300.0f * 300.0f;
-//inline constexpr float THRESH_SQ3 = 800.0f * 800.0f;
+inline constexpr float THRESH_SQ0 = 50.0f * 50.0f;
+inline constexpr float THRESH_SQ1 = 100.0f * 100.0f;
+inline constexpr float THRESH_SQ2 = 300.0f * 300.0f;
+inline constexpr float THRESH_SQ3 = 800.0f * 800.0f;
 
 
 
-inline constexpr float THRESH_SQ0 = 1000.0f * 1000.0f;
-inline constexpr float THRESH_SQ1 = 1000.0f * 1000.0f;
-inline constexpr float THRESH_SQ2 = 3000.0f * 3000.0f;
-inline constexpr float THRESH_SQ3 = 8000.0f * 8000.0f;
+//inline constexpr float THRESH_SQ0 = 1000.0f * 1000.0f;
+//inline constexpr float THRESH_SQ1 = 1000.0f * 1000.0f;
+//inline constexpr float THRESH_SQ2 = 3000.0f * 3000.0f;
+//inline constexpr float THRESH_SQ3 = 8000.0f * 8000.0f;
 
 inline constexpr glm::vec3 HALF_CHUNK(
     CHUNK_SIZE_X * 0.5f, 

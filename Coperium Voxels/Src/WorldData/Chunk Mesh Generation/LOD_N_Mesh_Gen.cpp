@@ -53,7 +53,7 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
                 int solid_voxel_count = 0;
 
                 // Calculate average color for the region
-                glm::vec3 average_color = CalculateAverageColorForVoxel(glm::ivec3(x, y, z), chunk_pair.second, l_o_d, num_air);
+                glm::vec3 average_color = CalculateAverageColorForVoxel(glm::ivec3(x, y, z), *(chunk_pair.second.get()), l_o_d, num_air);
 
                 // Check if the chunk is mostly air and skip if necessary
                 if (num_air >= l_o_d * l_o_d * l_o_d) continue;
@@ -121,11 +121,11 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
     }
 
     // Final mesh configuration
-    chunk_pair.second.Get_Mesh().Clear_Mesh();
-    chunk_pair.second.Get_Mesh().Configure_Mesh(vertex_mesh.data(), sizeof(GLfloat), static_cast<GLsizei>(vertex_mesh.size()), GL_FLOAT, FACE_NUM_ELEMENTS);
-    chunk_pair.second.Get_Mesh().Configure_Index_Buffer(index_mesh.data(), sizeof(GLuint), static_cast<GLsizei>(index_mesh.size()));
+    chunk_pair.second.get()->Get_Mesh().Clear_Mesh();
+    chunk_pair.second.get()->Get_Mesh().Configure_Mesh(vertex_mesh.data(), sizeof(GLfloat), static_cast<GLsizei>(vertex_mesh.size()), GL_FLOAT, FACE_NUM_ELEMENTS);
+    chunk_pair.second.get()->Get_Mesh().Configure_Index_Buffer(index_mesh.data(), sizeof(GLuint), static_cast<GLsizei>(index_mesh.size()));
 
-    chunk_pair.second.Get_Mesh().Add_Vertex_Set(0, 1, 0);
-    chunk_pair.second.Get_Mesh().Add_Vertex_Set(1, 1, 1);
-    chunk_pair.second.Get_Mesh().Add_Vertex_Set(2, 3, 2);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(0, 1, 0);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(1, 1, 1);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 3, 2);
 }

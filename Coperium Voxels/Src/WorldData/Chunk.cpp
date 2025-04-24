@@ -28,7 +28,7 @@ Chunk::Chunk(const Chunk& other) {
  */
 Chunk::~Chunk() {
     voxels.clear();
-    //mesh.Clear_Mesh();
+    mesh.Clear_Mesh();
 }
 
 /* ============================================================================

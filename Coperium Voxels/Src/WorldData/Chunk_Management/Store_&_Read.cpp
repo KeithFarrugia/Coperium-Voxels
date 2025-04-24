@@ -27,7 +27,7 @@ namespace fs = std::filesystem;
 void Store_Chunk(const std::string& world_name, sector_pair_t sector_pair, chunk_pair_t chunk_pair) {
     sector_loc_t sector_id = sector_pair.first;
     chunk_loc_t chunk_id = chunk_pair.first;
-    Chunk& chunk = chunk_pair.second;
+    Chunk& chunk = *(chunk_pair.second.get());
 
     // Construct the directory path: World_Saves/world_name/sector_id/
     fs::path sector_path = fs::path(WORLD_SAVES_DIR) / world_name / std::to_string(sector_id.location);

@@ -221,6 +221,7 @@ void Basic_Mesh::Draw_Mesh(bool wireframe) const {
 
     }
     else {
+        if (vertex_buffer_stride == 0) return;
         glDrawArrays(
             GL_TRIANGLES,
             0,

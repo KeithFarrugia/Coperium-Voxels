@@ -12,7 +12,7 @@ World::World() {}
  * Copy Constructor
  * ============================================================================
  */
-World::World(const World& other){
+World::World(const World& other) {
     sectors = other.sectors;
 }
 
@@ -58,7 +58,7 @@ Voxel* World::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  */
 Chunk* World::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
     Sector* s = Get_Sector(pos, rel);
-    if (s == nullptr) { return nullptr; }
+    if (!s) { return nullptr; }
     return s->Get_Chunk(pos, rel);
 }
 
@@ -76,7 +76,7 @@ Chunk* World::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 Sector* World::Get_Sector(glm::ivec3 pos, rel_loc_t rel) {
-    return sectors.Find(
+    auto sptr_ptr = sectors.Find(
         sector_loc_t::Compact(
             Convert_Loc_2_ID(
                 pos,
@@ -85,6 +85,7 @@ Sector* World::Get_Sector(glm::ivec3 pos, rel_loc_t rel) {
             )
         )
     );
+    return (sptr_ptr && *sptr_ptr) ? (*sptr_ptr).get() : nullptr;
 }
 
 /* ============================================================================
@@ -98,8 +99,9 @@ Sector* World::Get_Sector(glm::ivec3 pos, rel_loc_t rel) {
  * Pointer to the sector that contains the chunk at the specified location.
  * ============================================================================
  */
-Sector* World::Get_Sector(sector_loc_t id){
-    return sectors.Find(id);
+Sector* World::Get_Sector(sector_loc_t id) {
+    auto sptr_ptr = sectors.Find(id);
+    return (sptr_ptr && *sptr_ptr) ? (*sptr_ptr).get() : nullptr;
 }
 
 /* ============================================================================
@@ -112,18 +114,19 @@ Sector* World::Get_Sector(sector_loc_t id){
  * ============================================================================
  */
 void World::Create_Voxel(vox_data_t data) {
-    glm::ivec3 res = Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::SECTOR_LOC);
     sector_loc_t loc = sector_loc_t::Compact(
-        res
+        Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::SECTOR_LOC)
     );
 
-    Sector* s = sectors.Find(loc);
+    auto sptr_ptr = sectors.Find(loc);
 
-    if (s != nullptr) { s->Create_Voxel(data); return; }
-
-    s = sectors.Insert(loc, Sector());
-
-    if (s != nullptr) { s->Create_Voxel(data); return; }
+    if (!sptr_ptr || !(*sptr_ptr)) {
+        auto new_sector = std::make_shared<Sector>();
+        sptr_ptr = sectors.Insert(loc, new_sector);
+    }
+    if (sptr_ptr && *sptr_ptr) {
+        (*sptr_ptr)->Create_Voxel(data);
+    }
 }
 
 /* ============================================================================
@@ -137,19 +140,21 @@ void World::Create_Voxel(vox_data_t data) {
  * ============================================================================
  */
 void World::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-
     sector_loc_t loc = sector_loc_t::Compact(
         Convert_Loc_2_ID(pos, rel, rel_loc_t::SECTOR_LOC)
     );
 
-    Sector* s = sectors.Find(loc);
+    auto sptr_ptr = sectors.Find(loc);
 
-    if (s != nullptr) { s->Create_Chunk(pos, rel); return; }
-
-    s = sectors.Insert(loc, Sector());
-
-    if (s != nullptr) { s->Create_Chunk(pos, rel); return; }
+    if (!sptr_ptr || !(*sptr_ptr)) {
+        auto new_sector = std::make_shared<Sector>();
+        sptr_ptr = sectors.Insert(loc, new_sector);
+    }
+    if (sptr_ptr && *sptr_ptr) {
+        (*sptr_ptr)->Create_Chunk(pos, rel);
+    }
 }
+
 
 /* ============================================================================
  * --------------------------- Create_Sector
@@ -165,7 +170,7 @@ void World::Create_Sector(glm::ivec3 pos, rel_loc_t rel) {
         sector_loc_t::Compact(
             Convert_Loc_2_ID(pos, rel, rel_loc_t::SECTOR_LOC)
         ),
-        Sector()
+        std::make_shared<Sector>()
     );
 }
 /* ============================================================================
@@ -176,9 +181,9 @@ void World::Create_Sector(glm::ivec3 pos, rel_loc_t rel) {
  * id :   precompacted location.
  * ============================================================================
  */
-void World::Create_Sector(sector_loc_t id){
+void World::Create_Sector(sector_loc_t id) {
     sectors.Insert(
-        id, Sector()
+        id, std::make_shared<Sector>()
     );
 }
 
@@ -192,7 +197,7 @@ void World::Create_Sector(sector_loc_t id){
  * ============================================================================
  */
 void World::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
-    Chunk* c = Get_Chunk(pos, rel); 
+    Chunk* c = Get_Chunk(pos, rel);
     if (c != nullptr) { Get_Voxel(pos, rel); }
 }
 
@@ -207,7 +212,7 @@ void World::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  */
 void World::Remove_Chunk(glm::ivec3 pos, rel_loc_t rel) {
     Sector* s = Get_Sector(pos, rel);
-    if (s != nullptr) { Remove_Chunk(pos, rel); }
+    if (s != nullptr) { s->Remove_Chunk(pos, rel); }
 }
 
 /* ============================================================================
@@ -247,3 +252,4 @@ void World::Remove_Sector(glm::ivec3 pos, rel_loc_t rel) {
 sectors_t* World::Get_All_Sectrs() {
     return &sectors;
 }
+

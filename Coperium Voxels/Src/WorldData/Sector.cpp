@@ -39,7 +39,7 @@ Sector::~Sector() {
  */
 Voxel* Sector::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
     Chunk* c = Get_Chunk(pos, rel);
-    return (c == nullptr) ? nullptr : c->Get_Voxel(pos, rel);
+    return c ? c->Get_Voxel(pos, rel) : nullptr;
 }
 
 /* ============================================================================
@@ -56,13 +56,11 @@ Voxel* Sector::Get_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 Chunk* Sector::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    return chunks.Find(
-        chunk_loc_t::Compact(
-            Convert_Loc_2_ID(
-                pos, rel, rel_loc_t::CHUNK_LOC
-            )
-        )
+    chunk_loc_t id = chunk_loc_t::Compact(
+        Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC)
     );
+    auto sptr_ptr = chunks.Find(id);
+    return (sptr_ptr && *sptr_ptr) ? (*sptr_ptr).get() : nullptr;
 }
 
 /* ============================================================================
@@ -79,7 +77,8 @@ Chunk* Sector::Get_Chunk(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 Chunk* Sector::Get_Chunk(chunk_loc_t id){
-    return chunks.Find(id);
+    auto sptr_ptr = chunks.Find(id);
+    return (sptr_ptr && *sptr_ptr) ? (*sptr_ptr).get() : nullptr;
 }
 
 /* ============================================================================
@@ -97,18 +96,16 @@ Chunk* Sector::Get_Chunk(chunk_loc_t id){
  * ============================================================================
  */
 void Sector::Create_Voxel(vox_data_t data) {
-    chunk_loc_t loc = chunk_loc_t::Compact(
+    chunk_loc_t id = chunk_loc_t::Compact(
         Convert_Loc_2_ID(data.position, data.rel, rel_loc_t::CHUNK_LOC)
     );
-    
-    Chunk* c = chunks.Find(loc);
-    if (c != nullptr) {
-        c->Create_Voxel(data); return;
+    auto sptr_ptr = chunks.Find(id);
+    if (!sptr_ptr || !(*sptr_ptr)) {
+        auto new_chunk = std::make_shared<Chunk>();
+        sptr_ptr = chunks.Insert(id, new_chunk);
     }
-    c = chunks.Insert(loc, Chunk());
-
-    if (c != nullptr) {
-        c->Create_Voxel(data); return;
+    if (sptr_ptr && *sptr_ptr) {
+        (*sptr_ptr)->Create_Voxel(data);
     }
 }
 
@@ -124,21 +121,21 @@ void Sector::Create_Voxel(vox_data_t data) {
  * ============================================================================
  */
 void Sector::Create_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    chunks.Insert(
-        chunk_loc_t::Compact(
-            Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC)
-        ),
-        Chunk()
+    chunk_loc_t id = chunk_loc_t::Compact(
+        Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC)
     );
+    auto new_chunk = std::make_shared<Chunk>();
+    chunks.Insert(id, new_chunk);
 }
 
 
 void Sector::Add_Chunk(glm::ivec3 chunk_id, const Chunk& chunk) {
-    chunks.Insert(chunk_loc_t::Compact(chunk_id), chunk);
+    chunk_loc_t id = chunk_loc_t::Compact(chunk_id);
+    chunks.Insert(id, std::make_shared<Chunk>(chunk));
 }
 
 void Sector::Add_Chunk(chunk_loc_t chunk_id, const Chunk& chunk){
-    chunks.Insert(chunk_id, chunk);
+    chunks.Insert(chunk_id, std::make_shared<Chunk>(chunk));
 }
 
 /* ============================================================================
@@ -153,7 +150,7 @@ void Sector::Add_Chunk(chunk_loc_t chunk_id, const Chunk& chunk){
  */
 void Sector::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
     Chunk* c = Get_Chunk(pos, rel);
-    if (c != nullptr) { c->Remove_Voxel(pos, rel); }
+    if (c) c->Remove_Voxel(pos, rel);
 }
 
 /* ============================================================================
@@ -167,9 +164,10 @@ void Sector::Remove_Voxel(glm::ivec3 pos, rel_loc_t rel) {
  * ============================================================================
  */
 void Sector::Remove_Chunk(glm::ivec3 pos, rel_loc_t rel) {
-    chunks.Remove(chunk_loc_t::Compact(
-        Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC))
+    chunk_loc_t id = chunk_loc_t::Compact(
+        Convert_Loc_2_ID(pos, rel, rel_loc_t::CHUNK_LOC)
     );
+    chunks.Remove(id);
 }
 
 /* ============================================================================

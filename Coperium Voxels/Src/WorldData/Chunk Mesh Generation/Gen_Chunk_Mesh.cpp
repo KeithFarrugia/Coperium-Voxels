@@ -30,8 +30,8 @@ void Generate_Single_Chunk(
         sector_pair.first, chunk_pair.first, camera_pos
     );
     if (
-        chunk_pair.second.Get_Chunk_Data().l_o_d  != new_lod || 
-        chunk_pair.second.Get_Chunk_Data().updated
+        chunk_pair.second.get()->Get_Chunk_Data().l_o_d  != new_lod ||
+        chunk_pair.second.get()->Get_Chunk_Data().updated
     ){
         if (new_lod == lod_Level_t::NORMAL) {
             Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c);
@@ -42,8 +42,8 @@ void Generate_Single_Chunk(
     }
 
     // Update chunk LOD
-    chunk_pair.second.Get_Chunk_Data().l_o_d    = new_lod;
-    chunk_pair.second.Get_Chunk_Data().updated  = false;
+    chunk_pair.second.get()->Get_Chunk_Data().l_o_d    = new_lod;
+    chunk_pair.second.get()->Get_Chunk_Data().updated  = false;
 }
 
 
@@ -63,7 +63,7 @@ void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera) {
     // Iterate over all sectors and chunks
     sectors_t* sectors = world.Get_All_Sectrs();
     for (sector_pair_t sector_pair : *sectors) {
-        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+        chunks_t* chunks = sector_pair.second.get()->Get_All_Chunks();
         for (chunk_pair_t chunk_pair : *chunks) {
             Generate_Single_Chunk(
                 world, 
@@ -125,31 +125,31 @@ void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, bool
     // Iterate over all sectors and chunks to update LOD values.
     sectors_t* sectors = world.Get_All_Sectrs();
     for (sector_pair_t sector_pair : *sectors) {
-        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+        chunks_t* chunks = sector_pair.second.get()->Get_All_Chunks();
         for (chunk_pair_t chunk_pair : *chunks) {
             lod_Level_t new_lod = Compute_LOD(
                 sector_pair.first, chunk_pair.first, camera_pos
             );
-            if (new_lod != chunk_pair.second.Get_Chunk_Data().l_o_d) {
-                chunk_pair.second.Get_Chunk_Data().l_o_d = new_lod;
-                chunk_pair.second.Get_Chunk_Data().updated = true;
+            if (new_lod != chunk_pair.second.get()->Get_Chunk_Data().l_o_d) {
+                chunk_pair.second.get()->Get_Chunk_Data().l_o_d = new_lod;
+                chunk_pair.second.get()->Get_Chunk_Data().updated = true;
             }
         }
     }
 
     // Generate chunk meshes for updated chunks.
     for (sector_pair_t sector_pair : *sectors) {
-        chunks_t* chunks = sector_pair.second.Get_All_Chunks();
+        chunks_t* chunks = sector_pair.second.get()->Get_All_Chunks();
         for (chunk_pair_t chunk_pair : *chunks) {
-            if (chunk_pair.second.Get_Chunk_Data().updated) {
-                if (chunk_pair.second.Get_Chunk_Data().l_o_d == lod_Level_t::NORMAL) {
+            if (chunk_pair.second.get()->Get_Chunk_Data().updated) {
+                if (chunk_pair.second.get()->Get_Chunk_Data().l_o_d == lod_Level_t::NORMAL) {
                     Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c);
                 }
                 else {
                     Generate_Chunk_Mesh(world, sector_pair, chunk_pair, generic_c,
-                        static_cast<int>(chunk_pair.second.Get_Chunk_Data().l_o_d));
+                        static_cast<int>(chunk_pair.second.get()->Get_Chunk_Data().l_o_d));
                 }
-                chunk_pair.second.Get_Chunk_Data().updated = false;
+                chunk_pair.second.get()->Get_Chunk_Data().updated = false;
                 changed = true;
             }
         }
