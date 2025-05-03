@@ -13,7 +13,8 @@
 #include "Imgui_setup.h"
 #include "Animation Stuff/Game_of_Life.h"
 #include "VoxelModel_Loader.h"
-
+#include "WorldData/Chunk_Management/WorldManager.h"
+#include "World Creation Functions.h"
 void setupShader(Coil::Shader& shader) {
     shader.Add_Shaders({
         Coil::shader_info_t{"compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER},
@@ -61,7 +62,9 @@ int main() {
     Coil::Window window("Voxel Test Case", 1500, 1000);
     setupWindow(window);
 
-    WorldManager world_1(std::string("Flat"));
+    WorldManager world_1(std::string("sponge"));
+    
+    Create_Static_Model_World(world_1);
     //VoxData voxData = readVoxFile("teapot.vox");
     //GameOfLife gol(64, 64, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 50);
     //
@@ -71,8 +74,8 @@ int main() {
     //Load_All_Chunks(teapot_world);
 
     //return 0;
-    VoxelImporter importer;
-    importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);
+    /*VoxelImporter importer;
+    importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);*/
     //Load_All_Chunks(world_1);
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
@@ -184,7 +187,7 @@ int main() {
     std::cout << "Generate_All_Chunk_Meshes took " << meshGenDuration.count() << " ms\n";
 
     int call_counter_a = 0;
-    Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
+    //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
     while (!window.Is_Closed()) {
         if (glfwGetKey(window.Get_Window(), GLFW_KEY_R) == GLFW_PRESS) {
             if (!r_was_pressed) {

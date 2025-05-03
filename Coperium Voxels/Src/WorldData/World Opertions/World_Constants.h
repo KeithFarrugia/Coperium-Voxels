@@ -1,6 +1,6 @@
 #ifndef WORLD_CONSTANTS_H
 #define WORLD_CONSTANTS_H
-
+#include <GLM/glm.hpp>
 
 /* ---------------------------------
  * NUMBER OF VOXELS IN A SECTOR     */
@@ -77,6 +77,18 @@ inline constexpr int NUM_VOXELS_Z = MAX_ID_V_Z - MIN_ID_V_Z + 1; // 16
 inline constexpr int MASK_VOXELS_X = NUM_VOXELS_X - 1; // 15 (0xF)
 inline constexpr int MASK_VOXELS_Y = NUM_VOXELS_Y - 1; // 63 (0x3F)
 inline constexpr int MASK_VOXELS_Z = NUM_VOXELS_Z - 1; // 15 (0xF)
+
+
+/* ============================================================================
+ * --------------------------- Other Sizes
+ * Other Generic Sizes used
+ * ============================================================================
+ */
+inline const glm::vec3 HALF_CHUNK = glm::vec3(
+    CHUNK_SIZE_X * 0.5f,
+    CHUNK_SIZE_Y * 0.5f,
+    CHUNK_SIZE_Z * 0.5f
+);
 
 
 #endif // !WORLD_CONSTANTS_H

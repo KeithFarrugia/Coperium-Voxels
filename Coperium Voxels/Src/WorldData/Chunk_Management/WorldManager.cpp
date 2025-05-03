@@ -5,7 +5,8 @@
  * Initializes a WorldManager object with a specified world name.
  * ============================================================================ */
 WorldManager::WorldManager(const std::string& world_name) 
-: world_name(world_name), world() {}
+: world_name(world_name), world() {
+}
 
 /* ============================================================================
  * --------------------------- WorldManager Destructor
@@ -61,52 +62,98 @@ void WorldManager::Set_Generate_Mesh_Callback(std::function<void(WorldManager&)>
     generate_mesh_callback = func;
 }
 
+void WorldManager::Set_Chunk_Generation_Callback(
+    std::function<void(Chunk&, glm::ivec3 offset)> func
+){
+    chunk_generation_callback = func;
+}
+
 /* ============================================================================
  * --------------------------- Initialise World
  * Calls the initialise callback if it has been set.
  * ============================================================================ */
-void WorldManager::Initialise() {
-    if (initialise_callback) initialise_callback(*this);
+void WorldManager::Initialise(bool load_settings) {
+    if (load_settings)          Load_Settings();
+    if (settings.mass_load)     Mass_Load();
+    if (initialise_callback)    initialise_callback(*this);
+    unload_threshold =
+        settings.chunk_radius * CHUNK_SIZE_X *
+        settings.chunk_radius * CHUNK_SIZE_Z;
 }
 
-/* ============================================================================
- * --------------------------- Load World
- * Calls the load callback if it has been set.
- * ============================================================================ */
-void WorldManager::Load() {
-    if (load_callback) load_callback(*this);
+
+void WorldManager::Save_World(){
+    Store_All_Chunks();
 }
 
-/* ============================================================================
- * --------------------------- Unload World
- * Calls the unload callback if it has been set.
- * ============================================================================ */
-void WorldManager::Unload() {
-    if (unload_callback) unload_callback(*this);
+void WorldManager::Mass_Load(){
+    Load_All_Chunks();
 }
 
 /* ============================================================================
  * --------------------------- Render World
  * Calls the render callback if it has been set and rendering is enabled.
  * ============================================================================ */
-void WorldManager::Render() {
+void WorldManager::Render(
+    Coil::Shader&   shader,
+    GLuint          vertex_offset,
+    glm::vec3       player_position,
+    glm::vec3       player_front
+) {
     if (render_callback && settings.render_world) render_callback(*this);
+    if (!settings.render_world) return;
+    size_t drawn = 0;
+    sectors_t* sectors = world.Get_All_Sectrs();
+    for (sector_pair_t sector_pair : *sectors) {
+        chunks_t* chunks = sector_pair.second->Get_All_Chunks();
+        for (chunk_pair_t chunk_pair : *chunks) {
+
+            glm::vec3 offset = {
+                sector_pair.first.X() * SECTR_SIZE_X + chunk_pair.first.X() * CHUNK_SIZE_X,
+                                                       chunk_pair.first.Y() * CHUNK_SIZE_Y,
+                sector_pair.first.Z() * SECTR_SIZE_Z + chunk_pair.first.Z() * CHUNK_SIZE_Z
+            };
+
+            if (settings.smart_render) {
+                glm::vec3 toChunk = offset - player_position;
+                if (glm::dot(toChunk, player_front) <= 0.0f) {
+                    continue;
+                }
+            }
+
+            shader.Set_Vec3(vertex_offset, offset);
+            chunk_pair.second->Draw_Mesh();
+            ++drawn;
+        }
+    }
+
+    if (drawn != last_no_chunks_drawn && settings.debug) {
+        std::cout << "Chunks drawn this frame: " << drawn << std::endl;
+        last_no_chunks_drawn = drawn;
+    }
 }
+
 
 /* ============================================================================
  * --------------------------- Update World
  * Calls the update callback if it has been set.
  * ============================================================================ */
-void WorldManager::Update() {
+void WorldManager::Update(glm::vec3 player_position) {
+    Dynamic_Update_Chunks();
     if (update_callback) update_callback(*this);
+    
+    Generate_Mesh(player_position);
 }
 
 /* ============================================================================
  * --------------------------- Generate Mesh
  * Calls the generate mesh callback if it has been set and auto generation is enabled.
  * ============================================================================ */
-void WorldManager::Generate_Mesh() {
-    if (generate_mesh_callback && settings.auto_generate) generate_mesh_callback(*this);
+void WorldManager::Generate_Mesh(glm::vec3 player_position) {
+    if (generate_mesh_callback) generate_mesh_callback(*this);
+    if (settings.mesh_changes || initial_update) {
+        Generate_All_Chunk_Meshes(player_position);
+    }
 }
 
 /* ============================================================================
@@ -129,7 +176,7 @@ void WorldManager::Set_World_Name(const std::string& name) {
  * --------------------------- Get Settings
  * Returns a reference to the settings struct.
  * ============================================================================ */
-World_Settings& WorldManager::Get_Settings() {
+world_settings_t& WorldManager::Get_Settings() {
     return settings;
 }
 
@@ -137,7 +184,7 @@ World_Settings& WorldManager::Get_Settings() {
  * --------------------------- Set Settings
  * Updates the settings of the world manager.
  * ============================================================================ */
-void WorldManager::Set_Settings(const World_Settings& new_settings) {
+void WorldManager::Set_Settings(const world_settings_t& new_settings) {
     settings = new_settings;
 }
 

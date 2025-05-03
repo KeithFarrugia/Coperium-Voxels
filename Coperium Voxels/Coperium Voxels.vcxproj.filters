@@ -150,52 +150,52 @@
     <ClCompile Include="Src\WorldData\World Opertions\Location\Sector_Location.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_1_Mesh_Gen.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\LOD_1_Mesh_Gen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Get_Chunk_Neighbours.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\Get_Chunk_Neighbours.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Voxel_Operations.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\LOD_N_Mesh_Gen.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\LOD_N_Mesh_Gen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Calc_LOD.h">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\Calc_LOD.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk Mesh Generation\Gen_Chunk_Mesh.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\Gen_Chunk_Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\WorldData\Chunk_Management\Set_Neighbours_Update.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Unload_Chunks.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Unload_Chunks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Load_Chunks.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Load_Chunks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Update_Chunks.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Update_Chunks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\WorldData\Chunk_Management\WorldManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Source.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Store_&amp;_Read.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Store_&amp;_Read.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Load_All_Chunks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Load_All_Chunks.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Store_All_Chunks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Store_All_Chunks.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Loading_&amp;_Unloading\Random Delete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\WorldData\Chunk_Management\Random Delete.cpp">
+    <ClCompile Include="Src\WorldData\Chunk_Management\Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1214,16 +1214,13 @@
     <ClInclude Include="Src\Imgui_setup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\WorldData\Chunk Mesh Generation\Chunk_Mesh.h">
+    <ClInclude Include="Src\WorldData\Chunk_Management\Mesh Generation\Chunk_Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Operations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\WorldData\World Opertions\Wrap Operations\Wrap_Chunk_Sector_Operations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\WorldData\Chunk_Management\Manage_Chunks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\WorldData\Chunk_Management\WorldManager.h">
@@ -1233,6 +1230,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\VoxelModel_Loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\World Creation Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

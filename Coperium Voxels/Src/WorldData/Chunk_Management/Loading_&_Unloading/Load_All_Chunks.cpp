@@ -2,12 +2,11 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "Manage_Chunks.h"  // Ensure this header declares Read_Chunk, WorldManager, etc.
-
+#include "../WorldManager.h"
 namespace fs = std::filesystem;
 
-/*
- * Load_All_Chunks
+/* ============================================================================
+ * --------------------------- Load_All_Chunks
  * Given a world name, this function accesses the world folder,
  * iterates through each sector folder, and for each chunk file found,
  * loads the chunk data and adds it to the appropriate sector in the world.
@@ -15,18 +14,20 @@ namespace fs = std::filesystem;
  * Parameters:
  *   world_name - the name (and folder) of the world.
  *   wm         - the WorldManager instance whose world will be updated.
+ * ============================================================================ 
  */
-void Load_All_Chunks(WorldManager& wm) {
+void WorldManager::Load_All_Chunks() {
     /* ------------------------------------------
      * Finding the world file 
      * ------------------------------------------ */
-    fs::path world_folder = fs::path(WORLD_SAVES_DIR) / wm.Get_World_Name();
+    fs::path world_folder = fs::path(WORLD_SAVES_DIR) / world_name;
+
     if (!fs::exists(world_folder) || !fs::is_directory(world_folder)) {
-        std::cerr << "Error: World folder does not exist: " << world_folder << std::endl;
+        std::cerr 
+            << "Error: World folder does not exist: " 
+            << world_folder << std::endl;
         return;
     }
-
-    World& world = wm.Get_World();
 
     /* ------------------------------------------
      * Iterating over each sector
@@ -40,7 +41,12 @@ void Load_All_Chunks(WorldManager& wm) {
          * ------------------------------------------ */
         sector_loc_t sector_loc;
         try {
-            sector_loc.location = static_cast<uint32_t>(std::stoi(sector_entry.path().filename().string()));
+            sector_loc.location = 
+                static_cast<uint32_t>(
+                    std::stoi(
+                        sector_entry.path().filename().string()
+                    )
+                );
 
         }catch (const std::exception&) {
             std::cerr
@@ -72,7 +78,12 @@ void Load_All_Chunks(WorldManager& wm) {
              * ------------------------------------------ */
             chunk_loc_t chunk_loc;
             try {
-                chunk_loc.location = static_cast<uint16_t>(std::stoi(file_entry.path().stem().string()));
+                chunk_loc.location = 
+                    static_cast<uint16_t>(
+                        std::stoi(
+                            file_entry.path().stem().string()
+                        )
+                    );
 
             }catch (const std::exception&) {
                 std::cerr 
@@ -89,7 +100,7 @@ void Load_All_Chunks(WorldManager& wm) {
              * Read Chunk Data
              * ------------------------------------------ */
             Chunk chunk;
-            if (Read_Chunk(wm.Get_World_Name(), sector_loc, chunk_loc, chunk)) {
+            if (Read_Chunk(sector_loc, chunk_loc, chunk)) {
                 sector->Add_Chunk(chunk_loc, chunk);
                 std::cout << "Loaded chunk from file: "
                     << file_entry.path() << std::endl;

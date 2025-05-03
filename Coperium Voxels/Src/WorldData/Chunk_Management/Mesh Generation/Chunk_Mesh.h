@@ -2,9 +2,8 @@
 #ifndef CHUNK_MESH_GENERATION_H
 #define CHUNK_MESH_GENERATION_H
 
-#include "../World.h"
-#include <COIL/Camera/Camera.h>
-#include "../../Compact Data/Cube Mesh/CCMS.h"
+#include "../../World.h"
+#include "../../../Compact Data/Cube Mesh/CCMS.h"
 #include <bitset>
 
 typedef enum n_chunk_t {
@@ -88,8 +87,7 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, con
 void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk, int l_o_d);
 
 void Generate_Single_Chunk(World& world, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const glm::vec3& camera_pos);
-void Generate_All_Chunk_Meshes(World& world, Coil::Camera& camera);
-void Generate_All_Chunk_Meshes_LOD_PASS(World& world, Coil::Camera& camera, bool check_mov, int update_interval_ms);
+void Generate_All_Chunk_Meshes_LOD_PASS(World& world, glm::vec3 player_position, bool check_mov, int update_interval_ms);
 
 
 #endif // !CHUNK_MESH_GENERATION_H

@@ -2,16 +2,23 @@
 #ifndef VOXEL_IMPORTER_H
 #define VOXEL_IMPORTER_H
 
-#include <iostream>
+//----------------------------------------------------------------------------//
+//                                  INCLUDES                                  //
+//----------------------------------------------------------------------------//
+#include <cstdlib>      // std::rand, std::srand
+#include <ctime>        // std::time
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <cstdlib>  // For rand()
-#include <ctime>    // For seeding random generator
+
 #include <glm/glm.hpp>
+
 #include "WorldData/World.h"
 
-// Enum for different voxel color modes
+//----------------------------------------------------------------------------//
+//                            ENUM: VoxelColorMode                            //
+//----------------------------------------------------------------------------//
 enum class VoxelColorMode {
     ROYAL_BLUE,
     SKY_BLUE,
@@ -19,142 +26,139 @@ enum class VoxelColorMode {
     TERRAIN
 };
 
+//----------------------------------------------------------------------------//
+//                          CLASS: VoxelImporter                              //
+//----------------------------------------------------------------------------//
 class VoxelImporter {
 public:
-    VoxelImporter(){
-        std::srand(static_cast<unsigned>(std::time(nullptr)));
-    }
+    //------------------------------------------------------------------------//
+    //                     STATIC INITIALIZER FOR RNG                          //
+    //------------------------------------------------------------------------//
+    struct Seeder {
+        Seeder() { std::srand(static_cast<unsigned>(std::time(nullptr))); }
+    };
+    static inline Seeder seeder;
 
-    // Function to determine voxel color based on mode
-    glm::ivec3 GetVoxelColor(VoxelColorMode mode, int y) {
+    //------------------------------------------------------------------------//
+    //                         STATIC COLOR GENERATION                         //
+    //------------------------------------------------------------------------//
+    static glm::ivec3 GetVoxelColor(VoxelColorMode mode, int y) {
         switch (mode) {
-        case VoxelColorMode::ROYAL_BLUE: {
-            int red = std::clamp(4 + (std::rand() % 3 - 1), 0, 15);
-            int green = std::clamp(6 + (std::rand() % 3 - 1), 0, 15);
-            int blue = std::clamp(14 + (std::rand() % 3 - 1), 0, 15);
-            return glm::ivec3(red, green, blue);
+        case VoxelColorMode::ROYAL_BLUE: return GetRoyalBlue();
+        case VoxelColorMode::SKY_BLUE:   return GetSkyBlue();
+        case VoxelColorMode::HEIGHT_MAP: return GetHeightMapColor(y);
+        case VoxelColorMode::TERRAIN:    return GetTerrainColor(y);
         }
-        case VoxelColorMode::SKY_BLUE: {
-            int red = std::clamp(6 + (std::rand() % 3 - 1), 0, 15);
-            int green = std::clamp(10 + (std::rand() % 3 - 1), 0, 15);
-            int blue = std::clamp(15 + (std::rand() % 3 - 1), 0, 15);
-            return glm::ivec3(red, green, blue);
-        }
-        case VoxelColorMode::HEIGHT_MAP: {
-            if (y >= 64) return glm::ivec3(15, 0, 0);  // Max Crimson Red
-            if (y >= 32) {
-                // Smoothly transition from green (32) to red (64)
-                float factor = (y - 32) / 32.0f;
-                int red = static_cast<int>(factor * 15);  // From 0 to 15 (red increases)
-                int green = static_cast<int>((1.0f - factor) * 15);  // From 15 to 0 (green decreases)
-                return glm::ivec3(red, green, 0);  // Red and Green transition
-            }
-            if (y < 0) return glm::ivec3(0, 0, 15);  // Max Royal Blue (below 0)
-            // Smoothly transition from blue to green
-            float factor = y / 32.0f;
-            int blue = static_cast<int>((1.0f - factor) * 15);  // From 15 to 0 (blue decreases)
-            int green = static_cast<int>(factor * 15);  // From 0 to 15 (green increases)
-            return glm::ivec3(0, green, blue);  // Blue and Green transition
-        }
-        case VoxelColorMode::TERRAIN: {
-            if (y < 0) {
-                return glm::ivec3(0, 0, 15);  // Max Royal Blue for below 0
-            }
-
-            // Transition from blue to a less-saturated green (levels 0 to 48)
-            if (y < 48) {
-                float factor = y / 48.0f;
-                int blue = static_cast<int>((1.0f - factor) * 15);
-                // Reduced saturation: green ranges from about 4 to 11
-                int green = std::clamp(static_cast<int>(factor * 7 + 4 + (std::rand() % 5 - 2)), 0, 15);
-                int red = std::clamp(static_cast<int>(factor * 3 + (std::rand() % 4 - 2)), 0, 15);
-                return glm::ivec3(red, green, blue);
-            }
-
-            // Transition from less-saturated green to a brownish-grey tone (levels 48 to 56)
-            if (y < 56) {
-                float factor = (y - 48) / 8.0f;
-                // Updated start color to match the new green (approximate color at y == 48)
-                glm::ivec3 sColor(3, 11, 0);
-                glm::ivec3 eColor(8, 8, 8);     // Target brownish-grey tone at y == 56
-                int red = static_cast<int>(sColor.r * (1.0f - factor) + eColor.r * factor);
-                int green = static_cast<int>(sColor.g * (1.0f - factor) + eColor.g * factor);
-                int blue = static_cast<int>(sColor.b * (1.0f - factor) + eColor.b * factor);
-                // Apply a uniform random offset to keep the tone consistent
-                int offset = std::rand() % 5 - 2;
-                red = std::clamp(red + offset, 0, 15);
-                green = std::clamp(green + offset, 0, 15);
-                blue = std::clamp(blue + offset, 0, 15);
-                return glm::ivec3(red, green, blue);
-            }
-
-            // Smooth transition from brownish-grey to stone (levels 56 to 80)
-            if (y < 80) {
-                float factor = (y - 56) / 24.0f;
-                glm::ivec3 sColor(8, 8, 8);      // Color at y == 56
-                glm::ivec3 eColor(12, 12, 12);    // Target stone tone at y == 80
-                int red = static_cast<int>(sColor.r * (1.0f - factor) + eColor.r * factor);
-                int green = static_cast<int>(sColor.g * (1.0f - factor) + eColor.g * factor);
-                int blue = static_cast<int>(sColor.b * (1.0f - factor) + eColor.b * factor);
-                int offset = std::rand() % 5 - 2;
-                red = std::clamp(red + offset, 0, 15);
-                green = std::clamp(green + offset, 0, 15);
-                blue = std::clamp(blue + offset, 0, 15);
-                return glm::ivec3(red, green, blue);
-            }
-
-            // For y >= 80, transition to full white with slight uniform random variation
-            if (y >= 80) {
-                int base = 15;
-                int offset = std::rand() % 3 - 1;
-                int red = std::clamp(base + offset, 0, 15);
-                int green = std::clamp(base + offset, 0, 15);
-                int blue = std::clamp(base + offset, 0, 15);
-                return glm::ivec3(red, green, blue);
-            }
-        }
-
-
-
-
-
-
-
-
-        }
-        return glm::ivec3(0, 0, 0);  // Default (should never reach here)
+        return glm::ivec3(0, 0, 0); // unreachable
     }
 
-    // Load from file and directly import into the world
-    void LoadAndImport(const std::string& filename, World& world, VoxelColorMode colorMode) {
+    //------------------------------------------------------------------------//
+    //                     STATIC FILE LOADING & IMPORT                       //
+    //------------------------------------------------------------------------//
+    static void LoadAndImport(
+        const std::string& filename,
+        World& world,
+        VoxelColorMode      colorMode
+    ) {
         std::ifstream file(filename);
         if (!file) {
-            throw std::runtime_error("Failed to open voxel positions file: " + filename);
+            throw std::runtime_error("Failed to open voxel file: " + filename);
         }
 
-        int x, y, z;
+        int x, y, z, count = 0;
         std::string line;
-        int importedCount = 0;
-
         while (std::getline(file, line)) {
             std::stringstream ss(line);
             if (ss >> x >> y >> z) {
-                glm::ivec3 voxelColor = GetVoxelColor(colorMode, y);
-
+                glm::ivec3 color = GetVoxelColor(colorMode, y);
                 world.Create_Voxel(vox_data_t{
-                    glm::ivec3(x, y, z),  // Corrected axis mapping
-                    voxelColor,           // Color based on selected mode
-                    voxel_type_t::NORMAL, // Default type
-                    true,                 // Solid
-                    false,                // No transparency
-                    rel_loc_t::WORLD_LOC  // World location
+                    glm::ivec3(x,y,z),
+                    color,
+                    voxel_type_t::NORMAL,
+                    true,
+                    false,
+                    rel_loc_t::WORLD_LOC
                     });
-
-                ++importedCount;
+                ++count;
             }
         }
+        std::cout << "Imported " << count << " voxels\n";
+    }
 
-        std::cout << "Imported " << importedCount << " voxels into the world with selected color mode!" << std::endl;
+private:
+    //------------------------------------------------------------------------//
+    //                       STATIC COLOR HELPERS                              //
+    //------------------------------------------------------------------------//
+    static glm::ivec3 GetRoyalBlue() {
+        int r = std::clamp(4 + (std::rand() % 3 - 1), 0, 15);
+        int g = std::clamp(6 + (std::rand() % 3 - 1), 0, 15);
+        int b = std::clamp(14 + (std::rand() % 3 - 1), 0, 15);
+        return glm::ivec3(r, g, b);
+    }
+
+    static glm::ivec3 GetSkyBlue() {
+        int r = std::clamp(6 + (std::rand() % 3 - 1), 0, 15);
+        int g = std::clamp(10 + (std::rand() % 3 - 1), 0, 15);
+        int b = std::clamp(15 + (std::rand() % 3 - 1), 0, 15);
+        return glm::ivec3(r, g, b);
+    }
+
+    static glm::ivec3 GetHeightMapColor(int y) {
+        if (y >= 64) return glm::ivec3(15, 0, 0);
+        if (y >= 32) {
+            float f = (y - 32) / 32.0f;
+            return glm::ivec3(
+                static_cast<int>(f * 15),
+                static_cast<int>((1 - f) * 15),
+                0
+            );
+        }
+        if (y < 0) return glm::ivec3(0, 0, 15);
+        float f = y / 32.0f;
+        return glm::ivec3(
+            0,
+            static_cast<int>(f * 15),
+            static_cast<int>((1 - f) * 15)
+        );
+    }
+
+    static glm::ivec3 GetTerrainColor(int y) {
+        if (y < 0) return glm::ivec3(0, 0, 15);
+        if (y < 48) {
+            float f = y / 48.0f;
+            int b = static_cast<int>((1 - f) * 15);
+            int g = std::clamp(static_cast<int>(f * 7 + 4 + (std::rand() % 5 - 2)), 0, 15);
+            int r = std::clamp(static_cast<int>(f * 3 + (std::rand() % 4 - 2)), 0, 15);
+            return glm::ivec3(r, g, b);
+        }
+        if (y < 56) {
+            float f = (y - 48) / 8.0f;
+            glm::ivec3 s(3, 11, 0), e(8, 8, 8);
+            int off = std::rand() % 5 - 2;
+            return glm::ivec3(
+                std::clamp(int(s.r * (1 - f) + e.r * f) + off, 0, 15),
+                std::clamp(int(s.g * (1 - f) + e.g * f) + off, 0, 15),
+                std::clamp(int(s.b * (1 - f) + e.b * f) + off, 0, 15)
+            );
+        }
+        if (y < 80) {
+            float f = (y - 56) / 24.0f;
+            glm::ivec3 s(8, 8, 8), e(12, 12, 12);
+            int off = std::rand() % 5 - 2;
+            return glm::ivec3(
+                std::clamp(int(s.r * (1 - f) + e.r * f) + off, 0, 15),
+                std::clamp(int(s.g * (1 - f) + e.g * f) + off, 0, 15),
+                std::clamp(int(s.b * (1 - f) + e.b * f) + off, 0, 15)
+            );
+        }
+        // y >= 80
+        int base = 15;
+        int off = std::rand() % 3 - 1;
+        return glm::ivec3(
+            std::clamp(base + off, 0, 15),
+            std::clamp(base + off, 0, 15),
+            std::clamp(base + off, 0, 15)
+        );
     }
 };
 
