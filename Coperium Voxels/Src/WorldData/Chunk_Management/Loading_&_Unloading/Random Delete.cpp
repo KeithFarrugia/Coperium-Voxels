@@ -10,7 +10,7 @@ void WorldManager::Randomly_Delete_Chunk() {
 
     // 1) Gather all (sector, chunk) pairs
     std::vector<std::pair<sector_pair_t, chunk_pair_t>> all_chunks;
-    for (auto& sector_entry : *sectors) {
+    for (auto sector_entry : *sectors) {
         Sector* sector = sector_entry.second.get();
         chunks_t* chunks = sector->Get_All_Chunks();
 

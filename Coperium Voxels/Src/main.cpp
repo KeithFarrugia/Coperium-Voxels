@@ -62,21 +62,11 @@ int main() {
     Coil::Window window("Voxel Test Case", 1500, 1000);
     setupWindow(window);
 
-    WorldManager world_1(std::string("sponge"));
+    WorldManager world_1(std::string("dragon theese"));
     
     Create_Static_Model_World(world_1);
-    //VoxData voxData = readVoxFile("teapot.vox");
-    //GameOfLife gol(64, 64, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 50);
-    //
-    // 
-   //importVoxelsToWorld(world_1.Get_World(), voxData);
-    //generate_blocks_colour(world_1.Get_World());
-    //Load_All_Chunks(teapot_world);
+    
 
-    //return 0;
-    /*VoxelImporter importer;
-    importer.LoadAndImport("sponge.txt", world_1.Get_World(), VoxelColorMode::SKY_BLUE);*/
-    //Load_All_Chunks(world_1);
     Coil::Fly_Camera camera(window, 0, 65, 0);
     camera.Take_Over_All_Input();
 
@@ -189,15 +179,7 @@ int main() {
     int call_counter_a = 0;
     //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
     while (!window.Is_Closed()) {
-        if (glfwGetKey(window.Get_Window(), GLFW_KEY_R) == GLFW_PRESS) {
-            if (!r_was_pressed) {
-                Randomly_Delete_Chunk(world_1);
-                r_was_pressed = true;
-            }
-        }
-        else {
-            r_was_pressed = false;
-        }
+        
         glm::mat4 model = glm::mat4(1.0f);
 
         // Use shader and set matrices
@@ -215,8 +197,8 @@ int main() {
         //gol.Update(world_1, glm::ivec3(-64,0,-64), glm::ivec3(64, 0, 64));
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
-        Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
-        render_voxels(world_1.Get_World(), buffer_shader, vertex_offset, camera, false);
+        world_1.Update(camera.Get_Position());
+        world_1.Render(buffer_shader, vertex_offset, camera.Get_Position(), camera.Get_Front());
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

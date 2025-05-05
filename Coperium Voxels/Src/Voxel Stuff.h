@@ -6,10 +6,8 @@
 #include <chrono>
 #include "WorldData/Create_Generic_Chunks.h"
 #include <COIL/Shaders/Shader.h>
-#include "WorldData/Chunk Mesh Generation/Chunk_Mesh.h"
 #include <GLM/gtx/norm.hpp>
 #include "WorldData/World Opertions/Wrap Operations/Wrap_Chunk_Sector_Operations.h"
-#include "WorldData/Chunk_Management/Manage_Chunks.h"
 
 //constexpr int GRID_SIZE_F_X = 64;
 //constexpr int GRID_SIZE_F_Y = 1;
@@ -247,51 +245,5 @@ glm::ivec3 getValidDirection(World& world, glm::ivec3 pos) {
     return validDirections[rand() % validDirections.size()]; // Pick a random valid direction
 }
 
-// Lightning animation function
-void Lightning_Animation(WorldManager& wm) {
-    static int callCounter = 0;
-    callCounter++;
 
-    if (callCounter < 200) return;
-    callCounter = 0;
-
-    World& world = wm.Get_World();
-
-    if (!initialized) Init_Lightning_Animation();
-    if (cubes.empty()) return;
-
-    glm::ivec3 pos = cubes.front();
-    cubes.pop();
-
-    Chunk* chunk = world.Get_Chunk(pos, rel_loc_t::WORLD_LOC);
-    if (chunk) {
-        Voxel* voxel = chunk->Get_Voxel(Convert_Loc_2_Offset(pos, rel_loc_t::WORLD_LOC, rel_loc_t::CHUNK_LOC));
-        if (!voxel->IsAir()) {
-            voxel->SetR(3);
-            voxel->SetG(3);
-            voxel->SetB(6);
-            chunk->Get_Chunk_Data().updated = true;
-        }
-        else {
-            return;
-        }
-    }
-
-    int branchChance = rand() % 100; // Random chance for branching
-
-    int branches = (branchChance < 30) ? 2 : 1; // 30% chance to branch into two directions
-
-    for (int i = 0; i < branches; ++i) {
-        glm::ivec3 dir = getValidDirection(world, pos);
-        if (dir == glm::ivec3(0, 0, 0)) return; // No valid move
-
-        glm::ivec3 newPos = pos + dir;
-        cubes.push(newPos);
-
-        std::cout << "New cube at position: ("
-            << newPos.x << ", "
-            << newPos.y << ", "
-            << newPos.z << ")" << std::endl;
-    }
-}
 #endif // !VOXEL_STUFF_H

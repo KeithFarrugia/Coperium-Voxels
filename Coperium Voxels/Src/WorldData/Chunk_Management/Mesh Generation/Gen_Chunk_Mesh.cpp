@@ -6,53 +6,6 @@
 // Global state
 int total_faces_generated = 0;
 
-/* ============================================================================
- * --------------------------- Generate_All_Chunk_Meshes
- * Main entry point for generating all chunk meshes with optional LOD support.
- *
- * Updates chunk LODs once unless `dynamic_lod` is enabled. Chunks are still
- * checked for mesh regeneration even if the player hasn't moved. Update
- * frequency is limited by `update_interval_ms`.
- *
- * ------ Parameters ------
- * player_position: The player's current position in world space.
- * ============================================================================ */
-void WorldManager::Generate_All_Chunk_Meshes(glm::vec3 player_position) {
-    auto now = std::chrono::steady_clock::now();
-    auto dt_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now - last_update_time
-    ).count();
-
-    last_update_time = now;
-
-    glm::ivec3 curr_position(
-        glm::round(player_position.x),
-        glm::round(player_position.y),
-        glm::round(player_position.z)
-    );
-
-    bool moved = Has_Moved(
-        last_position, curr_position,
-        settings.smart_update
-    );
-
-    if (!Should_Update(
-        dt_ms, 
-        settings.update_interval_ms, 
-        initial_update, 
-        time_acc_ms
-    )) return;
-
-    if (initial_update || (settings.dynamic_lod && moved)) {
-        Update_Chunk_LODs(
-            world           , player_position   , 
-            settings.use_lod, settings.lod_set  );
-    }
-
-    if (Regenerate_Update_Meshes(world, settings.generic_chunk)) {
-        printf("Number of faces: %d\n", total_faces_generated);
-    }
-}
 
 /* ============================================================================
  * --------------------------- Has_Moved
@@ -81,7 +34,6 @@ bool Has_Moved(glm::ivec3& last_position, glm::ivec3& curr_position, bool check_
 bool Should_Update(int dt_ms, int update_interval_ms, bool& first_call, int& time_acc_ms) {
     if (first_call) {
         time_acc_ms = update_interval_ms;
-        first_call = false;
     }
     else {
         time_acc_ms += dt_ms;
@@ -176,4 +128,52 @@ bool Regenerate_Update_Meshes(World& world, Chunk& generic_chunk) {
     }
 
     return changed;
+}
+
+/* ============================================================================
+ * --------------------------- Generate_All_Chunk_Meshes
+ * Main entry point for generating all chunk meshes with optional LOD support.
+ *
+ * Updates chunk LODs once unless `dynamic_lod` is enabled. Chunks are still
+ * checked for mesh regeneration even if the player hasn't moved. Update
+ * frequency is limited by `update_interval_ms`.
+ *
+ * ------ Parameters ------
+ * player_position: The player's current position in world space.
+ * ============================================================================ */
+void WorldManager::Generate_All_Chunk_Meshes(glm::vec3 player_position) {
+    auto now = std::chrono::steady_clock::now();
+    auto dt_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now - last_update_time
+    ).count();
+
+    last_update_time = now;
+
+    glm::ivec3 curr_position(
+        glm::round(player_position.x),
+        glm::round(player_position.y),
+        glm::round(player_position.z)
+    );
+
+    bool moved = Has_Moved(
+        last_position, curr_position,
+        settings.smart_update
+    );
+
+    if (!Should_Update(
+        dt_ms, 
+        settings.update_interval_ms, 
+        initial_update, 
+        time_acc_ms
+    )) return;
+
+    if (initial_update || (settings.dynamic_lod && moved)) {
+        Update_Chunk_LODs(
+            world           , player_position   , 
+            settings.use_lod, settings.lod_set  );
+    }
+
+    if (Regenerate_Update_Meshes(world, settings.generic_chunk)) {
+        printf("Number of faces: %d\n", total_faces_generated);
+    }
 }

@@ -1,6 +1,6 @@
 #include "Chunk_Mesh.h"
-#include "../../Compact Data/Cube Mesh/CCMS.h"
-#include "../World Opertions/Wrap Operations/Wrap_Voxel_Operations.h"
+#include "../../../Compact Data/Cube Mesh/CCMS.h"
+#include "../../World Opertions/Wrap Operations/Wrap_Voxel_Operations.h"
 #include <bitset>
 
 

@@ -15,9 +15,9 @@ void WorldManager::Dynamic_Update_Chunks(glm::vec3 player_position) {
         curr_position, rel_loc_t::WORLD_LOC, rel_loc_t::SECTOR_LOC
     );
 
-    settings.last_chunk = glm::ivec3(INT_MIN, INT_MIN, INT_MIN);
-    if (current_chunk == settings.last_chunk) return;
-    settings.last_chunk = current_chunk;
+    last_chunk = glm::ivec3(INT_MIN, INT_MIN, INT_MIN);
+    if (current_chunk == last_chunk) return;
+    last_chunk = current_chunk;
 
     if (settings.debug) {
         std::cout 

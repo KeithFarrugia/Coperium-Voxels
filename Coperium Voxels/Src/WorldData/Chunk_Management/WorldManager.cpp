@@ -139,10 +139,11 @@ void WorldManager::Render(
  * Calls the update callback if it has been set.
  * ============================================================================ */
 void WorldManager::Update(glm::vec3 player_position) {
-    Dynamic_Update_Chunks();
+    Dynamic_Update_Chunks(player_position);
     if (update_callback) update_callback(*this);
     
     Generate_Mesh(player_position);
+    initial_update = false;
 }
 
 /* ============================================================================

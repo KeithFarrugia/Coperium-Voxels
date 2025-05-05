@@ -93,7 +93,7 @@ void WorldManager::Unload_Far_Chunks(const glm::ivec3& curr_position) {
             glm::vec2 chunk_center = chunk_pos_xz + glm::vec2(HALF_CHUNK.x, HALF_CHUNK.z);
             float dist_sq = glm::distance2(cam_pos_xz, chunk_center);
 
-            if (dist_sq > unload_treshold) {
+            if (dist_sq > unload_threshold) {
                 chunks_to_unload.emplace_back(chunk_pair);
             }
         }

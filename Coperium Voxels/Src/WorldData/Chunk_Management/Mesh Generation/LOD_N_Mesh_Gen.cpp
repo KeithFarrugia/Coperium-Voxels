@@ -1,6 +1,6 @@
 #include "Chunk_Mesh.h"
-#include "../../Compact Data/Cube Mesh/CCMS.h"
-#include "../World Opertions/Wrap Operations/Wrap_Voxel_Operations.h"
+#include "../../../Compact Data/Cube Mesh/CCMS.h"
+#include "../../World Opertions/Wrap Operations/Wrap_Voxel_Operations.h"
 
 glm::vec3 InterpolateColors(glm::vec3 color1, glm::vec3 color2, float t) {
     return glm::mix(color1, color2, t); // Linear interpolation between two colors
