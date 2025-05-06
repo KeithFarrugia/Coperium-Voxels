@@ -46,6 +46,7 @@ void calculateFPS(int& frames, auto& start, float& fps) {
 void renderQuad();
 
 Chunk temp_c = Create_Air_Chunk();
+
 /* ============================================================================
  *                                  MAIN
  * ============================================================================
@@ -53,6 +54,7 @@ Chunk temp_c = Create_Air_Chunk();
 
 
 int main() {
+    printf("SOMETING PLEASE\n");
     bool r_was_pressed = false;
 
     Coil::Logger::init_logger(Coil::LOG_TO_FILE);
@@ -62,7 +64,7 @@ int main() {
     Coil::Window window("Voxel Test Case", 1500, 1000);
     setupWindow(window);
 
-    WorldManager world_1(std::string("dragon theese"));
+    WorldManager world_1(std::string("sponge"));
     
     Create_Static_Model_World(world_1);
     
@@ -71,7 +73,7 @@ int main() {
     camera.Take_Over_All_Input();
 
     // Initialize ImGui
-    InitializeImGui(window);
+    //InitializeImGui(window);
 
     // FPS and color state
     float   fps = 0.0f;
@@ -146,7 +148,7 @@ int main() {
     deferred_shader.Set_Int("gNormal", 1);
     deferred_shader.Set_Int("gAlbedoSpec", 2);
 
-
+    world_1.Force_Generate_Meshes(camera.Get_Position());
     GLuint vertex_offset = buffer_shader.Get_Uniform("vertex_offset");
     /* ============================================================================
      *                                  Render
@@ -155,11 +157,6 @@ int main() {
     //Update_Chunks(w, camera);
     //Testing_STUFF(w, camera);
     // Main rendering loop
-
-    auto meshGenStart = std::chrono::high_resolution_clock::now();  // Start time
-
-
-    auto meshGenEnd = std::chrono::high_resolution_clock::now();  // End time
     //Init_Lightning_Animation();
     std::vector<glm::ivec3> initial_live_voxels = {
         // First glider (front)
@@ -170,11 +167,6 @@ int main() {
         glm::ivec3(2, 0, 2),
 
     };
-
-
-
-    std::chrono::duration<double, std::milli> meshGenDuration = meshGenEnd - meshGenStart;
-    std::cout << "Generate_All_Chunk_Meshes took " << meshGenDuration.count() << " ms\n";
 
     int call_counter_a = 0;
     //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
@@ -221,10 +213,10 @@ int main() {
 
 
         // Calculate FPS
-        calculateFPS(frames, start, fps);
+        //calculateFPS(frames, start, fps);
 
         // Render ImGui frame
-        RenderImGuiFrame(fps, color);
+        //RenderImGuiFrame(fps, color);
 
         // Swap buffers and update camera
         window.SwapBuffers();
@@ -233,7 +225,7 @@ int main() {
     }
 
     // Cleanup ImGui
-    CleanupImGui();
+    //CleanupImGui();
 
     // Cleanup window and terminate GLFW
     window.Del();

@@ -72,13 +72,15 @@ void Update_Chunk_LODs(
                     data.updated = true;
                 }
                 continue;
+            }else {
+
+                lod_Level_t new_lod = Compute_LOD(sector_pos, chunk_pos, camera_pos, lod_dst);
+                if (new_lod != data.l_o_d) {
+                    data.l_o_d = new_lod;
+                    data.updated = true;
+                }
             }
 
-            lod_Level_t new_lod = Compute_LOD(sector_pos, chunk_pos, camera_pos, lod_dst);
-            if (new_lod != data.l_o_d) {
-                data.l_o_d = new_lod;
-                data.updated = true;
-            }
         }
     }
 }
@@ -176,4 +178,80 @@ void WorldManager::Generate_All_Chunk_Meshes(glm::vec3 player_position) {
     if (Regenerate_Update_Meshes(world, settings.generic_chunk)) {
         printf("Number of faces: %d\n", total_faces_generated);
     }
+}
+
+/* ============================================================================
+ * --------------------------- Clear Cache Thrasher
+ * Performs a memory traversal over a large dummy buffer to evict existing
+ * data from all cache levels. The buffer size should exceed the total
+ * combined cache capacity.
+ * ============================================================================ */
+void Clear_Cache_Thrasher() {
+    constexpr size_t cache_size_bytes = 32 * 1024 * 1024; // e.g., 32 MiB > typical L3
+    constexpr size_t stride = 64;                       // cache line size
+    static std::vector<char> buffer(cache_size_bytes);
+    volatile char sink;
+    for (size_t offset = 0; offset < cache_size_bytes; offset += stride) {
+        sink = buffer[offset];
+    }
+    (void)sink; // prevent optimizing away
+}
+
+/* ============================================================================
+ * --------------------------- Force Regenerate All Chunk Meshes Timed
+ * Regenerates every chunk mesh ignoring `updated` flags, after clearing cache.
+ * Prints CPU cycles taken to stdout.
+ * ============================================================================ */
+void WorldManager::Force_Generate_Meshes(glm::vec3 player_position) {
+    // 1) Evict cache
+    Clear_Cache_Thrasher();
+
+    // 2) Record start time and cycles
+    auto wall_start = std::chrono::steady_clock::now();
+    uint64_t rdtsc_start = __rdtsc();
+    int chunks_regenerated = 0;
+    int64_t faces_start = total_faces_generated;
+
+    // 3) Optionally update LODs
+    if (settings.use_lod) {
+        Update_Chunk_LODs(world, player_position, true, settings.lod_set);
+    }
+
+    // 4) Regenerate all meshes
+    sectors_t* sectors = world.Get_All_Sectrs();
+    for (auto [sector_pos, sector_ptr] : *sectors) {
+        auto* chunks = sector_ptr->Get_All_Chunks();
+        for (auto [chunk_pos, chunk_ptr] : *chunks) {
+            chunk_data_t& data = chunk_ptr->Get_Chunk_Data();
+            lod_Level_t lod = settings.use_lod ? data.l_o_d : lod_Level_t::NORMAL;
+
+            if (lod == lod_Level_t::NORMAL) {
+                Generate_Chunk_Mesh(world, { sector_pos, sector_ptr }, { chunk_pos, chunk_ptr }, settings.generic_chunk);
+            }
+            else {
+                Generate_Chunk_Mesh(world, { sector_pos, sector_ptr }, { chunk_pos, chunk_ptr }, settings.generic_chunk, static_cast<int>(data.l_o_d));
+            }
+            data.updated = false;
+            ++chunks_regenerated;
+        }
+    }
+
+    // 5) Record end time and cycles
+    uint64_t rdtsc_end = __rdtsc();
+    auto wall_end = std::chrono::steady_clock::now();
+    int64_t faces_end = total_faces_generated;
+
+    // 6) Compute metrics
+    uint64_t cycles = rdtsc_end - rdtsc_start;
+    std::chrono::duration<double> elapsed = wall_end - wall_start;
+    double seconds = elapsed.count();
+    int64_t faces_generated = faces_end - faces_start;
+    double chunks_per_sec = chunks_regenerated / seconds;
+    double faces_per_sec = faces_generated / seconds;
+
+    // 7) Output results
+    std::cout << "Force regeneration cycles: " << cycles << "\n"
+        << "Wall time: " << seconds << " s\n"
+        << "Chunks regenerated: " << chunks_regenerated << " (" << chunks_per_sec << " chunks/s)\n"
+        << "Faces generated: " << faces_generated << " (" << faces_per_sec << " faces/s)\n";
 }

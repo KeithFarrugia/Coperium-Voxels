@@ -35,7 +35,7 @@ glm::vec3 CalculateAverageColorForVoxel(const glm::ivec3& voxelPos, Chunk& chunk
 
 void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const Chunk& generic_chunk, int l_o_d) {
     const neighbouring_chunks_t c_neighbours = get_chunk_neighbours(w, chunk_pair, sector_pair, generic_chunk);
-
+    total_faces_generated = 0;
     std::vector<GLfloat> vertex_mesh;
     std::vector<GLuint> index_mesh;
     vertex_mesh.reserve(static_cast<size_t>(16) * 1024);

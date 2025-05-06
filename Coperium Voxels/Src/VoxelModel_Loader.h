@@ -58,21 +58,25 @@ public:
     static void LoadAndImport(
         const std::string& filename,
         World& world,
-        VoxelColorMode      colorMode
+        VoxelColorMode colorMode
     ) {
         std::ifstream file(filename);
         if (!file) {
             throw std::runtime_error("Failed to open voxel file: " + filename);
         }
-
+        printf("Starting Loading\n");
         int x, y, z, count = 0;
         std::string line;
+
+        // Timer setup
+        auto lastReport = std::chrono::steady_clock::now();
+
         while (std::getline(file, line)) {
             std::stringstream ss(line);
             if (ss >> x >> y >> z) {
                 glm::ivec3 color = GetVoxelColor(colorMode, y);
                 world.Create_Voxel(vox_data_t{
-                    glm::ivec3(x,y,z),
+                    glm::ivec3(x, y, z),
                     color,
                     voxel_type_t::NORMAL,
                     true,
@@ -81,8 +85,16 @@ public:
                     });
                 ++count;
             }
+
+            // Check elapsed time
+            auto now = std::chrono::steady_clock::now();
+            if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastReport).count() >= 1000) {
+                std::cout << "Imported " << count << " voxels so far...\n";
+                lastReport = now;
+            }
         }
-        std::cout << "Imported " << count << " voxels\n";
+
+        std::cout << "Imported " << count << " voxels in total\n";
     }
 
 private:

@@ -105,6 +105,7 @@ public:
     //------------------------------------------------------------------------//
     void Dynamic_Update_Chunks      (glm::vec3 player_position);
     void Generate_All_Chunk_Meshes  (glm::vec3 player_position);
+    void Force_Generate_Meshes      (glm::vec3 player_position);
     void Randomly_Delete_Chunk      ();
     void Set_Neighbours_to_Update   (
         const glm::ivec3& sector, 
