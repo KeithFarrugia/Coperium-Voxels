@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 struct voxel_loc_t {
 
-    uint32_t location;
+    uint16_t  location;
     /* ============================================================================
      * --------------------------- Set
      * Encodes a 3D voxel position into a compact location format

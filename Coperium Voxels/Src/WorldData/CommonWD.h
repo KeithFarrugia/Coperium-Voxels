@@ -65,8 +65,14 @@ class Sector;
 class Chunk;
 class Voxel;
 
-typedef AvlTreeDataStructure <sector_loc_t, std::shared_ptr<Sector>>  sectors_t;
-typedef AvlTreeDataStructure<chunk_loc_t, std::shared_ptr<Chunk>>  chunks_t;
+
+
+//typedef UnorderedMapDataStructure <sector_loc_t, std::shared_ptr<Sector>> sectors_t;
+typedef AvlTreeDataStructure      <sector_loc_t, std::shared_ptr<Sector>> sectors_t;
+
+//typedef UnorderedMapDataStructure <chunk_loc_t , std::shared_ptr<Chunk >> chunks_t;
+typedef AvlTreeDataStructure      <chunk_loc_t , std::shared_ptr<Chunk >> chunks_t;
+
 typedef std::vector<Voxel>                           voxels_t;
 
 typedef std::pair<const chunk_loc_t, std::shared_ptr<Chunk>> chunk_pair_t;

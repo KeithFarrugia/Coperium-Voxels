@@ -33,6 +33,8 @@ glm::ivec3 last_position;
 #include <stdexcept>
 #include <cstdint>
 #include <glm/vec3.hpp> // Include GLM for vector types
+#include <random>
+
 
 // Define a simple structure to hold voxel data
 struct Magica_Vox {
@@ -126,6 +128,121 @@ void generate_blocks(World& world) {
     std::chrono::duration<double> duration = end - start;
     std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
         << duration.count() << " seconds." << std::endl;
+}
+
+void generate_checkerboard(World& world) {
+    constexpr int SIZE_X = 16;
+    constexpr int SIZE_Y = 64;
+    constexpr int SIZE_Z = 16;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    int solid_voxel_count = 0;
+
+    for (int x = 0; x < SIZE_X; ++x) {
+        for (int y = 0; y < SIZE_Y; ++y) {
+            for (int z = 0; z < SIZE_Z; ++z) {
+                bool is_solid = (x + y + z) % 2 == 0; // Checkerboard pattern
+
+                if (!is_solid) continue; // Skip air blocks
+
+                vox_data_t voxel_data = {
+                    glm::ivec3(x, y, z),                 // position
+                    glm::ivec3(255, 255, 255),           // color
+                    voxel_type_t::NORMAL,                // type
+                    true,                                // solid
+                    false,                               // transparency
+                    rel_loc_t::WORLD_LOC                 // Relative location
+                };
+
+                world.Create_Voxel(voxel_data);
+                ++solid_voxel_count;
+            }
+        }
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::cout << "Checkerboard voxel generation time: "
+        << std::fixed << std::setprecision(6)
+        << duration.count() << " seconds.\n"
+        << "Solid voxels created: " << solid_voxel_count << std::endl;
+}
+void generate_solid_block(World& world) {
+    constexpr int SIZE_X = 16;
+    constexpr int SIZE_Y = 64;
+    constexpr int SIZE_Z = 16;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    int solid_voxel_count = 0;
+
+    for (int x = 0; x < SIZE_X; ++x) {
+        for (int y = 0; y < SIZE_Y; ++y) {
+            for (int z = 0; z < SIZE_Z; ++z) {
+                vox_data_t voxel_data = {
+                    glm::ivec3(x, y, z),                 // position
+                    glm::ivec3(200, 200, 200),           // color (light gray)
+                    voxel_type_t::NORMAL,                // type
+                    true,                                // solid
+                    false,                               // transparency
+                    rel_loc_t::WORLD_LOC                 // Relative location
+                };
+
+                world.Create_Voxel(voxel_data);
+                ++solid_voxel_count;
+            }
+        }
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::cout << "Solid block voxel generation time: "
+        << std::fixed << std::setprecision(6)
+        << duration.count() << " seconds.\n"
+        << "Solid voxels created: " << solid_voxel_count << std::endl;
+}
+void generate_random_block(World& world, float solid_chance) {
+    constexpr int SIZE_X = 16;
+    constexpr int SIZE_Y = 64;
+    constexpr int SIZE_Z = 16;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    std::mt19937 rng(std::random_device{}());  // Random number generator
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+    int solid_voxel_count = 0;
+
+    for (int x = 0; x < SIZE_X; ++x) {
+        for (int y = 0; y < SIZE_Y; ++y) {
+            for (int z = 0; z < SIZE_Z; ++z) {
+                if (dist(rng) > solid_chance) continue;  // Skip if above solid chance
+
+                vox_data_t voxel_data = {
+                    glm::ivec3(x, y, z),                 // position
+                    glm::ivec3(128, 180, 255),           // color (light blue)
+                    voxel_type_t::NORMAL,                // type
+                    true,                                // solid
+                    false,                               // transparency
+                    rel_loc_t::WORLD_LOC                 // Relative location
+                };
+
+                world.Create_Voxel(voxel_data);
+                ++solid_voxel_count;
+            }
+        }
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::cout << "Random voxel generation time: "
+        << std::fixed << std::setprecision(6)
+        << duration.count() << " seconds.\n"
+        << "Solid voxels created: " << solid_voxel_count << std::endl;
 }
 
 void generate_blocks_colour(World& world) {

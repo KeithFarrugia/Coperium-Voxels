@@ -15,6 +15,10 @@
 #include "VoxelModel_Loader.h"
 #include "WorldData/Chunk_Management/WorldManager.h"
 #include "World Creation Functions.h"
+#include "WorldData/Chunk_Management/Mesh Generation/Chunk_Mesh.h"
+#include "loosingit.h"
+
+
 void setupShader(Coil::Shader& shader) {
     shader.Add_Shaders({
         Coil::shader_info_t{"compact_v2.vert", Coil::shader_type_t::VERTEX_SHADER},
@@ -149,6 +153,8 @@ int main() {
     deferred_shader.Set_Int("gAlbedoSpec", 2);
 
     world_1.Force_Generate_Meshes(camera.Get_Position());
+
+
     GLuint vertex_offset = buffer_shader.Get_Uniform("vertex_offset");
     /* ============================================================================
      *                                  Render
@@ -167,9 +173,11 @@ int main() {
         glm::ivec3(2, 0, 2),
 
     };
-
+    //generate_multiple_density_sweep(world_1, 100);
+    //generate_lod_density_sweep(world_1,100);
     int call_counter_a = 0;
     //Generate_All_Chunk_Meshes_LOD_PASS(world_1.Get_World(), camera, false, 50);
+    //world_1.Force_Generate_Meshes(camera.Get_Position());
     while (!window.Is_Closed()) {
         
         glm::mat4 model = glm::mat4(1.0f);

@@ -83,11 +83,9 @@ static inline int Count_Set_Bits(cube_faces_t flags) {
 const neighbouring_chunks_t get_chunk_neighbours(
     World& w, chunk_pair_t chunk, sector_pair_t sector, const Chunk& generic_chunk);
 
-void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk);
-void Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk, int l_o_d);
+int Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk);
+int Generate_Chunk_Mesh(World& w, sector_pair_t sector, chunk_pair_t chunk, const Chunk& generic_chunk, int l_o_d);
 
-void Generate_Single_Chunk(World& world, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const glm::vec3& camera_pos);
-void Generate_All_Chunk_Meshes_LOD_PASS(World& world, glm::vec3 player_position, bool check_mov, int update_interval_ms);
 
 
 #endif // !CHUNK_MESH_GENERATION_H

@@ -5,7 +5,7 @@
 
 
 
-void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const Chunk& generic_chunk) {
+int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const Chunk& generic_chunk) {
     const neighbouring_chunks_t c_neighbours =
         get_chunk_neighbours(w, chunk_pair, sector_pair, generic_chunk);
 
@@ -15,6 +15,8 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
     index_mesh.reserve(static_cast<size_t>(4) * 1024);
     int vertex_offset = 0;
     int index_offset = 0;
+
+    int total_faces_generated = 0;
 
     for (int x = MIN_ID_V_X; x <= MAX_ID_V_X; x++) {
         for (int y = MIN_ID_V_Y; y <= MAX_ID_V_Y; y++) {
@@ -31,7 +33,7 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
                     ((c_neighbours.Get_Back (z)->Get_Voxel(glm::ivec3(x, y, vox_dec_z(z)))->IsAir()) << 1)   // BACK_FACE
                 );
 
-                total_faces_generated += Count_Set_Bits(flags); // Track the total faces
+                total_faces_generated += Count_Set_Bits(flags); // Now local to this function
 
                 Add_Cube_Mesh(
                     glm::ivec3(x, y, z),
@@ -62,5 +64,5 @@ void Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk
     chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(1, 1, 1);
     chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 3, 2);
 
-    //std::cout << "Total faces generated in this chunk: " << total_faces_generated << std::endl;
+    return total_faces_generated;
 }

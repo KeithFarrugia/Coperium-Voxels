@@ -145,7 +145,7 @@ bool Regenerate_Update_Meshes(World& world, Chunk& generic_chunk) {
  * ============================================================================ */
 void WorldManager::Generate_All_Chunk_Meshes(glm::vec3 player_position) {
     auto now = std::chrono::steady_clock::now();
-    auto dt_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+    int dt_ms = (int)std::chrono::duration_cast<std::chrono::milliseconds>(
         now - last_update_time
     ).count();
 
@@ -210,7 +210,7 @@ void WorldManager::Force_Generate_Meshes(glm::vec3 player_position) {
     auto wall_start = std::chrono::steady_clock::now();
     uint64_t rdtsc_start = __rdtsc();
     int chunks_regenerated = 0;
-    int64_t faces_start = total_faces_generated;
+    int64_t total_faces_generated = 0;
 
     // 3) Optionally update LODs
     if (settings.use_lod) {
@@ -225,12 +225,11 @@ void WorldManager::Force_Generate_Meshes(glm::vec3 player_position) {
             chunk_data_t& data = chunk_ptr->Get_Chunk_Data();
             lod_Level_t lod = settings.use_lod ? data.l_o_d : lod_Level_t::NORMAL;
 
-            if (lod == lod_Level_t::NORMAL) {
-                Generate_Chunk_Mesh(world, { sector_pos, sector_ptr }, { chunk_pos, chunk_ptr }, settings.generic_chunk);
-            }
-            else {
-                Generate_Chunk_Mesh(world, { sector_pos, sector_ptr }, { chunk_pos, chunk_ptr }, settings.generic_chunk, static_cast<int>(data.l_o_d));
-            }
+            int faces = (lod == lod_Level_t::NORMAL)
+                ? Generate_Chunk_Mesh(world, { sector_pos, sector_ptr }, { chunk_pos, chunk_ptr }, settings.generic_chunk)
+                : Generate_Chunk_Mesh(world, { sector_pos, sector_ptr }, { chunk_pos, chunk_ptr }, settings.generic_chunk, static_cast<int>(data.l_o_d));
+
+            total_faces_generated += faces;
             data.updated = false;
             ++chunks_regenerated;
         }
@@ -239,19 +238,24 @@ void WorldManager::Force_Generate_Meshes(glm::vec3 player_position) {
     // 5) Record end time and cycles
     uint64_t rdtsc_end = __rdtsc();
     auto wall_end = std::chrono::steady_clock::now();
-    int64_t faces_end = total_faces_generated;
 
     // 6) Compute metrics
     uint64_t cycles = rdtsc_end - rdtsc_start;
     std::chrono::duration<double> elapsed = wall_end - wall_start;
     double seconds = elapsed.count();
-    int64_t faces_generated = faces_end - faces_start;
     double chunks_per_sec = chunks_regenerated / seconds;
-    double faces_per_sec = faces_generated / seconds;
+    double faces_per_sec = total_faces_generated / seconds;
+    double avg_faces_per_chunk = chunks_regenerated > 0
+        ? static_cast<double>(total_faces_generated) / chunks_regenerated
+        : 0.0;
 
     // 7) Output results
-    std::cout << "Force regeneration cycles: " << cycles << "\n"
-        << "Wall time: " << seconds << " s\n"
-        << "Chunks regenerated: " << chunks_regenerated << " (" << chunks_per_sec << " chunks/s)\n"
-        << "Faces generated: " << faces_generated << " (" << faces_per_sec << " faces/s)\n";
+    std::cout 
+        << "Force regeneration cycles: "    << cycles               << "\n"
+        << "Wall time: "                    << seconds              << " s\n"
+        << "Chunks regenerated: "           << chunks_regenerated 
+        << " ("                             << chunks_per_sec       << " chunks/s)\n"
+        << "Faces generated: "              << total_faces_generated 
+        << " ("                             << faces_per_sec        << " faces/s)\n"
+        << "Average faces per chunk: "      << avg_faces_per_chunk  << "\n";
 }

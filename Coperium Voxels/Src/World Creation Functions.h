@@ -7,10 +7,12 @@
 #include "VoxelModel_Loader.h"
 
 void Load_World_From_text(WorldManager& wm) {
-    VoxelImporter::LoadAndImport(wm.Get_World_Name() + ".txt", wm.Get_World(), VoxelColorMode::SKY_BLUE);
+    VoxelImporter::LoadAndImport(wm.Get_World_Name() + ".txt", wm.Get_World(), VoxelColorMode::HEIGHT_MAP);
 }
 
-
+void CheckerBoard(WorldManager& wm) {
+    //generate_random_block(wm.Get_World(),0.5);
+}
 void Create_Static_Model_World(WorldManager& world ) {
     world.Load_Settings();
 
