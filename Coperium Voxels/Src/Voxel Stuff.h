@@ -17,13 +17,13 @@
 //constexpr int GRID_SIZE_S_Y = 0;
 //constexpr int GRID_SIZE_S_Z = -70;
 
-constexpr int GRID_SIZE_F_X = 64;
+constexpr int GRID_SIZE_F_X = 128;
 constexpr int GRID_SIZE_F_Y = 64;
-constexpr int GRID_SIZE_F_Z = 64;
+constexpr int GRID_SIZE_F_Z = 128;
 
-constexpr int GRID_SIZE_S_X = 0;
+constexpr int GRID_SIZE_S_X = -128;
 constexpr int GRID_SIZE_S_Y = 0;
-constexpr int GRID_SIZE_S_Z = 0;
+constexpr int GRID_SIZE_S_Z = -128;
 
 glm::ivec3 last_position;
 #include <iostream>
@@ -107,26 +107,27 @@ void importVoxelsToWorld(World& world, const VoxData& voxData) {
 }
 
 void generate_blocks(World& world) {
-
+    int count = 0;
     auto start = std::chrono::high_resolution_clock::now();
     for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
         for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
             for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
                 vox_data_t som = vox_data_t{
                         glm::ivec3(x, y, z),                // position
-                        glm::ivec3(0,0,0),  // color
+                        glm::ivec3(x%16,y%16,z%16),         // color
                         voxel_type_t::NORMAL,               // type
                         true,                               // solid
                         false,                              // transparency
                         rel_loc_t::WORLD_LOC                // Relative
                 };
                 world.Create_Voxel(som);
+                count++;
             }
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
-    std::cout << "Time taken to create voxels: " << std::fixed << std::setprecision(6)
+    std::cout << "Time taken to create [" << count << "] voxels : " << std::fixed << std::setprecision(6)
         << duration.count() << " seconds." << std::endl;
 }
 

@@ -68,7 +68,7 @@ int main() {
     Coil::Window window("Voxel Test Case", 1500, 1000);
     setupWindow(window);
 
-    WorldManager world_1(std::string("sponge"));
+    WorldManager world_1(std::string("mount"));
     
     Create_Static_Model_World(world_1);
     
@@ -77,7 +77,7 @@ int main() {
     camera.Take_Over_All_Input();
 
     // Initialize ImGui
-    //InitializeImGui(window);
+    InitializeImGui(window);
 
     // FPS and color state
     float   fps = 0.0f;
@@ -152,7 +152,13 @@ int main() {
     deferred_shader.Set_Int("gNormal", 1);
     deferred_shader.Set_Int("gAlbedoSpec", 2);
 
+    auto start_mesh = std::chrono::high_resolution_clock::now();
     world_1.Force_Generate_Meshes(camera.Get_Position());
+
+    auto end_mesh = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration_mesh = end_mesh - start_mesh;
+
+    std::cout << "Generate_All_Chunk_Meshes took " << duration_mesh.count() << " ms\n";
 
 
     GLuint vertex_offset = buffer_shader.Get_Uniform("vertex_offset");
@@ -198,6 +204,7 @@ int main() {
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
         world_1.Update(camera.Get_Position());
+        world_1.Generate_Mesh(camera.Get_Position());
         world_1.Render(buffer_shader, vertex_offset, camera.Get_Position(), camera.Get_Front());
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -221,10 +228,10 @@ int main() {
 
 
         // Calculate FPS
-        //calculateFPS(frames, start, fps);
+        calculateFPS(frames, start, fps);
 
         // Render ImGui frame
-        //RenderImGuiFrame(fps, color);
+        RenderImGuiFrame(fps, color);
 
         // Swap buffers and update camera
         window.SwapBuffers();
@@ -233,7 +240,7 @@ int main() {
     }
 
     // Cleanup ImGui
-    //CleanupImGui();
+    CleanupImGui();
 
     // Cleanup window and terminate GLFW
     window.Del();

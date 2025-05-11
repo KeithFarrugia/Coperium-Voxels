@@ -29,13 +29,13 @@ void Create_Static_Model_World(WorldManager& world ) {
 
     //=== Rendering & Mesh Updates ===
     s.render_world           = true;    // draw the world
-    s.mesh_changes           = false;    // allow mesh regeneration
+    s.mesh_changes           = true;    // allow mesh regeneration
     s.update_interval_ms     = 250;     // update meshes every 250 ms
 
     //=== Level of Detail (LOD) ===
-    s.use_lod                = false;   // enable LOD system
-    s.dynamic_lod            = false;   // compute LOD only once
-    s.smart_update           = true;    // skip LOD if camera is still
+    s.use_lod                = true;   // enable LOD system
+    s.dynamic_lod            = true;   // compute LOD only once
+    s.smart_update           = false;    // skip LOD if camera is still
 
 
     Create_Air_Chunk(s.generic_chunk);  // default prototype chunk

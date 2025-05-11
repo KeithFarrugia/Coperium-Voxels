@@ -56,59 +56,75 @@ int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_
 
                 if (num_air >= l_o_d * l_o_d * l_o_d) continue;
 
-                cube_faces_t flags_air = static_cast<cube_faces_t>(0);
+                cube_faces_t flags_air   = static_cast<cube_faces_t>(0);
                 cube_faces_t flags_solid = static_cast<cube_faces_t>(0);
 
                 Chunk
-                    * r_c = c_neighbours.Get_Right(x + l_o_d - 1),
-                    * t_c = c_neighbours.Get_Up(y + l_o_d - 1),
-                    * f_c = c_neighbours.Get_Front(z + l_o_d - 1),
-                    * l_c = c_neighbours.Get_Left(x),
-                    * d_c = c_neighbours.Get_Down(y),
-                    * b_c = c_neighbours.Get_Back(z);
+                    * r_c = c_neighbours.Get_Right  (x + l_o_d - 1),
+                    * t_c = c_neighbours.Get_Up     (y + l_o_d - 1),
+                    * f_c = c_neighbours.Get_Front  (z + l_o_d - 1),
+                    * l_c = c_neighbours.Get_Left   (x),
+                    * d_c = c_neighbours.Get_Down   (y),
+                    * b_c = c_neighbours.Get_Back   (z);
 
                 cube_faces_t lod_flags = static_cast<cube_faces_t>(
-                    ((r_c->Get_Chunk_Data().l_o_d >= l_o_d)) << RIGHT_SHIFT |
-                    ((l_c->Get_Chunk_Data().l_o_d >= l_o_d)) << LEFT_SHIFT |
-                    ((t_c->Get_Chunk_Data().l_o_d >= l_o_d)) << TOP_SHIFT |
+                    ((r_c->Get_Chunk_Data().l_o_d >= l_o_d)) << RIGHT_SHIFT  |
+                    ((l_c->Get_Chunk_Data().l_o_d >= l_o_d)) << LEFT_SHIFT   |
+                    ((t_c->Get_Chunk_Data().l_o_d >= l_o_d)) << TOP_SHIFT    |
                     ((d_c->Get_Chunk_Data().l_o_d >= l_o_d)) << BOTTOM_SHIFT |
-                    ((f_c->Get_Chunk_Data().l_o_d >= l_o_d)) << FRONT_SHIFT |
+                    ((f_c->Get_Chunk_Data().l_o_d >= l_o_d)) << FRONT_SHIFT  |
                     ((b_c->Get_Chunk_Data().l_o_d >= l_o_d)) << BACK_SHIFT
                     );
 
                 using u8 = std::underlying_type_t<cube_faces_t>;
                 for (int i = 0; i < l_o_d; i++) {
                     for (int j = 0; j < l_o_d; j++) {
-                        bool right_is_block = r_c->Get_Voxel({ vox_inc_x(x, l_o_d), y + i, z + j })->IsAir();
-                        bool left_is_block = l_c->Get_Voxel({ vox_dec_x(x, l_o_d), y + i, z + j })->IsAir();
-                        bool top_is_block = t_c->Get_Voxel({ x + i, vox_inc_y(y, l_o_d), z + j })->IsAir();
-                        bool bottom_is_block = d_c->Get_Voxel({ x + i, vox_dec_y(y, l_o_d), z + j })->IsAir();
-                        bool front_is_block = f_c->Get_Voxel({ x + i, y + j, vox_inc_z(z, l_o_d) })->IsAir();
-                        bool back_is_block = b_c->Get_Voxel({ x + i, y + j, vox_dec_z(z, l_o_d) })->IsAir();
+                        bool right_is_block     = r_c->Get_Voxel({ vox_inc_x(x, l_o_d), y + i, z + j })->IsAir();
+                        bool left_is_block      = l_c->Get_Voxel({ vox_dec_x(x, l_o_d), y + i, z + j })->IsAir();
+                        bool top_is_block       = t_c->Get_Voxel({ x + i, vox_inc_y(y, l_o_d), z + j })->IsAir();
+                        bool bottom_is_block    = d_c->Get_Voxel({ x + i, vox_dec_y(y, l_o_d), z + j })->IsAir();
+                        bool front_is_block     = f_c->Get_Voxel({ x + i, y + j, vox_inc_z(z, l_o_d) })->IsAir();
+                        bool back_is_block      = b_c->Get_Voxel({ x + i, y + j, vox_dec_z(z, l_o_d) })->IsAir();
 
                         flags_air |= static_cast<cube_faces_t>(
-                            (static_cast<u8>(right_is_block) << RIGHT_SHIFT) |
-                            (static_cast<u8>(left_is_block) << LEFT_SHIFT) |
-                            (static_cast<u8>(top_is_block) << TOP_SHIFT) |
-                            (static_cast<u8>(bottom_is_block) << BOTTOM_SHIFT) |
-                            (static_cast<u8>(front_is_block) << FRONT_SHIFT) |
-                            (static_cast<u8>(back_is_block) << BACK_SHIFT)
+                            (static_cast<u8>(right_is_block ) << RIGHT_SHIFT    ) |
+                            (static_cast<u8>(left_is_block  ) << LEFT_SHIFT     ) |
+                            (static_cast<u8>(top_is_block   ) << TOP_SHIFT      ) |
+                            (static_cast<u8>(bottom_is_block) << BOTTOM_SHIFT   ) |
+                            (static_cast<u8>(front_is_block ) << FRONT_SHIFT    ) |
+                            (static_cast<u8>(back_is_block  ) << BACK_SHIFT     )
                             );
 
                         flags_solid |= static_cast<cube_faces_t>(
-                            (static_cast<u8>(!right_is_block) << RIGHT_SHIFT) |
-                            (static_cast<u8>(!left_is_block) << LEFT_SHIFT) |
-                            (static_cast<u8>(!top_is_block) << TOP_SHIFT) |
-                            (static_cast<u8>(!bottom_is_block) << BOTTOM_SHIFT) |
-                            (static_cast<u8>(!front_is_block) << FRONT_SHIFT) |
-                            (static_cast<u8>(!back_is_block) << BACK_SHIFT)
+                            (static_cast<u8>(!right_is_block ) << RIGHT_SHIFT   ) |
+                            (static_cast<u8>(!left_is_block  ) << LEFT_SHIFT    ) |
+                            (static_cast<u8>(!top_is_block   ) << TOP_SHIFT     ) |
+                            (static_cast<u8>(!bottom_is_block) << BOTTOM_SHIFT  ) |
+                            (static_cast<u8>(!front_is_block ) << FRONT_SHIFT   ) |
+                            (static_cast<u8>(!back_is_block  ) << BACK_SHIFT    )
                             );
                     }
                 }
 
-                cube_faces_t final_flags = static_cast<cube_faces_t>(
-                    static_cast<u8>(flags_air) & ~(static_cast<u8>(lod_flags) & static_cast<u8>(flags_solid))
-                    );
+                using u8 = std::underlying_type_t<cube_faces_t>;
+
+                // 1) pull the raw 6-bit masks into integers
+                u8 lod_u = static_cast<u8>(lod_flags);
+                u8 air_u = static_cast<u8>(flags_air);
+                u8 solid_u = static_cast<u8>(flags_solid);
+
+                // 2a) neighbor LOD < current LOD: draw if any sub-voxel is air
+                //     i.e. (lod bit == 0) AND (air bit == 1)
+                u8 mask_lower = (~lod_u) & air_u;
+
+                // 2b) neighbor LOD >= current LOD: draw only if all sub-voxels are air
+                //     i.e. (lod bit == 1) AND (solid bit == 0)
+                u8 mask_higher = lod_u & (~solid_u);
+
+                // 3) combine into final face bitmask
+                u8 final_u = mask_lower | mask_higher;
+                cube_faces_t final_flags = static_cast<cube_faces_t>(final_u);
+
 
                 total_faces_generated += Count_Set_Bits(final_flags);
 
