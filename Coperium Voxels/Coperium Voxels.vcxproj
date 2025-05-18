@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Compact Data\Compact Normal Data\CND.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\HandleCallbacks.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\Input_Handler.cpp" />
     <ClCompile Include="Libraries\Inc\COIL\Input Handler\AddCallBacks.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="Src\WorldData\Chunk_Management\WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Compact Data\Compact Normal Data\CND.h" />
     <ClInclude Include="Libraries\Inc\COIL\DataStructures\IndexedAvlTree\IndexedAvlTree.h" />
     <ClInclude Include="Libraries\Inc\COIL\Input Handler\Input_Handler.h" />
     <ClInclude Include="Libraries\Inc\COIL\Utility\CFF.h" />

@@ -11,7 +11,7 @@ uniform vec3 viewPos; // Camera position
 
 // Hardcoded sun (directional light) parameters
 // Sunlight coming straight down from above (0, -1, 0)
-const vec3 sunDir = normalize(vec3(-1.0, -1.0, -1.0));
+const vec3 sunDir = normalize(vec3(-0.5, -0.3, -0.9));
 const vec3 sunColor = vec3(1.0, 1.0, 1.0);
 
 void main()

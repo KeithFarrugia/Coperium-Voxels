@@ -198,6 +198,9 @@
     <ClCompile Include="Src\WorldData\Chunk_Management\Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Compact Data\Compact Normal Data\CND.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
@@ -1236,6 +1239,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\loosingit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Compact Data\Compact Normal Data\CND.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

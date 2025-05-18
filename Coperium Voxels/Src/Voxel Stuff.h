@@ -106,29 +106,72 @@ void importVoxelsToWorld(World& world, const VoxData& voxData) {
     }
 }
 
-void generate_blocks(World& world) {
+void generate_blocks(World& world, const glm::ivec3& start_pos, const glm::ivec3& end_pos) {
     int count = 0;
     auto start = std::chrono::high_resolution_clock::now();
-    for (int x = GRID_SIZE_S_X; x < GRID_SIZE_F_X; x++) {
-        for (int y = GRID_SIZE_S_Y; y < GRID_SIZE_F_Y; y++) {
-            for (int z = GRID_SIZE_S_Z; z < GRID_SIZE_F_Z; z++) {
+
+    for (int x = start_pos.x; x < end_pos.x; x++) {
+        for (int y = start_pos.y; y < end_pos.y; y++) {
+            for (int z = start_pos.z; z < end_pos.z; z++) {
                 vox_data_t som = vox_data_t{
-                        glm::ivec3(x, y, z),                // position
-                        glm::ivec3(x%16,y%16,z%16),         // color
-                        voxel_type_t::NORMAL,               // type
-                        true,                               // solid
-                        false,                              // transparency
-                        rel_loc_t::WORLD_LOC                // Relative
+                    glm::ivec3(x, y, z),                // position
+                    glm::ivec3(x % 16, y % 16, z % 16), // colour
+                    voxel_type_t::NORMAL,               // type
+                    true,                               // solid
+                    false,                              // transparency
+                    rel_loc_t::WORLD_LOC                // relative
                 };
                 world.Create_Voxel(som);
-                count++;
+                ++count;
             }
         }
     }
+
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Time taken to create [" << count << "] voxels : " << std::fixed << std::setprecision(6)
-        << duration.count() << " seconds." << std::endl;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Time taken to create [" << count << "] voxels: "
+        << duration.count() << " ms" << std::endl;
+}
+#include <cmath> // For std::sin
+
+void generate_blocks_wave(World& world, const glm::ivec3& start_pos, const glm::ivec3& end_pos) {
+    int count = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+
+    float freq1 = 0.1f;
+    float freq2 = 0.05f;
+    float amp1 = 8.0f;
+    float amp2 = 4.0f;
+
+    for (int x = start_pos.x; x < end_pos.x; x++) {
+        for (int z = start_pos.z; z < end_pos.z; z++) {
+            // Wavy height using 2 sine waves
+            float height = std::sin(x * freq1) * amp1 + std::sin(z * freq2) * amp2 + 16.0f;
+            int max_y = static_cast<int>(start_pos.y + height);
+
+            for (int y = start_pos.y; y < std::min(max_y, end_pos.y); y++) {
+                // Map height to 0–15 colour value
+                int shade = static_cast<int>((y / float(end_pos.y)) * 15.0f);
+                shade = std::clamp(shade, 0, 15);
+
+                vox_data_t som = vox_data_t{
+                    glm::ivec3(x, y, z),                     // position
+                    glm::ivec3(shade, shade, shade),         // greyscale 0–15
+                    voxel_type_t::NORMAL,                    // type
+                    true,                                    // solid
+                    false,                                   // transparency
+                    rel_loc_t::WORLD_LOC                     // relative location
+                };
+                world.Create_Voxel(som);
+                ++count;
+            }
+        }
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Time taken to create [" << count << "] voxels: "
+        << duration.count() << " ms" << std::endl;
 }
 
 void generate_checkerboard(World& world) {

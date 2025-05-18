@@ -32,6 +32,8 @@ glm::vec3 CalculateAverageColorForVoxel(const glm::ivec3& voxelPos, Chunk& chunk
 
     return glm::vec3(0.5f);  // Default neutral color
 }
+
+
 int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_pair, const Chunk& generic_chunk, int l_o_d) {
     const neighbouring_chunks_t c_neighbours = get_chunk_neighbours(w, chunk_pair, sector_pair, generic_chunk);
 
@@ -106,28 +108,14 @@ int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_
                     }
                 }
 
-                using u8 = std::underlying_type_t<cube_faces_t>;
-
-                // 1) pull the raw 6-bit masks into integers
-                u8 lod_u = static_cast<u8>(lod_flags);
-                u8 air_u = static_cast<u8>(flags_air);
-                u8 solid_u = static_cast<u8>(flags_solid);
-
-                // 2a) neighbor LOD < current LOD: draw if any sub-voxel is air
-                //     i.e. (lod bit == 0) AND (air bit == 1)
-                u8 mask_lower = (~lod_u) & air_u;
-
-                // 2b) neighbor LOD >= current LOD: draw only if all sub-voxels are air
-                //     i.e. (lod bit == 1) AND (solid bit == 0)
-                u8 mask_higher = lod_u & (~solid_u);
-
-                // 3) combine into final face bitmask
-                u8 final_u = mask_lower | mask_higher;
-                cube_faces_t final_flags = static_cast<cube_faces_t>(final_u);
-
-
-                total_faces_generated += Count_Set_Bits(final_flags);
-
+                // --- Final Flag Register ---
+                // For each face, if the neighbor's LOD is high (lod_flags set) and there is a block (flags_solid set)
+                // then we cull (set final flag bit to 0); otherwise, we keep the air flag bit.
+                cube_faces_t final_flags = static_cast<cube_faces_t>(
+                    static_cast<u8>(flags_air) & ~(static_cast<u8>(lod_flags) & static_cast<u8>(flags_solid))
+                    );
+                total_faces_generated += Count_Set_Bits(final_flags); // Track the total faces
+                // Add the cube mesh with the smoothed average color
                 Add_Cube_Mesh(glm::ivec3(x, y, z), average_color, vertex_mesh, index_mesh, vertex_offset, index_offset, final_flags, l_o_d);
             }
         }
@@ -139,7 +127,7 @@ int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_
 
     chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(0, 1, 0);
     chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(1, 1, 1);
-    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 3, 2);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 1, 2);
 
     return total_faces_generated;
 }

@@ -152,13 +152,9 @@ int main() {
     deferred_shader.Set_Int("gNormal", 1);
     deferred_shader.Set_Int("gAlbedoSpec", 2);
 
-    auto start_mesh = std::chrono::high_resolution_clock::now();
-    world_1.Force_Generate_Meshes(camera.Get_Position());
-
-    auto end_mesh = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duration_mesh = end_mesh - start_mesh;
-
-    std::cout << "Generate_All_Chunk_Meshes took " << duration_mesh.count() << " ms\n";
+    //for (int i = 0; i < 100; i++) {
+        world_1.Force_Generate_Meshes(camera.Get_Position());
+    //}
 
 
     GLuint vertex_offset = buffer_shader.Get_Uniform("vertex_offset");
@@ -204,7 +200,6 @@ int main() {
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
         world_1.Update(camera.Get_Position());
-        world_1.Generate_Mesh(camera.Get_Position());
         world_1.Render(buffer_shader, vertex_offset, camera.Get_Position(), camera.Get_Front());
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

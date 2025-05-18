@@ -92,11 +92,29 @@ void WorldManager::Load_Chunk(
     bool loaded = false;
 
     if (settings.allow_load_from_file) {
-        loaded = Read_Chunk(
-            sector_loc_t::Compact(sector_pos),
-            chunk_loc_t ::Compact(chunk_pos),
-            new_chunk
-        );
+        for (int y = MIN_ID_C_Y; y <= MAX_ID_C_Y; ++y) {
+            glm::ivec3 pos_in_column = { chunk_pos.x, y, chunk_pos.z };
+            Chunk column_chunk;
+            bool success = Read_Chunk(
+                sector_loc_t::Compact(sector_pos),
+                chunk_loc_t::Compact(pos_in_column),
+                column_chunk
+            );
+            loaded |= success;
+            if (success) {
+                sector->Add_Chunk(pos_in_column, column_chunk);
+                Set_Neighbours_to_Update(sector_pos, pos_in_column);
+
+                if (settings.debug) {
+                    std::cout
+                        << "[Loaded] "
+                        << "Sector (" << sector_pos.x << "," << sector_pos.z << ") "
+                        << "Chunk  (" << pos_in_column.x << "," << pos_in_column.y << ","
+                        << pos_in_column.z << ")\n";
+                }
+            }
+        }
+        if (loaded) { return; }
     }
 
     if (!loaded && settings.allow_chunk_generation) {

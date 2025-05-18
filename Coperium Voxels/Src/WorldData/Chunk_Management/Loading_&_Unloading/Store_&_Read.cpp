@@ -87,9 +87,11 @@ bool WorldManager::Read_Chunk(
         (std::to_string(chunk_location.location) + ".dat");
 
     if (!fs::exists(chunk_file)) {
-        std::cerr
-            << "Error: Chunk file does not exist: "
-            << chunk_file << std::endl;
+        if (settings.debug) {
+            std::cerr
+                << "Error: Chunk file does not exist: "
+                << chunk_file << std::endl;
+        }
         return false;
     }
 

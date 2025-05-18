@@ -104,14 +104,13 @@ public:
     //                         DYNAMIC CHUNK OPERATIONS                       //
     //------------------------------------------------------------------------//
     void Dynamic_Update_Chunks      (glm::vec3 player_position);
-    void Generate_All_Chunk_Meshes  (glm::vec3 player_position);
     void Force_Generate_Meshes      (glm::vec3 player_position);
+    void Update_Chunk_LODs          (const glm::vec3& player_position);
     void Randomly_Delete_Chunk      ();
     void Set_Neighbours_to_Update   (
         const glm::ivec3& sector, 
         const glm::ivec3& chunk
     );
-
     //------------------------------------------------------------------------//
     //                             GETTERS / SETTERS                          //
     //------------------------------------------------------------------------//
@@ -127,6 +126,10 @@ private:
     //------------------------------------------------------------------------//
     //                         PRIVATE HELPER FUNCTIONS                       //
     //------------------------------------------------------------------------//
+    void    Generate_All_Chunk_Meshes(
+        glm::vec3 player_position
+    );
+
     void    Load_New_Chunks     (
         const glm::ivec3&       current_sector,
         const glm::ivec3&       current_chunk
@@ -173,8 +176,8 @@ private:
     std::function<void(Chunk&, glm::ivec3)>       chunk_generation_callback;
 
     // State tracking
-    glm::ivec3  last_chunk    = { INT_MIN, INT_MIN, INT_MIN };
-    glm::ivec3  last_position = { INT_MIN, INT_MIN, INT_MIN };
+    glm::ivec3  last_chunk_update    = { INT_MIN, INT_MIN, INT_MIN };
+    glm::ivec3  last_chunk_mesh      = { INT_MIN, INT_MIN, INT_MIN };
 
     std::chrono::steady_clock::time_point last_update_time
         = std::chrono::steady_clock::now();

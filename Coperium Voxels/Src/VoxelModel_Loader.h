@@ -60,15 +60,19 @@ public:
         World& world,
         VoxelColorMode colorMode
     ) {
+        // Start total timer
+        auto startTime = std::chrono::steady_clock::now();
+
         std::ifstream file(filename);
         if (!file) {
             throw std::runtime_error("Failed to open voxel file: " + filename);
         }
         printf("Starting Loading\n");
+
         int x, y, z, count = 0;
         std::string line;
 
-        // Timer setup
+        // Timer for progress reporting
         auto lastReport = std::chrono::steady_clock::now();
 
         while (std::getline(file, line)) {
@@ -86,7 +90,6 @@ public:
                 ++count;
             }
 
-            // Check elapsed time
             auto now = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastReport).count() >= 1000) {
                 std::cout << "Imported " << count << " voxels so far...\n";
@@ -94,9 +97,13 @@ public:
             }
         }
 
-        std::cout << "Imported " << count << " voxels in total\n";
-    }
+        // End total timer
+        auto endTime = std::chrono::steady_clock::now();
+        auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 
+        std::cout << "Imported " << count << " voxels in total\n";
+        std::cout << "Total loading time: " << totalDuration << " ms\n";
+    }
 private:
     //------------------------------------------------------------------------//
     //                       STATIC COLOR HELPERS                              //
