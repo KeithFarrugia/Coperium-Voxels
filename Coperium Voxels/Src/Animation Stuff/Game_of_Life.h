@@ -7,196 +7,193 @@ using namespace std;
 using namespace std::chrono;
 
 struct Cell {
-    int  x          = 0;
-    int  y          = 0;
-    bool alive      = false;
-    bool changed    = false;
+    int x;
+    int y;
+    bool alive;
+    bool changed;
+
     Cell(int x_val = 0, int y_val = 0, bool alive_val = false, bool changed_val = false)
         : x(x_val), y(y_val), alive(alive_val), changed(changed_val) {}
+
     bool operator==(const Cell& other) const {
         return x == other.x && y == other.y;
     }
 };
 
-
-// Hash function for unordered_map
+// Hash function for Cell
 struct CellHash {
     size_t operator()(const Cell& c) const {
-        return hash<int>()(c.x) ^ hash<int>()(c.y);
+        return std::hash<int>()(c.x) ^ (std::hash<int>()(c.y) << 1);
     }
 };
 
+// GameOfLife with arbitrary centered play area
 class GameOfLife {
-private:
-    unordered_map<Cell, Cell, CellHash> cells;
-    int                                 width, height;
-    milliseconds                        update_interval;
-    steady_clock::time_point            last_update_time;
-    int                                 min_x, max_x, min_y, max_y; // Play area bounds
-
-    vector<Cell> getNeighbours(const Cell& cell) {
-        vector<Cell> neighbours;
-
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                if (dx == 0 && dy == 0) continue; // Skip the cell itself
-                int nx = cell.x + dx;
-                int ny = cell.y + dy;
-
-                // Ensure neighbours are within bounds
-                if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y) {
-                    neighbours.push_back({ nx, ny });
-                }
-            }
-        }
-        return neighbours;
-    }
-
 public:
-    GameOfLife(int w, int h, const vector<Cell>& init_cells, int mill_sec_interval) {
-        init(w, h, init_cells, mill_sec_interval);
+    /**
+     * Constructor: specify explicit bounds and initial live cells
+     * @param minX  Minimum x-coordinate (inclusive)
+     * @param maxX  Maximum x-coordinate (inclusive)
+     * @param minY  Minimum y-coordinate (inclusive)
+     * @param maxY  Maximum y-coordinate (inclusive)
+     * @param init_cells  List of initially alive cells (world coordinates)
+     * @param mill_sec_interval  Update interval in milliseconds
+     */
+    GameOfLife(int minX, int maxX, int minY, int maxY,
+        const std::vector<Cell>& init_cells,
+        int mill_sec_interval)
+    {
+        init(minX, maxX, minY, maxY, init_cells, mill_sec_interval);
     }
 
-    void init(int w, int h, const vector<Cell>& init_cells, int mill_sec_interval) {
-        width = w;
-        height = h;
+    /**
+     * Re-init simulation bounds and state
+     */
+    void init(int minX, int maxX, int minY, int maxY,
+        const std::vector<Cell>& init_cells,
+        int mill_sec_interval)
+    {
+        this->min_x = minX;
+        this->max_x = maxX;
+        this->min_y = minY;
+        this->max_y = maxY;
         cells.clear();
-        update_interval = milliseconds(mill_sec_interval);
-        last_update_time = steady_clock::now();
+        update_interval = std::chrono::milliseconds(mill_sec_interval);
+        last_update_time = std::chrono::steady_clock::now();
 
-        // Default play area bounds
-        min_x = 0;
-        max_x = width - 1;
-        min_y = 0;
-        max_y = height - 1;
-
-        for (const auto& cell : init_cells) {
-            if (cell.x >= min_x && cell.x <= max_x && cell.y >= min_y && cell.y <= max_y) {
-                cells[cell] = { cell.x, cell.y, true, true };
+        // Only insert cells within bounds
+        for (const auto& c : init_cells) {
+            if (c.x >= min_x && c.x <= max_x
+                && c.y >= min_y && c.y <= max_y)
+            {
+                cells[c] = Cell(c.x, c.y, true, true);
             }
         }
     }
 
+    /**
+     * Advance the simulation by one generation
+     */
     void Update_Game() {
-        unordered_map<Cell, int, CellHash> neighbour_count;
-        unordered_map<Cell, Cell, CellHash> new_cells;
+        std::unordered_map<Cell, int, CellHash> neighbour_count;
+        std::unordered_map<Cell, Cell, CellHash> new_state;
 
-        for (auto& [_, cell] : cells) {
-            cell.changed = false;
-            for (const auto& neighbour : getNeighbours(cell)) {
-                neighbour_count[neighbour]++;
+        // Count neighbours for each alive cell
+        for (auto& kv : cells) {
+            Cell cell = kv.first;
+            auto& data = kv.second;
+            data.changed = false;
+            for (auto& nb : getNeighbours(cell)) {
+                neighbour_count[nb]++;
             }
         }
 
-        // Apply rules and track changes
-        for (const auto& [cell, count] : neighbour_count) {
-            if (cell.x < min_x || cell.x > max_x || cell.y < min_y || cell.y > max_y) {
-                continue; // Prevents cells from growing outside the play area
-            }
+        // Apply Game of Life rules
+        for (auto& kv : neighbour_count) {
+            const Cell& cell = kv.first;
+            int count = kv.second;
+
+            if (cell.x < min_x || cell.x > max_x ||
+                cell.y < min_y || cell.y > max_y)
+                continue;
 
             bool was_alive = cells.count(cell) && cells[cell].alive;
-            bool now_alive = (count == 3 || (count == 2 && was_alive));
+            bool now_alive = (count == 3) || (was_alive && count == 2);
 
             if (was_alive != now_alive) {
-                new_cells[cell] = { cell.x, cell.y, now_alive, true };
-            } else if (was_alive) {
-                new_cells[cell] = { cell.x, cell.y, true, false };
+                new_state[cell] = Cell(cell.x, cell.y, now_alive, true);
+            }
+            else if (was_alive) {
+                new_state[cell] = Cell(cell.x, cell.y, true, false);
             }
         }
 
-        cells = move(new_cells);
+        cells = std::move(new_state);
     }
 
-    inline glm::ivec3 Lerp(const glm::ivec3& a, const glm::ivec3& b, float t)
+    /**
+     * Update the voxel world from current simulation state
+     */
+    void Update_World(WorldManager& world,
+        const glm::ivec3& min_cube,
+        const glm::ivec3& max_cube)
     {
-        return glm::ivec3(
-            (int)(a.r + t * (b.r - a.r)),
-            (int)(a.g + t * (b.g - a.g)),
-            (int)(a.b + t * (b.b - a.b))
-        );
-    }
-
-    void Update_World(WorldManager& world, glm::ivec3 min_cube, glm::ivec3 max_cube)
-    {
-        // Adjust play area
+        // Update sim bounds if cube region changed
         min_x = min_cube.x;
         max_x = max_cube.x;
-        min_y = min_cube.z; // your code calls the z dimension "y" in the simulation
+        min_y = min_cube.z;
         max_y = max_cube.z;
 
-        // Define 8-bit colors
-        glm::ivec3 royal_blue(65, 105, 225);
-        glm::ivec3 crimson(220, 20, 60);
+        // Colors for interpolation
+        glm::ivec3 colA(65, 105, 225), colB(220, 20, 60);
 
-        // Get all sectors from the world
-        sectors_t* sectors = world.Get_World().Get_All_Sectrs();
-        for (sector_pair_t sector_pair : *sectors) {
-            chunks_t* chunks = sector_pair.second.get()->Get_All_Chunks();
-            for (chunk_pair_t chunk_pair : *chunks) {
-
+        auto sectors = world.Get_World().Get_All_Sectrs();
+        for (auto sec_pair : *sectors) {
+            auto chunks = sec_pair.second->Get_All_Chunks();
+            for (auto chk_pair : *chunks) {
                 glm::ivec3 offset(
-                    chunk_pair.first.X() * CHUNK_SIZE_X + sector_pair.first.X() * SECTR_SIZE_X,
-                    chunk_pair.first.Y() * CHUNK_SIZE_Y,
-                    chunk_pair.first.Z() * CHUNK_SIZE_Z + sector_pair.first.Z() * SECTR_SIZE_Z
+                    sec_pair.first.X() * SECTR_SIZE_X + chk_pair.first.X() * CHUNK_SIZE_X,
+                    chk_pair.first.Y() * CHUNK_SIZE_Y,
+                    sec_pair.first.Z() * SECTR_SIZE_Z + chk_pair.first.Z() * CHUNK_SIZE_Z
                 );
 
-                // Iterate over the local voxel coords in this chunk
-                for (int local_x = MIN_ID_V_X; local_x <= MAX_ID_V_X; local_x++) {
-                    for (int local_z = MIN_ID_V_Z; local_z <= MAX_ID_V_Z; local_z++) {
-                        // Compute simulation cell coords
-                        int sim_x = offset.x + local_x;
-                        int sim_y = offset.z + local_z;
+                for (int lx = MIN_ID_V_X; lx <= MAX_ID_V_X; ++lx) for (int lz = MIN_ID_V_Z; lz <= MAX_ID_V_Z; ++lz) {
+                    int sx = offset.x + lx;
+                    int sy = offset.z + lz;
+                    if (sx < min_x || sx > max_x || sy < min_y || sy > max_y)
+                        continue;
 
-                        // Skip out-of-bounds
-                        if (sim_x < min_x || sim_x > max_x || sim_y < min_y || sim_y > max_y)
-                            continue;
-
-                        Cell sim_cell{ sim_x, sim_y };
-                        auto it = cells.find(sim_cell);
-                        if (it != cells.end() && it->second.changed) {
-                            // Default to black
-                            glm::ivec3 finalColor4(0, 0, 0);
-
-                            // If alive, compute gradient color, then quantize to 4-bit
-                            if (it->second.alive) {
-                                // Simple left-to-right gradient
-                                float t = 0.0f;
-                                if (max_x != min_x) {
-                                    t = float(sim_x - min_x) / float(max_x - min_x);
-                                }
-
-                                // Get the 8-bit interpolated color
-                                glm::ivec3 color8 = Lerp(royal_blue, crimson, t);
-
-                                // Now scale to 4-bit range [0..15]
-                                finalColor4.r = (color8.r * 15) / 255;
-                                finalColor4.g = (color8.g * 15) / 255;
-                                finalColor4.b = (color8.b * 15) / 255;
-
-                                // Alternatively: finalColor4.r = color8.r >> 4; etc.
-                            }
-
-                            // Set the voxel color with 4-bit channels
-                            chunk_pair.second.get()->
-                                Get_Voxel(glm::ivec3(local_x, 0, local_z))
-                                ->SetColour(finalColor4);
-
-                            chunk_pair.second.get()->Get_Chunk_Data().updated = true;
+                    Cell key(sx, sy);
+                    auto it = cells.find(key);
+                    if (it != cells.end() && it->second.changed) {
+                        glm::ivec3 c4(0);
+                        if (it->second.alive) {
+                            float t = (max_x > min_x)
+                                ? float(sx - min_x) / float(max_x - min_x)
+                                : 0.0f;
+                            auto lerp = [&](int a, int b) { return int(a + t * (b - a)); };
+                            c4.r = (lerp(colA.r, colB.r) * 15) / 255;
+                            c4.g = (lerp(colA.g, colB.g) * 15) / 255;
+                            c4.b = (lerp(colA.b, colB.b) * 15) / 255;
                         }
+                        auto voxel = chk_pair.second->Get_Voxel({ lx,0,lz });
+                        voxel->SetColour(c4);
+                        chk_pair.second->Get_Chunk_Data().updated = true;
                     }
                 }
             }
         }
     }
 
-    void Update(WorldManager& world, glm::ivec3 min_cube, glm::ivec3 max_cube) {
-        auto now     = steady_clock::now();
-        auto elapsed = duration_cast<milliseconds>(now - last_update_time);
-
-        if (elapsed >= update_interval) {
+    /**
+     * Main update call; advances sim on timer and pushes to world
+     */
+    void Update(WorldManager& world,
+        const glm::ivec3& min_cube,
+        const glm::ivec3& max_cube)
+    {
+        auto now = std::chrono::steady_clock::now();
+        auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_update_time);
+        if (dt >= update_interval) {
             last_update_time = now;
             Update_Game();
             Update_World(world, min_cube, max_cube);
         }
+    }
+
+private:
+    int min_x, max_x, min_y, max_y;
+    std::unordered_map<Cell, Cell, CellHash> cells;
+    std::chrono::milliseconds update_interval;
+    std::chrono::steady_clock::time_point last_update_time;
+
+    // Generate neighbour coords
+    std::vector<Cell> getNeighbours(const Cell& c) const {
+        std::vector<Cell> out;
+        for (int dx = -1; dx <= 1; ++dx) for (int dy = -1; dy <= 1; ++dy) {
+            if (dx == 0 && dy == 0) continue;
+            out.emplace_back(c.x + dx, c.y + dy);
+        }
+        return out;
     }
 };

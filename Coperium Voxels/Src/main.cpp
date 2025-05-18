@@ -69,7 +69,7 @@ int main() {
     setupWindow(window);
 
     WorldManager world_1(std::string("mount"));
-    
+    GameOfLife gol(-val, val, -val, val, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 100);
     Create_Static_Model_World(world_1);
     
 
@@ -199,6 +199,7 @@ int main() {
         //gol.Update(world_1, glm::ivec3(-64,0,-64), glm::ivec3(64, 0, 64));
         //UpdateGameOfLife(teapot_world.Get_World(), &temp_c);
         //Generate_All_Chunk_Meshes_LOD_PASS(teapot_world.Get_World(), camera, false, 500);
+        gol.Update(world_1, glm::ivec3(-val, 0, -val), glm::ivec3(val, 0, val));
         world_1.Update(camera.Get_Position());
         world_1.Render(buffer_shader, vertex_offset, camera.Get_Position(), camera.Get_Front());
 

@@ -100,7 +100,13 @@ void WorldManager::Update_Chunk_LODs(
  * ------ Returns ------
  * true if any chunks were regenerated; false otherwise.
  * ============================================================================ */
+#include <chrono>
+#include <iostream>
+
 bool Regenerate_Update_Meshes(World& world, Chunk& generic_chunk) {
+    static int updated_chunks_count = 0;
+    static auto start_time = std::chrono::steady_clock::now();
+
     bool changed = false;
     sectors_t* sectors = world.Get_All_Sectrs();
 
@@ -130,7 +136,22 @@ bool Regenerate_Update_Meshes(World& world, Chunk& generic_chunk) {
 
             data.updated = false;
             changed = true;
+
+            // Update counter for chunks processed
+            updated_chunks_count++;
         }
+    }
+
+    // Check elapsed time
+    auto now = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed = now - start_time;
+    if (elapsed.count() >= 1.0) {
+        std::cout << "[Performance] Chunks updated in last "
+            << elapsed.count() << " seconds: "
+            << updated_chunks_count << std::endl;
+        // Reset
+        updated_chunks_count = 0;
+        start_time = now;
     }
 
     return changed;

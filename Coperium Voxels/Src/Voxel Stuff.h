@@ -106,7 +106,7 @@ void importVoxelsToWorld(World& world, const VoxData& voxData) {
     }
 }
 
-void generate_blocks(World& world, const glm::ivec3& start_pos, const glm::ivec3& end_pos) {
+void generate_blocks(World& world, const glm::ivec3& start_pos, const glm::ivec3& end_pos, glm::ivec3 colour) {
     int count = 0;
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -115,7 +115,7 @@ void generate_blocks(World& world, const glm::ivec3& start_pos, const glm::ivec3
             for (int z = start_pos.z; z < end_pos.z; z++) {
                 vox_data_t som = vox_data_t{
                     glm::ivec3(x, y, z),                // position
-                    glm::ivec3(x % 16, y % 16, z % 16), // colour
+                    colour,                             // colour
                     voxel_type_t::NORMAL,               // type
                     true,                               // solid
                     false,                              // transparency

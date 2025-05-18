@@ -13,11 +13,13 @@ void Load_World_From_text(WorldManager& wm) {
 void CheckerBoard(WorldManager& wm) {
     generate_checkerboard(wm.Get_World());
 }
-
+int val = 512;
 void WaveWorld(WorldManager& wm) {
     generate_blocks_wave(wm.Get_World(),glm::ivec3(-512, 0, -512), glm::ivec3(512, 64, 512));
 }
-
+void SolidWorld(WorldManager& wm) {
+    generate_blocks(wm.Get_World(), glm::ivec3(-val, 0, -val), glm::ivec3(val, 1, val), glm::ivec3(1,1,1));
+}
 void Create_Static_Model_World(WorldManager& world) {
     world.Load_Settings();
 
@@ -35,21 +37,21 @@ void Create_Static_Model_World(WorldManager& world) {
     //=== Rendering & Mesh Updates ===
     s.render_world = true;    // draw the world
     s.mesh_changes = true;    // allow mesh regeneration
-    s.update_interval_ms = 250;     // update meshes every 250 ms
+    s.update_interval_ms = 50;     // update meshes every 250 ms
 
     //=== Level of Detail (LOD) ===
     s.use_lod = false;   // enable LOD system
-    s.dynamic_lod = true;   // compute LOD only once
+    s.dynamic_lod = false;   // compute LOD only once
     s.smart_update = true;    // skip LOD if camera is still
 
 
     Create_Air_Chunk(s.generic_chunk);  // default prototype chunk
 
     //=== Debug & Development ===
-    s.smart_render = false;   // only draw visible chunks
+    s.smart_render = true;   // only draw visible chunks
     s.debug = false;    // enable debug logging
 
-    world.Set_Initialise_Callback(Load_World_From_text);
+    world.Set_Initialise_Callback(SolidWorld);
 
     // 5) Continue with your initialization
     //for (int i = 0; i < 100; i++) {
