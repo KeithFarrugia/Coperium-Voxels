@@ -31,13 +31,19 @@ private:
         int frames = 0;
         float fps = 0.0f;
         float avgFrameTimeMs = 0.0f;
+
         double cpuTimeSumMs = 0.0;
         int cpuSamples = 0;
         float avgCpuTimeMs = 0.0f;
+
+        double gpuTimeSumMs = 0.0;
+        int gpuSamples = 0;
+        float avgGpuTimeMs = 0.0f;
+
         std::chrono::high_resolution_clock::time_point lastTime;
 
         TimingStats();
-        void update(float cpuTimeMsSample);
+        void update(float cpuTimeMsSample, float gpuTimeMsSample);
     } timingStats;
 
     void setup_window();

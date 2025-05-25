@@ -32,10 +32,10 @@ void RenderImGuiFrame(float fps, float avgFrameTimeMs, float avgCpuTimeMs, float
 
     // Use fixed-width fields: %-12s left-justified label in 12 chars,
     // %8.2f right-justified numeric in 8 chars with 2 decimal places.
-    ImGui::Text("%-12s %8.1f", "FPS:", fps);
-    ImGui::Text("%-12s %8.2f", "Frame Time:", avgFrameTimeMs);
-    ImGui::Text("%-12s %8.2f", "CPU Update:", avgCpuTimeMs);
-    ImGui::Text("%-12s %8.2f", "GPU Time:", gpuTimeMs);
+    ImGui::Text("%-12s %8.1f   ", "FPS:", fps);
+    ImGui::Text("%-12s %8.2f ms", "Frame Time:", avgFrameTimeMs);
+    ImGui::Text("%-12s %8.2f ms", "CPU Update:", avgCpuTimeMs);
+    ImGui::Text("%-12s %8.2f ms", "GPU Time:", gpuTimeMs);
 
     ImGui::End();
     ImGui::Render();

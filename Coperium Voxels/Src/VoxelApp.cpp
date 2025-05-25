@@ -18,12 +18,16 @@ VoxelApp::TimingStats::TimingStats() {
 
 /* ============================================================================
  * --------------------------- TimingStats::update
- * Updates FPS, average frame time, and average CPU time.
+ * Updates FPS, average frame time, and average CPU/GPU time.
  * ============================================================================ */
-void VoxelApp::TimingStats::update(float cpuTimeMsSample) {
+void VoxelApp::TimingStats::update(float cpuTimeMsSample, float gpuTimeMsSample) {
     frames++;
+
     cpuTimeSumMs += cpuTimeMsSample;
     cpuSamples++;
+
+    gpuTimeSumMs += gpuTimeMsSample;
+    gpuSamples++;
 
     auto now = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> diff = now - lastTime;
@@ -31,11 +35,15 @@ void VoxelApp::TimingStats::update(float cpuTimeMsSample) {
     if (diff.count() >= 1.0f) {
         fps = frames / diff.count();
         avgFrameTimeMs = 1000.0f / fps;
+
         avgCpuTimeMs = cpuSamples > 0 ? (float)(cpuTimeSumMs / cpuSamples) : 0.0f;
+        avgGpuTimeMs = gpuSamples > 0 ? (float)(gpuTimeSumMs / gpuSamples) : 0.0f;
 
         frames = 0;
         cpuSamples = 0;
+        gpuSamples = 0;
         cpuTimeSumMs = 0.0;
+        gpuTimeSumMs = 0.0;
         lastTime = now;
     }
 }
@@ -48,9 +56,9 @@ VoxelApp::VoxelApp(Coil::Window& win, WorldManager& wm)
     : window(win),
     world(wm),
     camera(win, 0, 65, 0),
-    buffer_shader("Buffer"),          // initialised with name
+    buffer_shader("Buffer"),
     deferred_shader("Deferred"),
-    deferredRenderer(0, 0)            // will be configured in setup_renderer
+    deferredRenderer(0, 0)
 {
     setup_window();
     setup_camera();
@@ -148,8 +156,8 @@ void VoxelApp::render_frame() {
 
     buffer_shader.Use();
     buffer_shader.Set_Matrix4("projection", camera.Calc_Projection_Matrix());
-    buffer_shader.Set_Matrix4("view"      , camera.Calc_View_Matrix());
-    buffer_shader.Set_Matrix4("model"     , model);
+    buffer_shader.Set_Matrix4("view", camera.Calc_View_Matrix());
+    buffer_shader.Set_Matrix4("model", model);
 
     // -- 2) Start CPU timer right before update+render --
     auto cpuStart = std::chrono::high_resolution_clock::now();
@@ -183,12 +191,12 @@ void VoxelApp::render_frame() {
     float gpuTimeMs = gpuTimeNs * 1e-6f;
 
     // -- 7) Feed stats & UI --
-    timingStats.update(cpuTimeMs);
+    timingStats.update(cpuTimeMs, gpuTimeMs);
     RenderImGuiFrame(
         timingStats.fps,
         timingStats.avgFrameTimeMs,
         timingStats.avgCpuTimeMs,
-        gpuTimeMs
+        timingStats.avgGpuTimeMs
     );
 
     // -- 8) Present & poll --
