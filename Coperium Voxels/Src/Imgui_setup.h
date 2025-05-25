@@ -24,20 +24,27 @@ void RenderImGuiFrame(float fps, float avgFrameTimeMs, float avgCpuTimeMs, float
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::SetNextWindowPos(ImVec2(10, 10));  // Top-left corner
-    ImGui::Begin("Performance Stats", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("FPS: %.1f", fps);
-    ImGui::Text("Frame Time: %.2f ms", avgFrameTimeMs);
-    ImGui::Text("CPU Update Time: %.2f ms (avg)", avgCpuTimeMs);
-    ImGui::Text("GPU Time: %.2f ms", gpuTimeMs);
-    ImGui::End();
+    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    ImGui::Begin("Performance Stats", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_AlwaysAutoResize);
 
+    // Use fixed-width fields: %-12s left-justified label in 12 chars,
+    // %8.2f right-justified numeric in 8 chars with 2 decimal places.
+    ImGui::Text("%-12s %8.1f", "FPS:", fps);
+    ImGui::Text("%-12s %8.2f", "Frame Time:", avgFrameTimeMs);
+    ImGui::Text("%-12s %8.2f", "CPU Update:", avgCpuTimeMs);
+    ImGui::Text("%-12s %8.2f", "GPU Time:", gpuTimeMs);
+
+    ImGui::End();
     ImGui::Render();
-    ImDrawData* draw_data = ImGui::GetDrawData();
-    if (draw_data != nullptr) {
+
+    if (auto draw_data = ImGui::GetDrawData())
         ImGui_ImplOpenGL3_RenderDrawData(draw_data);
-    }
 }
+
+
 
 
 void CleanupImGui() {
