@@ -201,6 +201,12 @@
     <ClCompile Include="Src\Compact Data\Compact Normal Data\CND.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\DeferredRenderer.cpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\VoxelApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\Inc\GLAD\glad.h">
@@ -1211,7 +1217,7 @@
     <ClInclude Include="Src\WorldData\Create_Generic_Chunks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Voxel Stuff.h">
+    <ClInclude Include="Src\Voxel_Gen_Util_Func.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Imgui_setup.h">
@@ -1238,10 +1244,13 @@
     <ClInclude Include="Src\World Creation Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\loosingit.h">
+    <ClInclude Include="Src\Compact Data\Compact Normal Data\CND.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Compact Data\Compact Normal Data\CND.h">
+    <ClInclude Include="Src\DeferredRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\VoxelApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1680,11 +1689,5 @@
     <None Include="Resources\Shaders\deferred.frag" />
     <None Include="Resources\Shaders\quad.vert" />
     <None Include="Resources\Shaders\quad.frag" />
-    <None Include="teapot.vox" />
-    <None Include="monu1.vox" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="test.txt" />
-    <Text Include="Extras\Testing Conversion.txt" />
   </ItemGroup>
 </Project>

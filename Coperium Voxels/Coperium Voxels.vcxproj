@@ -198,7 +198,9 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
+    <ClCompile Include="Src\DeferredRenderer.cpp.cpp" />
     <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\VoxelApp.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\Get_Chunk_Neighbours.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\LOD_1_Mesh_Gen.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\LOD_N_Mesh_Gen.cpp" />
@@ -556,10 +558,11 @@
     <ClInclude Include="Src\Data Structure\AVL_DataStructure.h" />
     <ClInclude Include="Src\Data Structure\IDataStructure.h" />
     <ClInclude Include="Src\Data Structure\UM_DataStructure.h" />
-    <ClInclude Include="Src\loosingit.h" />
+    <ClInclude Include="Src\DeferredRenderer.h" />
+    <ClInclude Include="Src\VoxelApp.h" />
     <ClInclude Include="Src\World Creation Functions.h" />
     <ClInclude Include="Src\Imgui_setup.h" />
-    <ClInclude Include="Src\Voxel Stuff.h" />
+    <ClInclude Include="Src\Voxel_Gen_Util_Func.h" />
     <ClInclude Include="Src\Utility\Render Testing.h" />
     <ClInclude Include="Src\VoxelModel_Loader.h" />
     <ClInclude Include="Src\WorldData\Chunk_Management\Mesh Generation\Chunk_Mesh.h" />
@@ -717,7 +720,6 @@
     <None Include="Libraries\Inc\GLM\gtx\vector_angle.inl" />
     <None Include="Libraries\Inc\GLM\gtx\vector_query.inl" />
     <None Include="Libraries\Inc\GLM\gtx\wrap.inl" />
-    <None Include="monu1.vox" />
     <None Include="Readme.md" />
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\basic.vert" />
@@ -729,11 +731,6 @@
     <None Include="Resources\Shaders\deferred.vert" />
     <None Include="Resources\Shaders\quad.frag" />
     <None Include="Resources\Shaders\quad.vert" />
-    <None Include="teapot.vox" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Extras\Testing Conversion.txt" />
-    <Text Include="test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,6 +5,7 @@
 #include "WorldData/Chunk_Management/WorldManager.h"
 #include "WorldData/Create_Generic_Chunks.h"
 #include "VoxelModel_Loader.h"
+#include "Voxel_Gen_Util_Func.h"
 
 void Load_World_From_text(WorldManager& wm) {
     VoxelImporter::LoadAndImport(wm.Get_World_Name() + ".txt", wm.Get_World(), VoxelColorMode::HEIGHT_MAP);
@@ -18,7 +19,7 @@ void WaveWorld(WorldManager& wm) {
     generate_blocks_wave(wm.Get_World(),glm::ivec3(-512, 0, -512), glm::ivec3(512, 64, 512));
 }
 void SolidWorld(WorldManager& wm) {
-    generate_blocks(wm.Get_World(), glm::ivec3(-val, 0, -val), glm::ivec3(val, 1, val), glm::ivec3(1,1,1));
+    generate_blocks(wm.Get_World(), glm::ivec3(-val, 0, -val), glm::ivec3(val, 1, val), glm::ivec3(0,0,0));
 }
 void Create_Static_Model_World(WorldManager& world) {
     world.Load_Settings();
@@ -40,8 +41,8 @@ void Create_Static_Model_World(WorldManager& world) {
     s.update_interval_ms = 50;     // update meshes every 250 ms
 
     //=== Level of Detail (LOD) ===
-    s.use_lod = false;   // enable LOD system
-    s.dynamic_lod = false;   // compute LOD only once
+    s.use_lod = true;   // enable LOD system
+    s.dynamic_lod = true;   // compute LOD only once
     s.smart_update = true;    // skip LOD if camera is still
 
 
@@ -51,7 +52,7 @@ void Create_Static_Model_World(WorldManager& world) {
     s.smart_render = true;   // only draw visible chunks
     s.debug = false;    // enable debug logging
 
-    world.Set_Initialise_Callback(SolidWorld);
+    world.Set_Initialise_Callback(Load_World_From_text);
 
     // 5) Continue with your initialization
     //for (int i = 0; i < 100; i++) {
