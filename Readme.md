@@ -54,8 +54,18 @@ To build and run this project, ensure you have the following installed:
      - Select **Set as Startup Project**.
    - Press `F5` to run the application.
 
+## 🎮 Controls
+
+- **W, A, S, D**: Move forward, left, backward, and right relative to the camera’s facing direction.
+- **Space**: Move up.
+- **Left Shift**: Move down.
+- **Scroll Wheel**: Zoom the camera in and out.
+- **Tab**: Unlocks the mouse cursor for free movement, but is somewhat unstable — may require multiple presses and can be finicky.
+- **Window Resizing**: The application window can be resized, but this feature is unstable and **not recommended** for regular use.
+
+
 ___
-## 🎮 Default World Selection (Using `Create_Default_World`)
+## Default World Selection (Using `Create_Default_World`)
 
 The project provides several **default world presets** that you can choose from when initializing the `WorldManager` class **and calling the `Create_Default_World` function**.
 
