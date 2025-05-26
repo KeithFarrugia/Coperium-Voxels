@@ -81,11 +81,11 @@ int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_
                 for (int i = 0; i < l_o_d; i++) {
                     for (int j = 0; j < l_o_d; j++) {
                         bool right_is_block     = r_c->Get_Voxel({ vox_inc_x(x, l_o_d), y + i, z + j })->IsAir();
-                        bool left_is_block      = l_c->Get_Voxel({ vox_dec_x(x, l_o_d), y + i, z + j })->IsAir();
+                        bool left_is_block      = l_c->Get_Voxel({ vox_dec_x(x), y + i, z + j })->IsAir();
                         bool top_is_block       = t_c->Get_Voxel({ x + i, vox_inc_y(y, l_o_d), z + j })->IsAir();
-                        bool bottom_is_block    = d_c->Get_Voxel({ x + i, vox_dec_y(y, l_o_d), z + j })->IsAir();
+                        bool bottom_is_block    = d_c->Get_Voxel({ x + i, vox_dec_y(y), z + j })->IsAir();
                         bool front_is_block     = f_c->Get_Voxel({ x + i, y + j, vox_inc_z(z, l_o_d) })->IsAir();
-                        bool back_is_block      = b_c->Get_Voxel({ x + i, y + j, vox_dec_z(z, l_o_d) })->IsAir();
+                        bool back_is_block      = b_c->Get_Voxel({ x + i, y + j, vox_dec_z(z) })->IsAir();
 
                         flags_air |= static_cast<cube_faces_t>(
                             (static_cast<u8>(right_is_block ) << RIGHT_SHIFT    ) |

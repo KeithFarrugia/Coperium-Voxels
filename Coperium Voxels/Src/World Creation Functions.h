@@ -86,16 +86,6 @@ inline void FlatWorld(WorldManager& wm) {
 }
 
 /* ============================================================================
- * --------------------------- Canway_Update
- * Runs a step of Conway's Game of Life on the world within a specified area.
- * ============================================================================ */
-inline void Canway_Update(WorldManager& wm) {
-    constexpr int val = 128;
-    GameOfLife gol(-val, val, -val, val, { {0, 0}, {0, 1}, {0, 2}, {-1, 1}, {1, 1} }, 100);
-    gol.Update(wm, glm::ivec3(-val, 0, -val), glm::ivec3(val, 0, val));
-}
-
-/* ============================================================================
  * --------------------------- Create_Static_Model_World
  * Initialises world settings for static model usage, disables procedural
  * generation, enables loading from disk, and sets an import callback.
@@ -141,11 +131,11 @@ inline void Create_Static_Model_World(WorldManager& world) {
 }
 
 /* ============================================================================
- * --------------------------- Create_Canway_Game
+ * --------------------------- Create_Conway_Game
  * Sets up world parameters for running Conway's Game of Life simulation.
  * Disables loading and storing chunks to focus on simulation logic.
  * ============================================================================ */
-inline void Create_Canway_Game(WorldManager& world) {
+inline void Create_Conway_Game(WorldManager& world) {
     world.Load_Settings();
     world_settings_t& s = world.Get_Settings();
 
@@ -292,8 +282,8 @@ inline void Create_Default_World(WorldManager& world) {
     if (name == "mount" || name == "sponza") {
         Create_Static_Model_World(world);
     }
-    else if (name == "canway") {
-        Create_Canway_Game(world);
+    else if (name == "conway") {
+        Create_Conway_Game(world);
     }
     else if (name == "wave") {
         Create_Wave_World(world);

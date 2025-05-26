@@ -12,6 +12,8 @@ int main() {
     Coil::Window window("Voxel Test Case", 1500, 1000);
 
     WorldManager world("mount");
+
+    // Check Readme.md for information on World Configurations
     Create_Default_World(world);
 
     VoxelApp app(window, world);

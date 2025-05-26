@@ -62,7 +62,7 @@ int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_
 
     chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(0, 1, 0);
     chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(1, 1, 1);
-    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 3, 2);
+    chunk_pair.second.get()->Get_Mesh().Add_Vertex_Set(2, 1, 2);
 
     return total_faces_generated;
 }

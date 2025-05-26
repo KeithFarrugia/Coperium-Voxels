@@ -25,7 +25,7 @@ void Add_Face(
     float centre = (scale - 1.0f) * 0.5f;
     verts.insert(verts.end(), face_data, face_data + FACE_VERT_SIZE);
 
-    for (size_t i = verts.size() - FACE_VERT_SIZE; i < verts.size(); i += 3) {
+    for (size_t i = verts.size() - FACE_VERT_SIZE; i < verts.size(); i += FACE_NUM_ELEMENTS) {
         CLD loc(verts[i]);
         CCD col(verts[i + 1]);
         
@@ -43,7 +43,7 @@ void Add_Face(
     for (int j = 0; j < FACE_INDEX_SIZE; ++j) {
         inds.push_back(index_data[j] + v_offset);
     }
-    v_offset += FACE_VERT_SIZE / 3;
+    v_offset += FACE_VERT_SIZE / FACE_NUM_ELEMENTS;
     i_offset += FACE_INDEX_SIZE;
 }
 
