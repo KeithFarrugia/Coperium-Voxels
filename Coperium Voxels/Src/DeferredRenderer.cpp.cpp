@@ -87,10 +87,7 @@ void DeferredRenderer::setupFramebuffer() {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "DeferredRenderer: Framebuffer not complete!" << std::endl;
-    }
-
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

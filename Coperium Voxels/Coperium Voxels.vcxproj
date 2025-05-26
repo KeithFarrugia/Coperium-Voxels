@@ -720,7 +720,6 @@
     <None Include="Libraries\Inc\GLM\gtx\vector_angle.inl" />
     <None Include="Libraries\Inc\GLM\gtx\vector_query.inl" />
     <None Include="Libraries\Inc\GLM\gtx\wrap.inl" />
-    <None Include="Readme.md" />
     <None Include="Resources\Shaders\basic.frag" />
     <None Include="Resources\Shaders\basic.vert" />
     <None Include="Resources\Shaders\buffer.frag" />

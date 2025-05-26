@@ -110,6 +110,10 @@ bool Regenerate_Update_Meshes(World& world, Chunk& generic_chunk) {
             chunk_data_t& data = chunk_ptr->Get_Chunk_Data();
             if (!data.updated) continue;
 
+            if (data.l_o_d == lod_Level_t::UNSET || static_cast<int>(data.l_o_d) <= 0) {
+                data.l_o_d = lod_Level_t::NORMAL;
+            }
+
             if (data.l_o_d == lod_Level_t::NORMAL) {
                 Generate_Chunk_Mesh(
                     world,
@@ -225,11 +229,13 @@ void WorldManager::Force_Generate_Meshes(glm::vec3 player_position) {
         auto* chunks = sector_ptr->Get_All_Chunks();
         for (auto [chunk_pos, chunk_ptr] : *chunks) {
             chunk_data_t& data = chunk_ptr->Get_Chunk_Data();
-            lod_Level_t lod = settings.use_lod
-                ? data.l_o_d
-                : lod_Level_t::NORMAL;
 
-            int faces = (lod == lod_Level_t::NORMAL)
+            // Validate lod directly on data.l_o_d
+            if (data.l_o_d == lod_Level_t::UNSET || static_cast<int>(data.l_o_d) <= 0) {
+                data.l_o_d = lod_Level_t::NORMAL;
+            }
+
+            int faces = (data.l_o_d == lod_Level_t::NORMAL)
                 ? Generate_Chunk_Mesh(
                     world,
                     { sector_pos, sector_ptr },

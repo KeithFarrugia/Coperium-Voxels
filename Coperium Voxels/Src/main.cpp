@@ -11,10 +11,10 @@ int main() {
 
     Coil::Window window("Voxel Test Case", 1500, 1000);
 
-    WorldManager world_1("mount");
-    Create_Static_Model_World(world_1);
+    WorldManager world("mount");
+    Create_Default_World(world);
 
-    VoxelApp app(window, world_1);
+    VoxelApp app(window, world);
     app.Run();
 
     return 0;

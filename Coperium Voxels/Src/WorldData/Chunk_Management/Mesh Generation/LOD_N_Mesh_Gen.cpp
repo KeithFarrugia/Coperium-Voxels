@@ -55,7 +55,6 @@ int Generate_Chunk_Mesh(World& w, sector_pair_t sector_pair, chunk_pair_t chunk_
                 int num_air = 0;
 
                 glm::vec3 average_color = CalculateAverageColorForVoxel(glm::ivec3(x, y, z), *(chunk_pair.second.get()), l_o_d, num_air);
-
                 if (num_air >= l_o_d * l_o_d * l_o_d) continue;
 
                 cube_faces_t flags_air   = static_cast<cube_faces_t>(0);

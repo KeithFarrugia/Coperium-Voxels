@@ -1,2 +1,0 @@
-# Coperium Voxels
-
