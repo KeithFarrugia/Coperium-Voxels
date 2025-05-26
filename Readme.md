@@ -132,7 +132,7 @@ The `world_settings_t` struct contains configuration options for world loading, 
 
 ---
 
-### LOD Distance Thresholds (`lod_set`)
+### Default LOD Distance Thresholds (`lod_set`)
 
 | **LOD Level** | **Distance Threshold (units²)** |  **Calculation**  |
 | :-----------: | :-----------------------------: | :---------------: |
