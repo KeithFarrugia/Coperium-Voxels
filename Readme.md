@@ -35,7 +35,7 @@ To build and run this project, ensure you have the following installed:
 - **Visual Studio 2022** with the following workloads:
   - **Desktop Development with C++**
 - **Windows 10 SDK** (typically included with Visual Studio)
-
+- Needs a **windows 10** / **11 machine**
 ---
 
 ## Building and Running the Project
@@ -64,20 +64,23 @@ To build and run this project, ensure you have the following installed:
 
 ---
 
-## 🎮 Controls
+## Controls & Inputs
 
-* **W, A, S, D**: Move forward, left, backward, and right relative to the camera’s facing direction.
+* **W, A, S, D**: Move forward, left, backward, and right relative to the camera's facing direction.
 * **Space**: Move up.
 * **Left Shift**: Move down.
 * **Scroll Wheel**: Zoom the camera in and out.
-* **Tab**: Unlocks the mouse cursor for free movement, but is somewhat unstable — may require multiple presses and can be finicky.
+* **Tab**: Unlocks the mouse cursor for free movement, but is somewhat unstable - may require multiple presses and can be finicky.
 * **Window Resizing**: The application window can be resized, but this feature is unstable and **not recommended** for regular use.
 
 ---
 
+
 ## Default World Selection (Using `Create_Default_World`)
 
-The project provides several **default world presets** that you can choose from when initializing the `WorldManager` class **and calling the `Create_Default_World` function**.
+This voxel engine provides several **example world setups** designed to demonstrate key features, configurations, and test scenarios used throughout the development and evaluation in the accompanying report. These defaults act as starting templates to showcase how different world behaviours and systems can be configured using the engine.
+
+-  **Note:** These preset names are *examples only* and not required. The engine supports **any custom world name**. However, names listed below receive special configuration in the `Create_Default_World` function for demonstration purposes. You can remove or replace them entirely in your own implementation.
 
 ### How to Set the Default World
 
@@ -93,14 +96,15 @@ Replace `"mount"` with one of the supported world preset names to load a specifi
 | **World Name** | **Description**                                                                                     |
 | :------------: | :-------------------------------------------------------------------------------------------------- |
 |     `mount`    | Static model world loaded from heightmap data. Procedural generation disabled.                      |
-|    `sponza`    | Static model world using sky-blue color mapping. Procedural generation disabled.                    |
+|    `sponza`    | Static model world using sky-blue colour mapping. Procedural generation disabled.                   |
 |    `canway`    | Runs Conway's Game of Life simulation within the voxel world. No chunk loading/saving.              |
 |     `wave`     | Procedurally generates a wave-like landscape with static chunks.                                    |
 |    `dynamic`   | Dynamic world with automatic chunk loading/unloading and file storage enabled. Procedural disabled. |
 
+
 ---
 
-## 🌍 World Settings
+## World Settings
 
 The `world_settings_t` struct contains configuration options for world loading, rendering, level of detail, generation, and debugging. Below is a description of each setting:
 
@@ -138,3 +142,25 @@ The `world_settings_t` struct contains configuration options for world loading, 
 |    `LOD_8`    |            `160000.0`           | `400.0f * 400.0f` |
 
 ---
+
+
+
+
+## External Libraries Used
+
+This project uses a number of open-source libraries to streamline development and provide key functionality in rendering, input handling, mathematics, and GUI support:
+
+| **Library** | **Description**                                                                                     | **Link**                                                     |
+| ----------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **GLFW 3**  | A multi-platform library for creating windows, handling input, and managing OpenGL/Vulkan contexts. | [glfw.org](https://www.glfw.org/)                            |
+| **Glad**    | OpenGL function loader that simplifies working with modern OpenGL extensions and function pointers. | [glad.dav1d.de](https://glad.dav1d.de/)                      |
+| **GLM**     | Header-only mathematics library designed for graphics software and compliant with GLSL syntax.      | [github.com/g-truc/glm](https://github.com/g-truc/glm)       |
+| **ImGui**   | Immediate-mode graphical user interface toolkit for in-app tools, debug panels, and overlays.       | [github.com/ocornut/imgui](https://github.com/ocornut/imgui) |
+| **KHR**     | Khronos platform headers and definitions used with OpenGL/Vulkan implementations.                   | [github.com/KhronosGroup](https://github.com/KhronosGroup)   |
+| **STB**     | Collection of single-file public-domain libraries for image loading, font rendering, etc.           | [github.com/nothings/stb](https://github.com/nothings/stb)   |
+
+### COIL (Custom Wrapper Library)
+
+COIL is a general-purpose C++ wrapper library that I developed to simplify working with OpenGL and associated systems. It provides abstraction layers for window creation, input handling, shader management, and other utilities by integrating the libraries listed above into a more user-friendly interface.
+
+    Note: COIL is heavily inspired by the structure and coding style of LearnOpenGL, borrowing many ideas in its abstraction and resource management.

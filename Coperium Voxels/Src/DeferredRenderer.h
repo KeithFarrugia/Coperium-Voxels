@@ -7,6 +7,7 @@ typedef unsigned int GLuint;
 #include <COIL/Shaders/Shader.h>
 #include <COIL/Window/Window.h>
 #include <iostream>
+#include <COIL/Window/Window.h>
 
 class DeferredRenderer {
 public:
@@ -19,6 +20,8 @@ public:
     void Render(Coil::Shader& shader);
     void Resize(int newWidth, int newHeight);
 
+    void SetSizeCallback(Coil::Window& window);
+
 private:
     int width, height;
     GLuint gBuffer = 0;
@@ -27,4 +30,5 @@ private:
 
     void setupFramebuffer();
     void renderQuad();
+    void Window_Size_Callback(Coil::Window& window);
 };

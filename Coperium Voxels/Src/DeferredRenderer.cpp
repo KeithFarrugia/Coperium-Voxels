@@ -58,6 +58,12 @@ void DeferredRenderer::Resize(int newWidth, int newHeight) {
     setupFramebuffer();
 }
 
+void DeferredRenderer::SetSizeCallback(Coil::Window& window){
+    window.Add_Size_Callback([this](Coil::Window& win) {
+        this->Window_Size_Callback(win);
+    });
+}
+
 void DeferredRenderer::setupFramebuffer() {
     glGenFramebuffers(1, &gBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
@@ -112,6 +118,15 @@ void DeferredRenderer::renderQuad() {
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
+}
+
+void DeferredRenderer::Window_Size_Callback(Coil::Window& window){
+    int new_width, new_height;
+    window.Get_Size(new_width, new_height);
+
+    Resize(new_width, new_height);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
 }
 
 

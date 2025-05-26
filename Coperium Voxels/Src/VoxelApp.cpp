@@ -125,6 +125,7 @@ void VoxelApp::setup_renderer() {
     deferredRenderer.Resize(width, height);
     deferredRenderer.Init(deferred_shader);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    deferredRenderer.SetSizeCallback(window);
 }
 
 /* ============================================================================

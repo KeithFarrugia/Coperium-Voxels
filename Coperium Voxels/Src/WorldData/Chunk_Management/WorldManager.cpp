@@ -129,7 +129,7 @@ void WorldManager::Render(
 
     if (drawn != last_no_chunks_drawn && settings.debug) {
         std::cout << "Chunks drawn this frame: " << drawn << std::endl;
-        last_no_chunks_drawn = drawn;
+        last_no_chunks_drawn = static_cast<float>(drawn);
     }
 }
 

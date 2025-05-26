@@ -29,7 +29,7 @@ void Add_Face(
         CLD loc(verts[i]);
         CCD col(verts[i + 1]);
         
-        loc.Scale(scale);
+        loc.Scale(static_cast<float>(scale));
         loc.Shift(centre + pos_offset.x,
                   centre + pos_offset.y,
                   centre + pos_offset.z

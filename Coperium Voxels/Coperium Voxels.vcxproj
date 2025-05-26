@@ -141,6 +141,10 @@
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>MSVCRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Resources" "$(OutDir)Resources" /E /I /Y
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -159,6 +163,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)Coperium Voxels\Libraries\Lib\glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Resources" "$(OutDir)Resources" /E /I /Y
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Compact Data\Compact Normal Data\CND.cpp" />
@@ -198,7 +206,7 @@
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="Libraries\Inc\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="Src\Compact Data\Compact Location Data\CLD.cpp" />
-    <ClCompile Include="Src\DeferredRenderer.cpp.cpp" />
+    <ClCompile Include="Src\DeferredRenderer.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\VoxelApp.cpp" />
     <ClCompile Include="Src\WorldData\Chunk_Management\Mesh Generation\Get_Chunk_Neighbours.cpp" />

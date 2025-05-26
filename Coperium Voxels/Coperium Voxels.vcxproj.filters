@@ -201,7 +201,7 @@
     <ClCompile Include="Src\Compact Data\Compact Normal Data\CND.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\DeferredRenderer.cpp.cpp">
+    <ClCompile Include="Src\DeferredRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\VoxelApp.cpp">
