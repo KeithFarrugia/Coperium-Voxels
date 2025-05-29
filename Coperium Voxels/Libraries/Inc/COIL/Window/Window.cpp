@@ -1,7 +1,8 @@
 #include "Window.h"
-
+#include <GLFW/glfw3.h>
 namespace Coil {
 
+Window* Window::current_context =  nullptr;
 /* ============================================================================
  * --------------------------- Window Constructor
  * Initializes a new GLFW window with a default size, title, and no monitor.
@@ -67,24 +68,47 @@ Window::~Window() {
  * focus, iconify, position, and content scale.
  * ============================================================================
  */
-void Window::Configure_CallBacks() {
-    glfwSetWindowSizeCallback
-    (window, Window_Size_Callback);
-    glfwSetFramebufferSizeCallback
-    (window, Window_Framebuffer_Size_Callback);
-    glfwSetWindowCloseCallback
-    (window, Window_Close_Callback);
-    glfwSetWindowRefreshCallback
-    (window, Window_Refresh_Callback);
-    glfwSetWindowFocusCallback
-    (window, Window_Focus_Callback);
-    glfwSetWindowIconifyCallback
-    (window, Window_Iconify_Callback);
-    glfwSetWindowPosCallback
-    (window, Window_Pos_Callback);
-    glfwSetWindowContentScaleCallback
-    (window, Window_Content_Scale_Callback);
+
+template<typename cb_t>
+cb_t Window::SetCallback(
+    cb_t& previous, cb_t newCallback,
+    cb_t(*setFunction)(GLFWwindow*, cb_t)
+){
+    if (previous != newCallback) {
+        previous = setFunction(window, newCallback);
+    }
+    return previous;
 }
+
+void Window::Configure_CallBacks() {
+    previous_cb.window_size_cb      = SetCallback(previous_cb.window_size_cb, 
+                                        Window_Size_CB          , glfwSetWindowSizeCallback);
+
+    previous_cb.framebuffer_size_cb = SetCallback(previous_cb.framebuffer_size_cb,
+                                        Window_Framebuffer_Size_CB, glfwSetFramebufferSizeCallback);
+
+    previous_cb.window_close_cb     = SetCallback(previous_cb.window_close_cb,
+                                        Window_Close_CB         , glfwSetWindowCloseCallback);
+
+    previous_cb.window_refresh_cb   = SetCallback(previous_cb.window_refresh_cb, 
+                                        Window_Refresh_CB       , glfwSetWindowRefreshCallback);
+
+    previous_cb.window_focus_cb     = SetCallback(previous_cb.window_focus_cb, 
+                                        Window_Focus_CB         , glfwSetWindowFocusCallback);
+
+    previous_cb.window_iconify_cb   = SetCallback(previous_cb.window_iconify_cb, 
+                                        Window_Iconify_CB       , glfwSetWindowIconifyCallback);
+    
+    previous_cb.window_maximised_cb = SetCallback(previous_cb.window_maximised_cb, 
+                                        Window_Maximise_CB      , glfwSetWindowMaximizeCallback);
+
+    previous_cb.window_pos_cb       = SetCallback(previous_cb.window_pos_cb, 
+                                        Window_Pos_CB           , glfwSetWindowPosCallback);
+
+    previous_cb.content_scale_cb    = SetCallback(previous_cb.content_scale_cb, 
+                                        Window_Content_Scale_CB , glfwSetWindowContentScaleCallback);
+}
+
 
 /* ============================================================================
  * --------------------------- Del
@@ -174,8 +198,9 @@ void Window::SwapBuffers() {
  * ============================================================================
  */
 void Window::EnableVsync() {
-    MakeContext();
+    Window* pre = MakeContext();
     glfwSwapInterval(1);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -184,8 +209,9 @@ void Window::EnableVsync() {
  * ============================================================================
  */
 void Window::DisableVsync() {
-    MakeContext();
+    Window* pre = MakeContext();
     glfwSwapInterval(0);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -195,8 +221,9 @@ void Window::DisableVsync() {
  * ============================================================================
  */
 void Window::EnableDepthTest() {
-    MakeContext();
+    Window* pre = MakeContext();
     glEnable(GL_DEPTH_TEST);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -206,8 +233,9 @@ void Window::EnableDepthTest() {
  * ============================================================================
  */
 void Window::DisableDepthTest() {
-    MakeContext();
+    Window* pre = MakeContext();
     glDisable(GL_DEPTH_TEST);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -217,8 +245,9 @@ void Window::DisableDepthTest() {
  * ============================================================================
  */
 void Window::EnableCulling() {
-    MakeContext();
+    Window* pre = MakeContext();
     glEnable(GL_CULL_FACE);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -228,8 +257,9 @@ void Window::EnableCulling() {
  * ============================================================================
  */
 void Window::DisableCulling() {
-    MakeContext();
+    Window* pre = MakeContext();
     glDisable(GL_CULL_FACE);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -239,8 +269,9 @@ void Window::DisableCulling() {
  * ============================================================================
  */
 void Window::FF_Clockwise() {
-    MakeContext();
+    Window* pre = MakeContext();
     glFrontFace(GL_CW);
+    MakeContext(pre);
 }
 
 /* ============================================================================
@@ -251,19 +282,11 @@ void Window::FF_Clockwise() {
  * ============================================================================
  */
 void Window::FF_UntiClockwise() {
-    MakeContext();
+    Window* pre = MakeContext();
     glFrontFace(GL_CCW);
+    MakeContext(pre);
 }
 
-
-/* ============================================================================
- * --------------------------- SwapBuffers
- * Swaps the current buffers
- * ============================================================================
- */
-void Window::MakeContext() {
-    glfwMakeContextCurrent(window);
-}
 /* ============================================================================
  * --------------------------- FullScreen
  * Switches the window to fullscreen mode.
@@ -271,17 +294,14 @@ void Window::MakeContext() {
  * ============================================================================
  */
 void Window::FullScreen() {
-    // Store the current window position and size
-    glfwGetWindowPos    (window, &windowed_x, &windowed_y);
-    glfwGetWindowSize   (window, &windowed_w, &windowed_h);
+    Get_Position    (windowed_x , windowed_y);
+    Get_Size        (windowed_w , windowed_h);
 
-    // Get the primary monitor and its video mode
-    GLFWmonitor* monitor    = glfwGetPrimaryMonitor();
+    GLFWmonitor* monitor;  Get_Monitor(&monitor);;
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     // Switch to fullscreen
-    glfwSetWindowMonitor(
-        window, 
+    Set_Monitor(
         monitor, 
         0, 
         0, 
@@ -290,9 +310,8 @@ void Window::FullScreen() {
         mode->refreshRate
     );
 
-    // Trigger the size and position callbacks
-    Window_Size_Callback(window, mode->width, mode->height);
-    Window_Pos_Callback(window, 0, 0);
+    Window_Size_CB(window, mode->width, mode->height);
+    Window_Pos_CB(window, 0, 0);
 }
 
 /* ============================================================================
@@ -314,8 +333,42 @@ void Window::Windowed() {
     );
 
     // Trigger the size and position callbacks
-    Window_Size_Callback(window, windowed_w, windowed_h);
-    Window_Pos_Callback(window, windowed_x, windowed_y);
+    Window_Size_CB(window, windowed_w, windowed_h);
+    Window_Pos_CB(window, windowed_x, windowed_y);
 }
 
+
+/* ============================================================================
+ * --------------------------- MakeContext
+ * Makes the window the current context
+ * ============================================================================
+ */
+Window* Window::MakeContext() {
+    w_mt.lock();
+    
+    Window* pre_context = current_context;
+    glfwMakeContextCurrent(this->window);
+    current_context = this;
+
+    w_mt.unlock();
+    
+    return pre_context;
+}
+
+/* ============================================================================
+ * --------------------------- MakeContext
+ * 
+ * ============================================================================
+ */
+Window* Window::MakeContext( Window* win ){
+    w_mt.lock();
+
+    Window* pre_context = current_context;
+    glfwMakeContextCurrent(win->window);
+    current_context = this;
+
+    w_mt.unlock();
+
+    return pre_context;
+}
 }

@@ -5,6 +5,7 @@
 // --------------------------------- External Includes
 #include <unordered_map>
 #include <vector>
+#include <string>
 
 namespace Coil {
 
@@ -75,17 +76,7 @@ typedef enum{
     Down,
 }camera_movement_t;
 
-typedef enum{
-    UNPRESSED,
-    PRESSED,
-    REPEAT
-}key_states_t;
 
-
-typedef struct {
-    int          key;
-    key_states_t state;
-}key_event_t;
 
 
 }

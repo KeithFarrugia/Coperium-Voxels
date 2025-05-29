@@ -2,13 +2,10 @@
 #ifndef COIL_CAMERA_H
 #define COIL_CAMERA_H
 #include <GLM/glm.hpp>
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 #include <queue>
 
-#include "../Utility.h"
 #include "../Window/Window.h"
 
 
@@ -31,7 +28,7 @@ public:
     float       Get_Mouse_Sensitivity   ()const;
 
     // --------------------------------- Setters
-    void        Set_Window              (const Window& window);
+    void        Set_Window              (      Window& window);
     void        Set_Position            (const glm::vec3& position);
     void        Set_Front               (const glm::vec3& front);
     void        Set_FOV                 (const float fov);
@@ -90,11 +87,11 @@ protected:
     bool    first_mouse;
     int     window_width;
     int     window_height;
-    Window& window;
+    Window* window;
 
 
     // Holds all possible Key presses
-    std::unordered_map<int, key_states_t> key_map;
+    std::unordered_map<int, io_states> key_map;
 
     // Updates some values based on the position Yaw Pitch etc... 
     void Update_Camera_Vectors();

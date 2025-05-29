@@ -37,10 +37,10 @@ glm::mat4 Fly_Camera::Calc_Projection_Matrix() {
         return glm::mat4(1.0f);
     }
 
-    return glm::perspective(
+    return glm::infinitePerspective(
         glm::radians(fov),
         (float)window_width / (float)window_height,
-        near_plane, far_plane
+        near_plane
     );
 }
 }

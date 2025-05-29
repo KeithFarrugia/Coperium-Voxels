@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <GLFW/glfw3.h>
 
 namespace Coil {
 
@@ -22,7 +23,7 @@ Camera::Camera(Window& window)
  */
 Camera::Camera(
     Window& window, GLfloat Pos_x, GLfloat Pos_y, GLfloat Pos_z) 
-    : window(window)
+    : window(&window)
 {
     position            = glm::vec3(Pos_x, Pos_y, Pos_z);
     world_up            = WORLD_UP;
@@ -128,15 +129,15 @@ void Camera::Keyboard_Callback(
     
     switch (action) {
     case GLFW_PRESS:
-        cam->key_map[key] = key_states_t::PRESSED;
+        cam->key_map[key] = io_states::PRESSED;
         break;
 
     case GLFW_REPEAT:
-        cam->key_map[key] = key_states_t::REPEAT;
+        cam->key_map[key] = io_states::REPEAT;
         break;
 
     case GLFW_RELEASE:
-        cam->key_map[key] = key_states_t::UNPRESSED;
+        cam->key_map[key] = io_states::UNPRESSED;
         break;
     }
 }
